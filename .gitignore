@@ -1,0 +1,9 @@
+sources/config.json
+node_modules
+vendor/*
+vendor/composer/installed.json
+vendor/composer/installed.php
+vendor/composer/installedVersions.php
+
+!vendor/composer
+!vendor/autoload.php
