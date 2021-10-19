@@ -6,6 +6,8 @@ defined( 'ABSPATH' ) || exit;
 
 abstract class Template {
 
+	protected $instance_key;
+
 	abstract public function __construct( string $instance_key );
 
 	abstract public function get( string $slug ): string;

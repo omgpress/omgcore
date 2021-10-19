@@ -1,0 +1,26 @@
+{
+  "name": "wp-titan-tools",
+  "version": "1.0.0",
+  "description": "Development tools for the WP Titan.",
+  "homepage": "https://github.com/dpripa/wp-titan/blob/main/tools",
+  "license": "GPL-2.0-or-later",
+  "contributors": [
+    {
+      "name": "Dmitry Pripa",
+      "email": "i@dpripa.com",
+      "homepage": "https://github.com/dpripa"
+    }
+  ],
+  "keywords": [
+    "wordpress"
+  ],
+  "node": "14",
+  "scripts": {
+    "deploy-zip": "cd .. && composer no-dev && composer optimize && cd tools && node deploy-zip.js && cd .. && composer install"
+  },
+  "dependencies": {
+    "fs": "~0.0.1-security",
+    "archiver": "~5.0.0",
+    "log-beautify": "~1.2.0"
+  }
+}

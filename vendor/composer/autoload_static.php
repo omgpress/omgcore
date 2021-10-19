@@ -27,7 +27,6 @@ class ComposerStaticInitacf4823d44a72fea19d0255c1d858465
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'WPT_Abstracts\\App' => __DIR__ . '/../..' . '/abstracts/App.php',
         'WPT_Abstracts\\Simpleton' => __DIR__ . '/../..' . '/abstracts/Simpleton.php',
         'WP_Titan\\Admin' => __DIR__ . '/../..' . '/includes/Admin.php',
         'WP_Titan\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Admin/Notice.php',

@@ -1,6 +1,6 @@
 {
   "name": "dpripa/wp-titan",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "wordpress-plugin",
   "description": "Library for relaxed development of WordPress themes and plugins.",
   "homepage": "https://github.com/dpripa/wp-titan",

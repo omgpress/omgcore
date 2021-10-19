@@ -6,7 +6,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Template_Plugin extends Template {
 
-	public function __construct( string $instance_key ) {}
+	public function __construct( string $instance_key ) {
+		$this->instance_key = $instance_key;
+	}
 
 	public function get( string $slug ): string {
 		// TODO: Implement get() method.

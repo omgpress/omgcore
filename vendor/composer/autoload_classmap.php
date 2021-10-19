@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'WPT_Abstracts\\App' => $baseDir . '/abstracts/App.php',
     'WPT_Abstracts\\Simpleton' => $baseDir . '/abstracts/Simpleton.php',
     'WP_Titan\\Admin' => $baseDir . '/includes/Admin.php',
     'WP_Titan\\Admin\\Notice' => $baseDir . '/includes/Admin/Notice.php',

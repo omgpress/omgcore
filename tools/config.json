@@ -1,0 +1,26 @@
+{
+	"name": "wp-titan",
+	"version": "1.0.0",
+	"rootPath": "../",
+	"mainFile": "index.php",
+  "packageFiles": [
+    "composer.json"
+  ],
+	"directories": [
+    "abstracts",
+    "includes",
+    "tools",
+		"vendor"
+	],
+	"files": [
+    ".editorconfig",
+    ".gitignore",
+		"composer.json",
+    "composer.lock",
+    "functions.php",
+    "index.php",
+    "LICENSE",
+    "phpcs.xml",
+    "README.md"
+	]
+}

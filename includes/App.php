@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 final class App {
 
 	protected $instance_key;
-	protected $type;
+	protected $environment;
 
 	public $hook;
 	public $http;
@@ -25,13 +25,13 @@ final class App {
 		crash( 'Cannot unserialize a singleton.' );
 	}
 
-	protected function __construct( string $instance_key, string $type ) {
+	protected function __construct( string $instance_key, string $environment ) {
 		$this->instance_key = $instance_key;
-		$this->type         = $type;
+		$this->environment  = $environment;
 
 		$this->hook = new Hook( $this->instance_key );
 
-		switch ( $this->type ) {
+		switch ( $this->environment ) {
 			case 'theme':
 				$this->http     = new Http_Theme( $this->instance_key );
 				$this->template = new Template_Theme( $this->instance_key );
@@ -50,9 +50,9 @@ final class App {
 		$this->logger = new Logger( $this->instance_key, $this->http );
 	}
 
-	public static function get_instance( string $key, string $type = 'plugin' ): self {
+	public static function get_instance( string $key, string $environment = 'plugin' ): self {
 		if ( ! isset( self::$instances[ $key ] ) ) {
-			self::$instances[ $key ] = new self( $key, $type );
+			self::$instances[ $key ] = new self( $key, $environment );
 		}
 
 		return self::$instances[ $key ];
