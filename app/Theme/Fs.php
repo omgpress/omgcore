@@ -1,14 +1,10 @@
 <?php
 
-namespace WP_Titan;
+namespace WP_Titan_1_0_0\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-class Http_Theme extends Http {
-
-	public function __construct( string $instance_key ) {
-		$this->instance_key = $instance_key;
-	}
+class Fs extends \WP_Titan_1_0_0\Fs {
 
 	public function get_path( string $path = '' ): string {
 		return get_parent_theme_file_path() . '/' . $path;

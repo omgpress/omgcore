@@ -16,10 +16,13 @@
   ],
   "node": "14",
   "scripts": {
-    "deploy-zip": "cd .. && composer no-dev && composer optimize && cd tools && node deploy-zip.js && cd .. && composer install"
+    "release": "npm run set-version && npm run deploy-zip",
+    "deploy-zip": "cd .. && composer no-dev && cd tools/scripts && node deploy-zip.js && cd ../.. && composer install",
+    "set-version": "cd scripts && node set-version.js cd ../.. && composer optimize"
   },
   "dependencies": {
     "fs": "~0.0.1-security",
+    "glob": "~7.2.0",
     "archiver": "~5.0.0",
     "log-beautify": "~1.2.0"
   }

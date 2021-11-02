@@ -1,13 +1,12 @@
 <?php
 
-namespace WP_Titan;
+namespace WP_Titan_1_0_0;
 
 defined( 'ABSPATH' ) || exit;
 
-class Asset {
+class Asset extends Feature {
 
-	protected $instance_key;
-	protected $http;
+	protected $fs;
 
 	protected $base_path   = 'assets';
 	protected $style_path  = 'styles';
@@ -15,16 +14,17 @@ class Asset {
 
 	protected $postfix = '.min';
 
-	public function __construct( string $instance_key, Http $http ) {
-		$this->instance_key = $instance_key;
-		$this->http         = $http;
+	public function __construct( string $instance_key, Fs $fs ) {
+		parent::__construct( $instance_key );
+
+		$this->fs = $fs;
 	}
 
 	public function enqueue_style( string $slug, array $deps = array(), string $addition = '' ): void {
 		$key   = $this->instance_key . '_' . $slug;
 		$path  = $this->base_path . ( $this->style_path ? ( '/' . $this->style_path ) : '' ) . ( $this->base_path ? '/' : '' );
-		$url   = $this->http->get_url( $path . $slug . $this->postfix . '.css' );
-		$stamp = filemtime( $this->http->get_path( $path . $slug . $this->postfix . '.css' ) );
+		$url   = $this->fs->get_url( $path . $slug . $this->postfix . '.css' );
+		$stamp = filemtime( $this->fs->get_path( $path . $slug . $this->postfix . '.css' ) );
 
 		wp_enqueue_style( $key, $url, $deps, $stamp );
 
@@ -36,8 +36,8 @@ class Asset {
 	public function enqueue_script( string $slug, array $deps = array(), array $args = array(), bool $in_footer = true ): void {
 		$key   = $this->instance_key . '_' . $slug;
 		$path  = $this->base_path . ( $this->script_path ? ( '/' . $this->script_path ) : '' ) . ( $this->base_path ? '/' : '' );
-		$url   = $this->http->get_url( $path . $slug . $this->postfix . '.js' );
-		$stamp = filemtime( $this->http->get_path( $path . $slug . $this->postfix . '.js' ) );
+		$url   = $this->fs->get_url( $path . $slug . $this->postfix . '.js' );
+		$stamp = filemtime( $this->fs->get_path( $path . $slug . $this->postfix . '.js' ) );
 
 		wp_enqueue_script( $key, $url, $deps, $stamp, $in_footer );
 

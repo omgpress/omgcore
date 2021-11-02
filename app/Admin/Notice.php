@@ -1,22 +1,24 @@
 <?php
 
-namespace WP_Titan\Admin;
+namespace WP_Titan_1_0_0\Admin;
+
+use WP_Titan_1_0_0\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
-class Notice {
+class Notice extends Feature {
 
-	protected $instance_key;
 	protected $key;
 
 	public function __construct( string $instance_key ) {
-		$this->instance_key = $instance_key;
-		$this->key          = $this->instance_key . '_transient_admin_notices';
+		parent::__construct( $instance_key );
+
+		$this->key = $this->instance_key . '_transient_admin_notices';
 
 		$this->render_transients();
 	}
 
-	private function render_transients(): void {
+	protected function render_transients(): void {
 		$notices = $this->get_transients();
 
 		if ( empty( $notices ) ) {

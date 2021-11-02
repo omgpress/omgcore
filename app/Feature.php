@@ -1,18 +1,14 @@
 <?php
 
-namespace WP_Titan;
+namespace WP_Titan_1_0_0;
 
 defined( 'ABSPATH' ) || exit;
 
-class Admin {
+abstract class Feature {
 
-	private $instance_key;
-
-	public $notice;
+	protected $instance_key;
 
 	public function __construct( string $instance_key ) {
 		$this->instance_key = $instance_key;
-
-		$this->notice = new Admin\Notice( $this->instance_key );
 	}
 }

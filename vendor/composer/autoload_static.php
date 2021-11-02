@@ -9,15 +9,15 @@ class ComposerStaticInitacf4823d44a72fea19d0255c1d858465
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
-            'WP_Titan\\' => 9,
+            'WP_Titan_1_0_0\\' => 15,
             'WPT_Abstracts\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_Titan\\' => 
+        'WP_Titan_1_0_0\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/includes',
+            0 => __DIR__ . '/../..' . '/app',
         ),
         'WPT_Abstracts\\' => 
         array (
@@ -28,19 +28,22 @@ class ComposerStaticInitacf4823d44a72fea19d0255c1d858465
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'WPT_Abstracts\\Simpleton' => __DIR__ . '/../..' . '/abstracts/Simpleton.php',
-        'WP_Titan\\Admin' => __DIR__ . '/../..' . '/includes/Admin.php',
-        'WP_Titan\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Admin/Notice.php',
-        'WP_Titan\\Ajax' => __DIR__ . '/../..' . '/includes/Ajax.php',
-        'WP_Titan\\App' => __DIR__ . '/../..' . '/includes/App.php',
-        'WP_Titan\\Asset' => __DIR__ . '/../..' . '/includes/Asset.php',
-        'WP_Titan\\Hook' => __DIR__ . '/../..' . '/includes/Hook.php',
-        'WP_Titan\\Http' => __DIR__ . '/../..' . '/includes/Http.php',
-        'WP_Titan\\Http_Plugin' => __DIR__ . '/../..' . '/includes/Http_Plugin.php',
-        'WP_Titan\\Http_Theme' => __DIR__ . '/../..' . '/includes/Http_Theme.php',
-        'WP_Titan\\Logger' => __DIR__ . '/../..' . '/includes/Logger.php',
-        'WP_Titan\\Template' => __DIR__ . '/../..' . '/includes/Template.php',
-        'WP_Titan\\Template_Plugin' => __DIR__ . '/../..' . '/includes/Template_Plugin.php',
-        'WP_Titan\\Template_Theme' => __DIR__ . '/../..' . '/includes/Template_Theme.php',
+        'WP_Titan_1_0_0\\Admin' => __DIR__ . '/../..' . '/app/Admin.php',
+        'WP_Titan_1_0_0\\Admin\\Notice' => __DIR__ . '/../..' . '/app/Admin/Notice.php',
+        'WP_Titan_1_0_0\\Ajax' => __DIR__ . '/../..' . '/app/Ajax.php',
+        'WP_Titan_1_0_0\\App' => __DIR__ . '/../..' . '/app/App.php',
+        'WP_Titan_1_0_0\\Asset' => __DIR__ . '/../..' . '/app/Asset.php',
+        'WP_Titan_1_0_0\\Feature' => __DIR__ . '/../..' . '/app/Feature.php',
+        'WP_Titan_1_0_0\\Fs' => __DIR__ . '/../..' . '/app/Fs.php',
+        'WP_Titan_1_0_0\\Hook' => __DIR__ . '/../..' . '/app/Hook.php',
+        'WP_Titan_1_0_0\\Http' => __DIR__ . '/../..' . '/app/Http.php',
+        'WP_Titan_1_0_0\\Logger' => __DIR__ . '/../..' . '/app/Logger.php',
+        'WP_Titan_1_0_0\\Plugin\\Fs' => __DIR__ . '/../..' . '/app/Plugin/Fs.php',
+        'WP_Titan_1_0_0\\Plugin\\Hook' => __DIR__ . '/../..' . '/app/Plugin/Hook.php',
+        'WP_Titan_1_0_0\\Plugin\\Template' => __DIR__ . '/../..' . '/app/Plugin/Template.php',
+        'WP_Titan_1_0_0\\Template' => __DIR__ . '/../..' . '/app/Template.php',
+        'WP_Titan_1_0_0\\Theme\\Fs' => __DIR__ . '/../..' . '/app/Theme/Fs.php',
+        'WP_Titan_1_0_0\\Theme\\Template' => __DIR__ . '/../..' . '/app/Theme/Template.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

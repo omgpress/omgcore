@@ -1,15 +1,10 @@
 {
 	"name": "wp-titan",
 	"version": "1.0.0",
-	"rootPath": "../",
-	"mainFile": "index.php",
-  "packageFiles": [
-    "composer.json"
-  ],
+  "rootPath": "../..",
 	"directories": [
     "abstracts",
-    "includes",
-    "tools",
+    "app",
 		"vendor"
 	],
 	"files": [

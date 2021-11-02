@@ -1,7 +1,7 @@
 {
   "name": "dpripa/wp-titan",
   "version": "1.0.0",
-  "type": "wordpress-plugin",
+  "type": "wordpress-library",
   "description": "Library for relaxed development of WordPress themes and plugins.",
   "homepage": "https://github.com/dpripa/wp-titan",
   "license": "GPL-2.0-or-later",
@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "WP_Titan\\": "includes/",
+      "WP_Titan_1_0_0\\": "app/",
       "WPT_Abstracts\\": "abstracts/"
     }
   },

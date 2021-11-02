@@ -1,22 +1,24 @@
 <?php
 
-namespace WP_Titan;
+namespace WP_Titan_1_0_0;
 
 defined( 'ABSPATH' ) || exit;
 
-class Logger {
+class Logger extends Feature {
 
-	protected $instance_key;
 	protected $key;
+	protected $fs;
 	protected $http;
 	protected $path;
 	protected $filename = 'debug.log';
 
-	public function __construct( string $instance_key, Http $http ) {
-		$this->instance_key = $instance_key;
-		$this->key          = $this->instance_key . '_log';
-		$this->http         = $http;
-		$this->path         = WP_CONTENT_DIR . '/uploads/' . $this->instance_key . '-log/';
+	public function __construct( string $instance_key, Fs $fs, Http $http ) {
+		parent::__construct( $instance_key );
+
+		$this->key  = $this->instance_key . '_log';
+		$this->fs   = $fs;
+		$this->http = $http;
+		$this->path = WP_CONTENT_DIR . '/uploads/' . $this->instance_key . '-log/';
 
 		if ( isset( $_GET[ $this->key ] ) && 'del' === $_GET[ $this->key ] ) { // phpcs:ignore
 			add_action( 'admin_init', array( $this, 'delete_file' ) );
