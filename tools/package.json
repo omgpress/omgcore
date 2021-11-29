@@ -1,7 +1,7 @@
 {
   "name": "wp-titan-tools",
   "version": "1.0.0",
-  "description": "Development tools for the WP Titan.",
+  "description": "Development tools for WP Titan.",
   "homepage": "https://github.com/dpripa/wp-titan/blob/main/tools",
   "license": "GPL-2.0-or-later",
   "contributors": [
@@ -16,9 +16,9 @@
   ],
   "node": "14",
   "scripts": {
-    "release": "npm run set-version && npm run deploy-zip",
-    "deploy-zip": "cd .. && composer no-dev && cd tools/scripts && node deploy-zip.js && cd ../.. && composer install",
-    "set-version": "cd scripts && node set-version.js cd ../.. && composer optimize"
+    "release": "npm run version && npm zip",
+    "zip": "cd .. && composer no-dev && cd tools/scripts && node zip.js && cd ../.. && composer install",
+    "version": "cd scripts && node version.js && cd ../.. && composer optimize"
   },
   "dependencies": {
     "fs": "~0.0.1-security",
