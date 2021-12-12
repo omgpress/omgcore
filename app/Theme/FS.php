@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_0_9_0\Theme;
+namespace WP_Titan_0_9_1\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-class Fs extends \WP_Titan_0_9_0\Fs {
+class FS extends \WP_Titan_0_9_1\Fs {
 
 	public function get_path( string $path = '', bool $parent = false ): string {
 		return ( $parent ? get_parent_theme_file_path() : get_theme_file_path() ) . DIRECTORY_SEPARATOR . $path;

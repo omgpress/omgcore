@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Fs extends Feature {
+abstract class FS extends Feature {
 
 	abstract public function get_path( string $path = '' ): string;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_0_9_0\Theme;
+namespace WP_Titan_0_9_1\Theme;
 
 defined( 'ABSPATH' ) || exit;
 
-class Template extends \WP_Titan_0_9_0\Template {
+class Template extends \WP_Titan_0_9_1\Template {
 
 	protected $base_path = 'template-parts';
 

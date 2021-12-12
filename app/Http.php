@@ -1,15 +1,15 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
 class Http extends Feature {
 
 	public function get_current_url( bool $rel = false ): string {
-		$rel_uri = add_query_arg( null, null );
+		$rel_url = add_query_arg( null, null );
 
-		return $rel ? $rel_uri : home_url( $rel_uri );
+		return $rel ? $rel_url : home_url( $rel_url );
 	}
 
 	public function redirect( string $url, ?callable $callback = null ): void {

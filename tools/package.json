@@ -16,7 +16,7 @@
   ],
   "node": "14",
   "scripts": {
-    "release": "npm run version && npm zip",
+    "release": "npm run version && npm run zip",
     "zip": "cd .. && composer no-dev && cd tools/scripts && node zip.js && cd ../.. && composer install",
     "version": "cd scripts && node version.js && cd ../.. && composer optimize"
   },

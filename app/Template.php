@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 

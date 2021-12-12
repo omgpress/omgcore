@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,10 +14,10 @@ final class Core {
 	}
 
 	public function log(): Core\Log {
-		return $this->apply_feature( 'log', Core\Log::class );
+		return $this->get_feature( 'log', Core\Log::class );
 	}
 
-	protected function apply_feature( string $property, string $class ) /* mixed */ {
+	protected function get_feature( string $property, string $class ) /* mixed */ {
 		if ( ! is_a( $this->$property, $class ) ) {
 			$this->$property = new $class( $this->app, $this );
 		}

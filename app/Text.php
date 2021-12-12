@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,12 +12,12 @@ class Text extends Feature {
 
 		unset( $words[0] );
 
-		return $first_word . array_reduce(
+		return array_reduce(
 			$words,
 			function ( string $result, string $item ): string {
 				return $result . ucfirst( $item );
 			},
-			''
+			$first_word
 		);
 	}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ class Log extends Feature {
 		parent::__construct( $app, $core );
 
 		$this->key  = $this->app->get_key() . '_log_' . $this->name;
-		$this->file = 'debug' . DIRECTORY_SEPARATOR . $this->name . '.log';
+		$this->file = 'logs' . DIRECTORY_SEPARATOR . $this->name . '.log';
 
 		if ( isset( $_GET[ $this->key ] ) && 'delete' === $_GET[ $this->key ] ) { // phpcs:ignore
 			add_action( 'admin_init', array( $this, 'delete_file' ) );
@@ -23,7 +23,7 @@ class Log extends Feature {
 
 	public function write( string $message, string $level = 'warning' ): void {
 		$timestamp = gmdate( 'n/j/Y H:i:s' );
-		$content   = "[$timestamp] $level: $message\n\n";
+		$content   = "[$timestamp] $level: $message\n";
 
 		$this->app->upload()->edit_file( $this->file, $content, true );
 	}
@@ -33,7 +33,7 @@ class Log extends Feature {
 	}
 
 	public function get_filesize(): string {
-		return ( $this->file_exists() ? ( round( filesize( $this->file ) / 1024, 3 ) ) : 0 ) . 'KB';
+		return ( $this->file_exists() ? round( filesize( $this->file ) / 1024, 3 ) : 0 ) . 'KB';
 	}
 
 	public function get_delete_url(): string {
@@ -43,6 +43,10 @@ class Log extends Feature {
 	public function delete_file(): void {
 		if ( current_user_can( 'delete_posts' ) && $this->file_exists() ) {
 			unlink( $this->file );
+		}
+
+		if ( empty( $_GET[ $this->key ] ) ) { // phpcs:ignore
+			return;
 		}
 
 		$this->app->http()->redirect( remove_query_arg( $this->key, $this->app->http()->get_current_url() ) );

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_0_9_0;
+namespace WP_Titan_0_9_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,19 +33,20 @@ final class App {
 		$this->config    = $config;
 		$root_file_paths = explode( DIRECTORY_SEPARATOR, $this->root_file );
 		$root_dir_number = count( $root_file_paths ) - 3;
-		$is_theme        = 'themes' === $root_file_paths[ $root_dir_number ];
-		$is_plugin       = 'plugins' === $root_file_paths[ $root_dir_number ];
+		$isset_root_dir  = isset( $root_file_paths[ $root_dir_number ] );
+		$is_theme        = $isset_root_dir && 'themes' === $root_file_paths[ $root_dir_number ];
+		$is_plugin       = $isset_root_dir && 'plugins' === $root_file_paths[ $root_dir_number ];
 		$this->env       = $is_theme ? 'theme' : 'plugin';
 
 		if ( ! $is_theme && ! $is_plugin ) {
-			_die( 'Wrong project root file.', null, $this->key );
+			wpt_die( 'Wrong project root file.', null, $this->key );
 		}
 	}
 
 	private function __clone() {}
 
 	public function __wakeup() {
-		_die( 'Cannot unserialize a singleton.', null, $this->key );
+		wpt_die( 'Cannot unserialize a singleton.', null, $this->key );
 	}
 
 	public static function get_instance( string $key, string $root_file, array $config = array() ): self {
@@ -81,54 +82,54 @@ final class App {
 	}
 
 	public function debug(): Debug {
-		return $this->apply_feature( 'debug', Debug::class );
+		return $this->get_feature( 'debug', Debug::class );
 	}
 
 	public function log(): Log {
-		return $this->apply_feature( 'log', Log::class );
+		return $this->get_feature( 'log', Log::class );
 	}
 
 	public function simpleton(): Simpleton {
-		return $this->apply_feature( 'simpleton', Simpleton::class );
+		return $this->get_feature( 'simpleton', Simpleton::class );
 	}
 
-	public function fs(): Fs {
-		return $this->apply_feature( 'fs', Plugin\Fs::class, Theme\Fs::class );
+	public function fs(): FS {
+		return $this->get_feature( 'fs', Plugin\FS::class, Theme\FS::class );
 	}
 
 	public function hook(): Hook {
-		return $this->apply_feature( 'hook', Plugin\Hook::class, Hook::class );
+		return $this->get_feature( 'hook', Plugin\Hook::class, Hook::class );
 	}
 
 	public function template(): Template {
-		return $this->apply_feature( 'template', Plugin\Template::class, Theme\Template::class );
+		return $this->get_feature( 'template', Plugin\Template::class, Theme\Template::class );
 	}
 
 	public function http(): Http {
-		return $this->apply_feature( 'http', Http::class );
+		return $this->get_feature( 'http', Http::class );
 	}
 
 	public function asset(): Asset {
-		return $this->apply_feature( 'asset', Asset::class );
+		return $this->get_feature( 'asset', Asset::class );
 	}
 
 	public function ajax(): Ajax {
-		return $this->apply_feature( 'ajax', Ajax::class );
+		return $this->get_feature( 'ajax', Ajax::class );
 	}
 
 	public function admin(): Admin {
-		return $this->apply_feature( 'admin', Admin::class );
+		return $this->get_feature( 'admin', Admin::class );
 	}
 
 	public function upload(): Upload {
-		return $this->apply_feature( 'upload', Upload::class );
+		return $this->get_feature( 'upload', Upload::class );
 	}
 
 	public function text(): Text {
-		return $this->apply_feature( 'text', Text::class );
+		return $this->get_feature( 'text', Text::class );
 	}
 
-	private function apply_feature( string $property, string $class, ?string $theme_class = null ) /* mixed */ {
+	private function get_feature( string $property, string $class, ?string $theme_class = null ) /* mixed */ {
 		if ( ! is_a( $this->$property, $class ) ) {
 			if ( $theme_class && 'theme' === $this->env ) {
 				$this->$property = new $theme_class( $this, $this->core() );

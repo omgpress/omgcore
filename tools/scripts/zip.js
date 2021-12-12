@@ -11,7 +11,7 @@ function deployZip() {
 
 	output.on( 'close', function() {
 		console.log( '\n' );
-		log.success_( '"' + config.name + '.zip" deployed to the root folder.' );
+		log.success_( '"' + config.name + '.zip" deployed to the root folder' );
 		console.log( '\n' )
 	});
 
