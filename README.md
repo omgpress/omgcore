@@ -17,22 +17,25 @@ require_once dirname( __FILE__ ) . '/vendor/dpripa/wp-titan/index.php';
 // Always be sure that the WPT namespace matches the installed version of the library.
 // This is because other plugins and themes might use the different versions.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_0_9_1\App as WP_Titan;
+use WP_Titan_0_9_2\App as WP_Titan;
 
 function wpt(): WP_Titan {
-	return WP_Titan::get_instance(
-		'my_wp_project', // The key to WPT instance as namespace of your plugin or theme.
-		__FILE__ // The main (root) file of your plugin or theme.
+	return WP_Titan::get_project(
+		'my_wp_project' // The key to WPT instance as namespace of your plugin or theme.
 	);
 }
+
+wpt()->setup(
+	__FILE__, // The main (root) file of your plugin or theme.
+	array() // Optional. The array of config parameters.
+);
 ```
 - Completed!
 
 ## Documentation
 - Call functionality using `wpt()` object methods.
 
-_Full documentation will be published with version 1.0.0._
+_Complete documentation will be published with version 1.0.0._
 
 ## License
-
 WordPress Titan is free software, and is released under the terms of the GPL (GNU General Public License) version 2 or (at your option) any later version. See [LICENSE](https://github.com/dpripa/wp-titan/blob/main/LICENSE).

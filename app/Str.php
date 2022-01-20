@@ -1,13 +1,13 @@
 <?php
 
-namespace WP_Titan_0_9_1;
+namespace WP_Titan_0_9_2;
 
 defined( 'ABSPATH' ) || exit;
 
-class Text extends Feature {
+class Str extends Feature {
 
-	public function to_camelcase( string $text ): string {
-		$words      = explode( '_', $text );
+	public function to_camelcase( string $text, string $separator = '_' ): string {
+		$words      = explode( $separator, $text );
 		$first_word = $words[0];
 
 		unset( $words[0] );
@@ -125,5 +125,16 @@ class Text extends Feature {
 		}
 
 		return $truncate;
+	}
+
+	public function generate_random( int $length = 64, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
+		$pieces = array();
+		$max    = mb_strlen( $keyspace, '8bit' ) - 1;
+
+		for ( $i = 0; $i < $length; ++ $i ) {
+			$pieces[] = $keyspace[ random_int( 0, $max ) ];
+		}
+
+		return implode( '', $pieces );
 	}
 }

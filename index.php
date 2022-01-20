@@ -1,14 +1,16 @@
 <?php
 
-namespace WP_Titan_0_9_1;
+namespace WP_Titan_0_9_2;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( class_exists( 'WP_Titan_0_9_1\App' ) ) {
+if ( class_exists( 'WP_Titan_0_9_2\App' ) ) {
 	return;
 }
 
-require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+const ROOT_FILE = __FILE__;
+
+require_once dirname( ROOT_FILE ) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 function wpt_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true ): void {
 	global $wp_query;

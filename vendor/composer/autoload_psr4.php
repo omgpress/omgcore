@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WP_Titan_0_9_1\\' => array($baseDir . '/app'),
+    'WP_Titan_0_9_2\\' => array($baseDir . '/app'),
 );

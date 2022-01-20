@@ -1,0 +1,6 @@
+{
+  "customizer-control": [
+    "./styles/customizer-control.scss",
+    "./scripts/customizer-control.js"
+  ]
+}

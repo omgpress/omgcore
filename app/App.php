@@ -1,46 +1,35 @@
 <?php
 
-namespace WP_Titan_0_9_1;
+namespace WP_Titan_0_9_2;
 
 defined( 'ABSPATH' ) || exit;
 
 final class App {
+
+	private static $projects = array();
 
 	private $key;
 	private $root_file;
 	private $config;
 	private $env;
 
-	private $core;
 	private $debug;
-	private $log;
-	private $simpleton;
 	private $fs;
 	private $hook;
-	private $template;
 	private $http;
+	private $simpleton;
 	private $asset;
+	private $template;
 	private $ajax;
 	private $admin;
 	private $upload;
-	private $text;
+	private $str;
+	private $customizer;
 
-	private static $instances = array();
+	private $core;
 
-	private function __construct( string $key, string $root_file, array $config ) {
-		$this->key       = $key;
-		$this->root_file = $root_file;
-		$this->config    = $config;
-		$root_file_paths = explode( DIRECTORY_SEPARATOR, $this->root_file );
-		$root_dir_number = count( $root_file_paths ) - 3;
-		$isset_root_dir  = isset( $root_file_paths[ $root_dir_number ] );
-		$is_theme        = $isset_root_dir && 'themes' === $root_file_paths[ $root_dir_number ];
-		$is_plugin       = $isset_root_dir && 'plugins' === $root_file_paths[ $root_dir_number ];
-		$this->env       = $is_theme ? 'theme' : 'plugin';
-
-		if ( ! $is_theme && ! $is_plugin ) {
-			wpt_die( 'Wrong project root file.', null, $this->key );
-		}
+	private function __construct( string $key ) {
+		$this->key = $key;
 	}
 
 	private function __clone() {}
@@ -49,68 +38,77 @@ final class App {
 		wpt_die( 'Cannot unserialize a singleton.', null, $this->key );
 	}
 
-	public static function get_instance( string $key, string $root_file, array $config = array() ): self {
-		if ( ! isset( self::$instances[ $key ] ) ) {
-			self::$instances[ $key ] = new self( $key, $root_file, $config );
+	public static function get_project( string $key ): self {
+		if ( empty( self::$projects[ $key ] ) ) {
+			self::$projects[ $key ] = new self( $key );
 		}
 
-		return self::$instances[ $key ];
+		return self::$projects[ $key ];
 	}
 
-	public function get_key(): string {
-		return $this->key;
+	public function setup( string $root_file, array $config = array() ): void {
+		if ( $this->root_file ) {
+			wpt_die( 'Setup can be done only once.', null, $this->key );
+		}
+
+		$this->root_file = $root_file;
+		$root_file_paths = explode( DIRECTORY_SEPARATOR, $this->root_file );
+		$root_dir_number = count( $root_file_paths ) - 3;
+		$isset_root_dir  = isset( $root_file_paths[ $root_dir_number ] );
+		$is_theme        = $isset_root_dir && 'themes' === $root_file_paths[ $root_dir_number ];
+		$is_plugin       = $isset_root_dir && 'plugins' === $root_file_paths[ $root_dir_number ];
+		$this->env       = $is_theme ? 'theme' : 'plugin';
+		$this->config    = $config;
+
+		if ( ! $is_theme && ! $is_plugin ) {
+			wpt_die( 'Wrong project root file.', null, $this->key );
+		}
+
+		new Core\Setup( $this, $this->core() );
+	}
+
+	public function get_key( string $slug = '' ): string {
+		return $this->get_prop( 'key' ) . ( $slug ? ( '_' . $slug ) : '' );
 	}
 
 	public function get_root_file(): string {
-		return $this->root_file;
+		return $this->get_prop( 'root_file' );
 	}
 
 	public function get_config(): array {
-		return $this->config;
+		return $this->get_prop( 'config' );
 	}
 
 	public function get_env(): string {
-		return $this->env;
-	}
-
-	private function core(): Core {
-		if ( ! is_a( $this->core, Core::class ) ) {
-			$this->core = new Core( $this );
-		}
-
-		return $this->core;
+		return $this->get_prop( 'env' );
 	}
 
 	public function debug(): Debug {
 		return $this->get_feature( 'debug', Debug::class );
 	}
 
-	public function log(): Log {
-		return $this->get_feature( 'log', Log::class );
-	}
-
-	public function simpleton(): Simpleton {
-		return $this->get_feature( 'simpleton', Simpleton::class );
-	}
-
 	public function fs(): FS {
-		return $this->get_feature( 'fs', Plugin\FS::class, Theme\FS::class );
+		return $this->get_feature( 'fs', FS::class );
 	}
 
 	public function hook(): Hook {
-		return $this->get_feature( 'hook', Plugin\Hook::class, Hook::class );
-	}
-
-	public function template(): Template {
-		return $this->get_feature( 'template', Plugin\Template::class, Theme\Template::class );
+		return $this->get_feature( 'hook', Hook::class );
 	}
 
 	public function http(): Http {
 		return $this->get_feature( 'http', Http::class );
 	}
 
+	public function simpleton(): Simpleton {
+		return $this->get_feature( 'simpleton', Simpleton::class );
+	}
+
 	public function asset(): Asset {
 		return $this->get_feature( 'asset', Asset::class );
+	}
+
+	public function template(): Template {
+		return $this->get_feature( 'template', Template::class );
 	}
 
 	public function ajax(): Ajax {
@@ -125,20 +123,41 @@ final class App {
 		return $this->get_feature( 'upload', Upload::class );
 	}
 
-	public function text(): Text {
-		return $this->get_feature( 'text', Text::class );
+	public function str(): Str {
+		return $this->get_feature( 'str', Str::class );
 	}
 
-	private function get_feature( string $property, string $class, ?string $theme_class = null ) /* mixed */ {
-		if ( ! is_a( $this->$property, $class ) ) {
-			if ( $theme_class && 'theme' === $this->env ) {
-				$this->$property = new $theme_class( $this, $this->core() );
+	public function customizer(): Customizer {
+		return $this->get_feature( 'customizer', Customizer::class );
+	}
 
-			} else {
-				$this->$property = new $class( $this, $this->core() );
-			}
+	private function core(): Core {
+		if ( ! is_a( $this->core, Core::class ) ) {
+			$this->core = new Core( $this );
 		}
 
-		return $this->$property;
+		return $this->core;
+	}
+
+	private function get_prop( string $prop ) /* mixed */ {
+		$this->validate_setup();
+
+		return $this->$prop;
+	}
+
+	private function get_feature( string $prop, string $class ) /* mixed */ {
+		$this->validate_setup();
+
+		if ( ! is_a( $this->$prop, $class ) ) {
+			$this->$prop = new $class( $this, $this->core() );
+		}
+
+		return $this->$prop;
+	}
+
+	private function validate_setup(): void {
+		if ( empty( $this->root_file ) ) {
+			wpt_die( 'Project isn\'t configured, complete the setup first.', null, $this->key );
+		}
 	}
 }

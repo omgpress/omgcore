@@ -1,6 +1,6 @@
 {
   "name": "dpripa/wp-titan",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "type": "wordpress-library",
   "description": "Library for relaxed development of WordPress themes and plugins.",
   "homepage": "https://github.com/dpripa/wp-titan",
@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "WP_Titan_0_9_1\\": "app/"
+      "WP_Titan_0_9_2\\": "app/"
     }
   },
   "require": {

@@ -1,4 +1,5 @@
 wp-titan.zip
+sources/config.json
 node_modules
 vendor/*
 vendor/composer/installed.json
