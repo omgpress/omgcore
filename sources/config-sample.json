@@ -1,0 +1,6 @@
+{
+	"browsersync": {
+		"proxy": "http://titan.loc",
+		"port": 9999
+	}
+}

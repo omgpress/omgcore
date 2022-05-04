@@ -1,11 +1,14 @@
 {
 	"name": "wp-titan",
-	"version": "0.9.2",
+	"version": "1.0.0",
   "rootPath": "../..",
 	"directories": [
-    "abstracts",
-    "app",
-		"vendor"
+    "assets",
+    "includes",
+		"vendor",
+    "sources/images",
+    "sources/scripts",
+    "sources/styles"
 	],
 	"files": [
     ".editorconfig",
@@ -16,6 +19,17 @@
     "index.php",
     "LICENSE",
     "phpcs.xml",
-    "README.md"
-	]
+    "phpdoc.dist.xml",
+    "README.md",
+    "sources/.eslintignore",
+    "sources/.eslintrc",
+    "sources/.htaccess",
+    "sources/.stylelintignore",
+    "sources/.stylelintrc",
+    "sources/config-sample.json",
+    "sources/entry.json",
+    "sources/package-lock.json",
+    "sources/package.json",
+    "sources/webpack.config.js"
+  ]
 }

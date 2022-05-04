@@ -1,10 +1,11 @@
-wp-titan.zip
-sources/config.json
+releases
+docs
 node_modules
+sources/config.json
 vendor/*
+!vendor/autoload.php
+!vendor/composer
 vendor/composer/installed.json
 vendor/composer/installed.php
 vendor/composer/installedVersions.php
-
-!vendor/composer
-!vendor/autoload.php
+.DS_Store

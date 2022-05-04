@@ -1,4 +1,5 @@
-const config = require( './config' );
+const fs = require( 'fs' );
+const config = fs.existsSync( './config.json' ) ? require( './config' ) : require( './config-sample' );
 const entry = require( './entry' );
 const path = require( 'path' );
 const Webpack = require( 'webpack' );
@@ -147,6 +148,7 @@ module.exports = {
 							url: false,
 							sourceMap: isDev
 						}
+					},
 					{
 						loader: 'postcss-loader',
 						options: {

@@ -1,6 +1,6 @@
 {
-  "customizer-control": [
-    "./styles/customizer-control.scss",
-    "./scripts/customizer-control.js"
+  "customizer": [
+    "./styles/customizer.scss",
+    "./scripts/customizer.js"
   ]
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<phpdocumentor configVersion="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpdoc.org" xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd">
+	<title>WordPress Titan</title>
+	<paths>
+		<output>docs/api</output>
+		<cache>docs/cache</cache>
+	</paths>
+	<version number="1.0.0">
+		<api>
+			<default-package-name>App</default-package-name>
+			<extensions>
+				<extension>php</extension>
+			</extensions>
+			<source dsn=".">
+				<path>includes</path>
+			</source>
+			<visibility>public</visibility>
+			<ignore hidden="true" symlinks="true">
+				<path>includes/Core/**/*</path>
+				<path>includes/Core.php</path>
+				<path>includes/Integration/Plugin.php</path>
+				<path>includes/Feature.php</path>
+				<path>includes/Featured.php</path>
+			</ignore>
+		</api>
+	</version>
+</phpdocumentor>

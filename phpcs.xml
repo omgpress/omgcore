@@ -8,7 +8,9 @@
 
 	<file>.</file>
 	<exclude-pattern>assets/*</exclude-pattern>
+	<exclude-pattern>releases/*</exclude-pattern>
 	<exclude-pattern>sources/*</exclude-pattern>
+	<exclude-pattern>tools/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
 
 	<rule ref="WordPress.PHP">
@@ -29,14 +31,7 @@
 	</rule>
 
 	<rule ref="Squiz.Commenting">
-		<exclude name="Squiz.Commenting.FileComment.Missing"/>
-		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-		<exclude name="Squiz.Commenting.ClassComment.Missing"/>
-		<exclude name="Squiz.Commenting.VariableComment.Missing"/>
-		<exclude name="Squiz.Commenting.FunctionComment.Missing"/>
-		<exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
-		<exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
-		<exclude name="Squiz.Commenting.ClassComment.WrongStyle"/>
+		<exclude name="Squiz.Commenting"/>
 	</rule>
 
 	<rule ref="WordPress.Files.FileName">

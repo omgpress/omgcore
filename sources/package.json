@@ -1,8 +1,8 @@
 {
-  "name": "wp-titan-frontend-sources",
+  "name": "wp-titan-sources",
   "version": "1.0.0",
-  "description": "",
-  "homepage": "https://github.com/dpripa/wp-titan/blob/main/sources",
+  "description": "Sources of WordPress Titan assets.",
+  "homepage": "https://github.com/dpripa/wp-titan/sources",
   "license": "GPL-2.0-or-later",
   "contributors": [
     {
@@ -22,7 +22,7 @@
     "ie 11"
   ],
   "scripts": {
-    "start-dev": "cross-env NODE_ENV=development webpack --watch",
+    "start": "cross-env NODE_ENV=development webpack --watch",
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {

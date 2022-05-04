@@ -1,7 +1,7 @@
 {
   "name": "wp-titan-tools",
   "version": "1.0.0",
-  "description": "Development tools for WP Titan.",
+  "description": "Development tools for WordPress Titan.",
   "homepage": "https://github.com/dpripa/wp-titan/blob/main/tools",
   "license": "GPL-2.0-or-later",
   "contributors": [

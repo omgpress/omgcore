@@ -4,7 +4,7 @@ const log = require( 'log-beautify' );
 const config = require( '../config' );
 const state = require( './state' );
 
-const PHPClassesRoot = 'app';
+const PHPClassesRoot = 'includes';
 
 setPHPClassName();
 
@@ -18,10 +18,11 @@ function setPHPClassName() {
 			const newPHPClassName = 'WP_Titan_' + config.version.split( '.' ).join( '_' );
 
 			paths.push( config.rootPath + '/index.php' );
+			paths.push( config.rootPath + '/functions.php' );
 			paths.push( config.rootPath + '/README.md' );
 
 			paths.forEach( function( path ) {
-				replaceFileText( path, currentPHPClassName, newPHPClassName );
+				replaceFileText( path, currentPHPClassName, newPHPClassName, replaceDashClassName );
 			});
 
 			replaceFileText( config.rootPath + '/composer.json', currentPHPClassName, newPHPClassName, setPackageVersion );
@@ -46,7 +47,7 @@ function replaceFileText( path, needle, replace, modifyResult = null ) {
 		let result = data.replace( new RegExp( needle, 'g' ), replace );
 
 		if ( modifyResult ) {
-			result = modifyResult( result );
+			result = modifyResult( result, needle, replace );
 		}
 
 		fs.writeFile( path, result, 'utf8', function( err ) {
@@ -57,11 +58,18 @@ function replaceFileText( path, needle, replace, modifyResult = null ) {
 	});
 }
 
-function setPackageVersion( content ) {
-	const json = JSON.parse( content );
+function setPackageVersion( data ) {
+	const json = JSON.parse( data );
 	json.version = config.version;
 
 	return JSON.stringify( json, null, 2 );
+}
+
+function replaceDashClassName( data, needle, replace ) {
+	return data.replace(
+		needle.replace( /_/g, '-' ),
+		replace.replace( /_/g, '-' )
+	);
 }
 
 log.success_( 'Version changed to ' + config.version );
