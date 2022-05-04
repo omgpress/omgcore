@@ -6,12 +6,13 @@ const config = require( '../config' );
 deployZip();
 
 function deployZip() {
-	const output = fs.createWriteStream( config.rootPath + '/' + config.name + '.zip' );
+	const name = config.name + '-' + config.version;
+	const output = fs.createWriteStream( config.rootPath + '/releases/' + name + '.zip' );
 	const archive = archiver( 'zip', {});
 
 	output.on( 'close', function() {
 		console.log( '\n' );
-		log.success_( '"' + config.name + '.zip" deployed to the root folder' );
+		log.success_( '"' + name + '.zip" deployed to the releases folder' );
 		console.log( '\n' )
 	});
 
@@ -23,12 +24,12 @@ function deployZip() {
 
 	let directories = config.directories;
 	for ( let i = 0; i < directories.length; i++ ) {
-		archive.directory( config.rootPath + '/' + directories[i], config.name + '/' + directories[i], null );
+		archive.directory( config.rootPath + '/' + directories[i], name + '/' + directories[i], null );
 	}
 
 	let files = config.files;
 	for ( let i = 0; i < files.length; i++ ) {
-		archive.file( config.rootPath + '/' + files[i], { name: config.name + '/' + files[i] });
+		archive.file( config.rootPath + '/' + files[i], { name: name + '/' + files[i] });
 	}
 
 	archive.finalize();

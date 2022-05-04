@@ -1,0 +1,9 @@
+.wpt-section-link {
+
+	.accordion-section-title {
+
+		&::after {
+			display: none !important;
+		}
+	}
+}
