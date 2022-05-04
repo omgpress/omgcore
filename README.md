@@ -1,5 +1,5 @@
 # WordPress Titan
-One entry point to get all your needs for developing a WordPress plugin or a theme. WP Titan introduces a smart layer between WordPress and your project.\
+One entry point to get all you need for developing a WordPress plugin or a theme. WP Titan introduces a smart layer between WordPress and your project.\
 P.S. It's also easy to start using in a live project.
 
 ## Getting Started

@@ -2,7 +2,7 @@
   "name": "dpripa/wp-titan",
   "version": "1.0.0",
   "type": "wordpress-library",
-  "description": "Library for relaxed development of WordPress themes and plugins.",
+  "description": "One entry point to get all you need for developing a WordPress plugin or a theme.",
   "homepage": "https://github.com/dpripa/wp-titan",
   "license": "GPL-2.0-or-later",
   "authors": [
