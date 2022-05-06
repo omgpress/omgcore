@@ -1,8 +1,6 @@
 # WordPress Titan
 
-<a href="https://packagist.org/packages/dpripa/wp-titan">
-<img src="https://img.shields.io/packagist/v/dpripa/wp-titan" alt="Packagist version"/></a>
-<img src="https://img.shields.io/packagist/l/dpripa/wp-titan" alt="Library license"/>
+<a href="https://packagist.org/packages/dpripa/wp-titan"><img src="https://img.shields.io/packagist/v/dpripa/wp-titan" alt="Packagist version"/></a> <img src="https://img.shields.io/packagist/l/dpripa/wp-titan" alt="Library license"/>
 
 One entry point to get all you need for developing a WordPress plugin or a theme.\
 WP Titan introduces a smart layer between WordPress and your project.\
