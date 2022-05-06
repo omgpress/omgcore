@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_0\Integration;
+namespace WP_Titan_1_0_1\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,10 +20,10 @@ class WC extends Plugin {
 	 * Required. Set up the feature.
 	 *
 	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly under the "plugins_loaded" or "after_setup_theme" hooks.
+	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
 	 */
 	public function setup(): self {
-		if ( ! $this->is_active() || $this->validate_single_call( __METHOD__ ) ) {
+		if ( ! $this->is_active() || $this->validate_single_call( __FUNCTION__ ) ) {
 			return $this;
 		}
 

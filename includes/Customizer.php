@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_0;
+namespace WP_Titan_1_0_1;
 
-use WP_Titan_1_0_0\Customizer\Section;
-use WP_Titan_1_0_0\Customizer\Control;
+use WP_Titan_1_0_1\Customizer\Section;
+use WP_Titan_1_0_1\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -39,6 +39,10 @@ class Customizer extends Feature {
 	}
 
 	public function add_panel( string $panel, array $args, ?string $panel_class = null ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		add_action(
 			'customize_register',
 			function ( \WP_Customize_Manager $wp_customize ) use ( $panel, $args, $panel_class ): void {
@@ -57,6 +61,10 @@ class Customizer extends Feature {
 	}
 
 	public function add_section( string $section, ?string $panel, array $args, ?string $section_class = null ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		if ( $panel ) {
 			$args['panel'] = $this->get_key( $panel );
 		}
@@ -82,6 +90,10 @@ class Customizer extends Feature {
 	}
 
 	public function add_setting( string $setting, string $section, array $args, array $control_args, ?string $control_class = null ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		$key = $this->get_key( $section . '_' . $setting );
 
 		if ( isset( $args['default'] ) ) {
@@ -126,10 +138,10 @@ class Customizer extends Feature {
 	/**
 	 * Required. Set up the feature.
 	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly under the "plugins_loaded" or "after_setup_theme" hooks.
+	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
 	 */
 	public function setup(): self {
-		if ( $this->validate_single_call( __METHOD__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__ ) ) {
 			return $this;
 		}
 

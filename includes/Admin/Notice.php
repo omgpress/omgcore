@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_0\Admin;
+namespace WP_Titan_1_0_1\Admin;
 
-use WP_Titan_1_0_0\App;
-use WP_Titan_1_0_0\Core;
-use WP_Titan_1_0_0\Feature;
+use WP_Titan_1_0_1\App;
+use WP_Titan_1_0_1\Core;
+use WP_Titan_1_0_1\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,6 +38,10 @@ class Notice extends Feature {
 	 * @param string $level "info", "success", "warning" or "error".
 	 */
 	public function add_transient( string $message, string $level = 'warning' ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		$notices = $this->get_transients();
 
 		$notices[ $level ][] = $message;
@@ -53,6 +57,10 @@ class Notice extends Feature {
 	 * @param string $level "info", "success", "warning" or "error".
 	 */
 	public function render( string $message, string $level = 'warning' ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		add_action(
 			'admin_notices',
 			function () use ( $message, $level ): void {
@@ -71,10 +79,10 @@ class Notice extends Feature {
 	 * Required. Set up the feature.
 	 *
 	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly under the "plugins_loaded" or "after_setup_theme" hooks.
+	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
 	 */
 	public function setup(): self {
-		if ( $this->validate_single_call( __METHOD__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__ ) ) {
 			return $this;
 		}
 

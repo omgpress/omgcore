@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_0;
+namespace WP_Titan_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,6 +21,10 @@ class Logger extends Feature {
 	}
 
 	public function log( string $message, string $level = 'warning' ): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		$timestamp = gmdate( 'n/j/Y H:i:s' );
 		$content   = "[$timestamp] $level: $message\n";
 
@@ -30,22 +34,34 @@ class Logger extends Feature {
 	}
 
 	public function log_exists(): bool {
+		$this->validate_setup();
+
 		return file_exists( $this->file );
 	}
 
 	public function get_log(): string {
+		$this->validate_setup();
+
 		return $this->log_exists() ? nl2br( file_get_contents( $this->file ) ) : ''; // phpcs:ignore
 	}
 
 	public function get_log_size(): string {
+		$this->validate_setup();
+
 		return ( $this->log_exists() ? round( filesize( $this->file ) / 1024, 3 ) : 0 ) . 'KB';
 	}
 
 	public function get_delete_log_url(): string {
+		$this->validate_setup();
+
 		return add_query_arg( array( $this->key => 'delete' ), $this->app->http()->get_current_url() );
 	}
 
 	public function delete_log(): self {
+		if ( $this->validate_setup() ) {
+			return $this;
+		}
+
 		if ( current_user_can( 'delete_posts' ) && $this->log_exists() ) {
 			unlink( $this->file );
 		}
@@ -63,10 +79,10 @@ class Logger extends Feature {
 	 * Required. Set up the feature.
 	 *
 	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly under the "plugins_loaded" or "after_setup_theme" hooks.
+	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
 	 */
 	public function setup(): self {
-		if ( $this->validate_single_call( __METHOD__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__ ) ) {
 			return $this;
 		}
 

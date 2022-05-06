@@ -1,6 +1,6 @@
 {
   "name": "dpripa/wp-titan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "wordpress-library",
   "description": "One entry point to get all you need for developing a WordPress plugin or a theme.",
   "homepage": "https://github.com/dpripa/wp-titan",
@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "WP_Titan_1_0_0\\": "includes/"
+      "WP_Titan_1_0_1\\": "includes/"
     }
   },
   "require": {
@@ -32,10 +32,9 @@
     "wp-coding-standards/wpcs": "^2.2.1"
   },
   "scripts": {
-    "build": "cd sources && npm run build && cd ../tools && npm run release && cd ../ && composer doc",
     "no-dev": "composer install --no-dev",
     "optimize": "composer dump-autoload --optimize",
     "wpcs": "phpcs",
-    "doc": "phpDocumentor"
+    "doc": "rm -rf docs/api && phpDocumentor"
   }
 }

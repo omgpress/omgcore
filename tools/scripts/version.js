@@ -2,8 +2,8 @@ const fs = require( 'fs' );
 const glob = require( 'glob' );
 const log = require( 'log-beautify' );
 const config = require( '../config' );
-const state = require( './state' );
-
+const cachePath = '../cache';
+const cache = require( cachePath );
 const PHPClassesRoot = 'includes';
 
 setPHPClassName();
@@ -14,7 +14,7 @@ function setPHPClassName() {
 			console.log( err );
 
 		} else {
-			const currentPHPClassName = state.currentPHPClassName;
+			const currentPHPClassName = cache.currentPHPClassName;
 			const newPHPClassName = 'WP_Titan_' + config.version.split( '.' ).join( '_' );
 
 			paths.push( config.rootPath + '/index.php' );
@@ -27,9 +27,9 @@ function setPHPClassName() {
 
 			replaceFileText( config.rootPath + '/composer.json', currentPHPClassName, newPHPClassName, setPackageVersion );
 
-			state.currentPHPClassName = newPHPClassName;
+			cache.currentPHPClassName = newPHPClassName;
 
-			fs.writeFile( './state.json', JSON.stringify( state, null, 2 ), 'utf8', function( err ) {
+			fs.writeFile( cachePath + '.json', JSON.stringify( cache, null, 2 ), 'utf8', function( err ) {
 				if ( err ) {
 					return console.error( err );
 				}
@@ -67,7 +67,7 @@ function setPackageVersion( data ) {
 
 function replaceDashClassName( data, needle, replace ) {
 	return data.replace(
-		needle.replace( /_/g, '-' ),
+		new RegExp( needle.replace( /_/g, '-' ), 'g' ),
 		replace.replace( /_/g, '-' )
 	);
 }

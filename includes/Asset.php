@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_0;
+namespace WP_Titan_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,7 +28,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up a name for the base asset directory.
 	 *
-	 * Default: assets
+	 * Default: "assets".
 	 */
 	public function set_base_dirname( string $name ): self {
 		$this->base_dirname = $name;
@@ -39,7 +39,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up a name for the font subdirectory.
 	 *
-	 * Default: fonts
+	 * Default: "fonts".
 	 */
 	public function set_font_dirname( string $name ): self {
 		$this->font_dirname = $name;
@@ -50,7 +50,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up a name for the image subdirectory.
 	 *
-	 * Default: images
+	 * Default: "images".
 	 */
 	public function set_image_dirname( string $name ): self {
 		$this->image_dirname = $name;
@@ -61,7 +61,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up a name for the style subdirectory.
 	 *
-	 * Default: styles
+	 * Default: "styles".
 	 */
 	public function set_style_dirname( string $name ): self {
 		$this->style_dirname = $name;
@@ -72,7 +72,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up a name for the script subdirectory.
 	 *
-	 * Default: scripts
+	 * Default: "scripts".
 	 */
 	public function set_script_dirname( string $name ): self {
 		$this->script_dirname = $name;
@@ -83,7 +83,7 @@ class Asset extends Feature {
 	/**
 	 * Optional. Set up an alternative postfix.
 	 *
-	 * Default: .min
+	 * Default: ".min".
 	 */
 	public function set_postfix( string $postfix ): self {
 		$this->postfix = $postfix;
@@ -143,7 +143,7 @@ class Asset extends Feature {
 		return $this;
 	}
 
-	public function enqueue_script( string $slug, array $deps = array(), array $args = array(), bool $in_footer = true ): self {
+	public function enqueue_script( string $slug, array $deps = array(), array $args = array(), ?string $args_object_name = null, bool $in_footer = true ): self {
 		$key      = $this->get_key( $slug );
 		$raw_path = $this->base_dirname . ( $this->script_dirname ? ( DIRECTORY_SEPARATOR . $this->script_dirname ) : '' ) . ( $this->base_dirname ? DIRECTORY_SEPARATOR : '' );
 		$url      = $this->fs->get_url() . $raw_path . $slug . $this->postfix . '.js';
@@ -156,7 +156,9 @@ class Asset extends Feature {
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
 		if ( $args ) {
-			wp_localize_script( $key, $this->app->str()->to_camelcase( $key ), $args );
+			$args_object_name = $args_object_name ?: $this->app->str()->to_camelcase( $key );
+
+			wp_localize_script( $key, $args_object_name, $args );
 		}
 
 		return $this;
