@@ -1,6 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_2\Integration;
+namespace WP_Titan_1_0_3\Integration;
+
+use WP_Titan_1_0_3\App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,23 +19,39 @@ class WC extends Plugin {
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 *
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required for theme.
 	 */
-	public function setup(): self {
-		if ( ! $this->is_active() || $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+	public function setup(): App {
+		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+			return $this->app;
 		}
 
-		$this->enable_blocks();
-		$this->enable_rest();
+		$this->add_setup_action(
+			function (): void {
+				if ( ! $this->is_active() ) {
+					return;
+				}
 
-		return $this;
+				if ( $this->is_theme() ) {
+					$this->enable_blocks();
+				}
+			}
+		);
+
+		return $this->app;
 	}
 
 	protected function enable_blocks(): void {
+		$filter = function ( array $args ): array {
+			$args['show_in_rest'] = true;
+
+			return $args;
+		};
+
+		add_filter( 'woocommerce_taxonomy_args_product_cat', $filter );
+		add_filter( 'woocommerce_taxonomy_args_product_tag', $filter );
+		add_filter( 'woocommerce_register_post_type_product', $filter );
+
 		add_filter(
 			'use_block_editor_for_post_type',
 			function ( bool $can_edit, string $post_type ): bool {
@@ -46,17 +64,5 @@ class WC extends Plugin {
 			10,
 			2
 		);
-	}
-
-	protected function enable_rest(): void {
-		$filter = function ( array $args ): array {
-			$args['show_in_rest'] = true;
-
-			return $args;
-		};
-
-		add_filter( 'woocommerce_taxonomy_args_product_cat', $filter );
-		add_filter( 'woocommerce_taxonomy_args_product_tag', $filter );
-		add_filter( 'woocommerce_register_post_type_product', $filter );
 	}
 }

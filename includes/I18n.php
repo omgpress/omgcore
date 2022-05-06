@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,10 +16,10 @@ class I18n extends Feature {
 	 *
 	 * Default: "languages".
 	 */
-	public function set_dirname( string $dirname ): self {
+	public function set_dirname( string $dirname ): App {
 		$this->dirname = $dirname;
 
-		return $this;
+		return $this->app;
 	}
 
 	/**
@@ -41,34 +41,35 @@ class I18n extends Feature {
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 *
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required.
 	 */
-	public function setup(): self {
+	public function setup(): App {
 		if ( $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+			return $this->app;
 		}
 
-		if ( $this->is_theme() ) {
-			load_theme_textdomain( $this->app->get_key(), $this->get_path() );
+		$this->add_setup_action(
+			function (): void {
+				if ( $this->is_theme() ) {
+					load_theme_textdomain( $this->app->get_key(), $this->get_path() );
 
-		} else {
-			load_plugin_textdomain( $this->app->get_key(), false, $this->get_path() );
-		}
+				} else {
+					load_plugin_textdomain( $this->app->get_key(), false, $this->get_path() );
+				}
+			}
+		);
 
-		return $this;
+		return $this->app;
 	}
 
-	public function localize_script( string $slug ): self {
+	public function localize_script( string $slug ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		wp_set_script_translations( $this->app->get_key( $slug ), $this->app->get_key(), $this->get_path() );
 
-		return $this;
+		return $this->app;
 	}
 
 	public function __( string $text ): string {

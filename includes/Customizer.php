@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
-use WP_Titan_1_0_2\Customizer\Section;
-use WP_Titan_1_0_2\Customizer\Control;
+use WP_Titan_1_0_3\Customizer\Section;
+use WP_Titan_1_0_3\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -38,9 +38,9 @@ class Customizer extends Feature {
 		return $this->app->get_key( 'customizer_' . $slug );
 	}
 
-	public function add_panel( string $panel, array $args, ?string $panel_class = null ): self {
+	public function add_panel( string $panel, array $args, ?string $panel_class = null ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		add_action(
@@ -57,12 +57,12 @@ class Customizer extends Feature {
 			}
 		);
 
-		return $this;
+		return $this->app;
 	}
 
-	public function add_section( string $section, ?string $panel, array $args, ?string $section_class = null ): self {
+	public function add_section( string $section, ?string $panel, array $args, ?string $section_class = null ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		if ( $panel ) {
@@ -86,12 +86,12 @@ class Customizer extends Feature {
 			}
 		);
 
-		return $this;
+		return $this->app;
 	}
 
-	public function add_setting( string $setting, string $section, array $args, array $control_args, ?string $control_class = null ): self {
+	public function add_setting( string $setting, string $section, array $args, array $control_args, ?string $control_class = null ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		$key = $this->get_key( $section . '_' . $setting );
@@ -126,7 +126,7 @@ class Customizer extends Feature {
 			}
 		);
 
-		return $this;
+		return $this->app;
 	}
 
 	public function get_setting( string $setting, string $section ) /* mixed */ {
@@ -136,18 +136,20 @@ class Customizer extends Feature {
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required.
 	 */
-	public function setup(): self {
+	public function setup(): App {
 		if ( $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+			return $this->app;
 		}
 
-		$this->enqueue_assets();
+		$this->add_setup_action(
+			function (): void {
+				$this->enqueue_assets();
+			}
+		);
 
-		return $this;
+		return $this->app;
 	}
 
 	protected function enqueue_assets(): void {

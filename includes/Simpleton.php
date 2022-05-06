@@ -1,13 +1,13 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 use ReflectionClass;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manage project classes that used the "simpleton" pattern.
+ * Manage project classes that used the simpleton pattern.
  *
  * - The simpleton can be called everywhere.
  * - Simpleton is guarantee that a functionality of this class (part of logic) has be called only once.

@@ -1,6 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_2\Integration;
+namespace WP_Titan_1_0_3\Integration;
+
+use WP_Titan_1_0_3\App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,19 +19,24 @@ class Polylang extends Plugin {
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 *
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required.
 	 */
-	public function setup(): self {
-		if ( ! $this->is_active() || $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+	public function setup(): App {
+		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+			return $this->app;
 		}
 
-		$this->change_home_url();
+		$this->add_setup_action(
+			function (): void {
+				if ( ! $this->is_active() ) {
+					return;
+				}
 
-		return $this;
+				$this->change_home_url();
+			}
+		);
+
+		return $this->app;
 	}
 
 	protected function change_home_url(): void {

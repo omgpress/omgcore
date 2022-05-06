@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,9 +20,9 @@ class Logger extends Feature {
 		$this->file = 'logs' . DIRECTORY_SEPARATOR . 'debug.log';
 	}
 
-	public function log( string $message, string $level = 'warning' ): self {
+	public function log( string $message, string $level = 'warning' ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		$timestamp = gmdate( 'n/j/Y H:i:s' );
@@ -30,7 +30,7 @@ class Logger extends Feature {
 
 		$this->app->upload()->set_content( $this->file, $content, true );
 
-		return $this;
+		return $this->app;
 	}
 
 	public function log_exists(): bool {
@@ -57,9 +57,9 @@ class Logger extends Feature {
 		return add_query_arg( array( $this->key => 'delete' ), $this->app->http()->get_current_url() );
 	}
 
-	public function delete_log(): self {
+	public function delete_log(): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		if ( current_user_can( 'delete_posts' ) && $this->log_exists() ) {
@@ -67,28 +67,29 @@ class Logger extends Feature {
 		}
 
 		if ( empty( $_GET[ $this->key ] ) ) { // phpcs:ignore
-			return $this;
+			return $this->app;
 		}
 
 		$this->app->http()->redirect( remove_query_arg( $this->key, $this->app->http()->get_current_url() ) );
 
-		return $this;
+		return $this->app;
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 *
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required.
 	 */
-	public function setup(): self {
+	public function setup(): App {
 		if ( $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+			return $this->app;
 		}
 
-		$this->delete_log_by_url();
+		$this->add_setup_action(
+			function (): void {
+				$this->delete_log_by_url();
+			}
+		);
 
-		return $this;
+		return $this->app;
 	}
 
 	protected function delete_log_by_url(): void {

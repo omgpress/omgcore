@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,25 +13,25 @@ class Hook extends Feature {
 		return apply_filters( $this->app->get_key( $slug ), ...$args );
 	}
 
-	public function add_filter( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): self {
+	public function add_filter( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): App {
 		add_filter( $this->app->get_key( $slug ), $callback, $priority, $accepted_args );
 
-		return $this;
+		return $this->app;
 	}
 
-	public function do_action( string $slug, /* mixed */ ...$args ): self {
+	public function do_action( string $slug, /* mixed */ ...$args ): App {
 		do_action( $this->app->get_key( $slug ), ...$args );
 
-		return $this;
+		return $this->app;
 	}
 
-	public function add_action( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): self {
+	public function add_action( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): App {
 		add_action( $this->app->get_key( $slug ), $callback, $priority, $accepted_args );
 
-		return $this;
+		return $this->app;
 	}
 
-	public function activation( callable $callback ): self {
+	public function activation( callable $callback ): App {
 		if ( $this->is_theme() ) {
 			add_action( 'after_switch_theme', $callback, 10, 2 );
 
@@ -39,10 +39,10 @@ class Hook extends Feature {
 			register_activation_hook( $this->app->get_root_file(), $callback );
 		}
 
-		return $this;
+		return $this->app;
 	}
 
-	public function deactivation( callable $callback ): self {
+	public function deactivation( callable $callback ): App {
 		if ( $this->is_theme() ) {
 			add_action( 'switch_theme', $callback, 10, 3 );
 
@@ -50,6 +50,6 @@ class Hook extends Feature {
 			register_deactivation_hook( $this->app->get_root_file(), $callback );
 		}
 
-		return $this;
+		return $this->app;
 	}
 }

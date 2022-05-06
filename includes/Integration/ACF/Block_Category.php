@@ -1,8 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_2\Integration\ACF;
+namespace WP_Titan_1_0_3\Integration\ACF;
 
-use WP_Titan_1_0_2\Feature;
+use WP_Titan_1_0_3\App;
+use WP_Titan_1_0_3\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,13 +19,13 @@ class Block_Category extends Feature {
 	 * @param string $path The path to the directory that contains the block templates for the current category.
 	 * @param string $title The name of the category to be rendered.
 	 */
-	public function add( string $category, string $path, string $title ): self {
+	public function add( string $category, string $path, string $title ): App {
 		if ( function_exists( 'acf_register_block_type' ) && function_exists( 'register_block_type' ) ) {
 			$this->add_category( $category, $title );
 			$this->add_blocks_autoloader( $category, $path );
 		}
 
-		return $this;
+		return $this->app;
 	}
 
 	protected function add_category( string $category, string $title ): void {

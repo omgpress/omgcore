@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,10 +11,10 @@ class Debug extends Feature {
 
 	protected $die_footer_text = null;
 
-	public function set_die_footer_text( string $text ): self {
+	public function set_die_footer_text( string $text ): App {
 		$this->die_footer_text = $text;
 
-		return $this;
+		return $this->app;
 	}
 
 	public function is_enabled(): bool {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,10 +11,10 @@ class Template extends Feature {
 
 	protected $base_path = 'template-parts';
 
-	public function set_base_path( string $path ): self {
+	public function set_base_path( string $path ): App {
 		$this->base_path = $path;
 
-		return $this;
+		return $this->app;
 	}
 
 	public function get( string $name, array $args = array() ): string {
@@ -32,7 +32,7 @@ class Template extends Feature {
 		return ob_get_clean();
 	}
 
-	public function render( string $name, array $args = array() ): self {
+	public function render( string $name, array $args = array() ): App {
 		if ( $this->is_theme() ) {
 			get_template_part( $this->base_path . DIRECTORY_SEPARATOR . $name, null, $args );
 
@@ -40,6 +40,6 @@ class Template extends Feature {
 			echo $this->get( $name, $args ); // phpcs:ignore
 		}
 
-		return $this;
+		return $this->app;
 	}
 }

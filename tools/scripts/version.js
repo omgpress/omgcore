@@ -18,7 +18,6 @@ function setPHPClassName() {
 			const newPHPClassName = 'WP_Titan_' + config.version.split( '.' ).join( '_' );
 
 			paths.push( config.rootPath + '/index.php' );
-			paths.push( config.rootPath + '/functions.php' );
 			paths.push( config.rootPath + '/README.md' );
 
 			paths.forEach( function( path ) {

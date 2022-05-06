@@ -1,15 +1,23 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WP Titan entry point.
+ * WP Titan Entry Point. It's also the best point to start exploring the library.
  *
- * A method that returns instance of a class that extends the "Feature" class is a specific feature, such as helpers, managers, etc.\
+ * A method that returns instance of a class that extends the `Feature` class is a specific feature, such as helpers, managers, etc.\
  * Of course, a feature contains its own methods and may also contain its own sub-features.\
  * Don't worry about optimization, each feature (and sub-feature) will be initialized only by the first call to its method.
+ *
+ * ### Setup Methods
+ * Some features have `::setup()` method. Calling of this method is __required__ when you want to start use this feature.\
+ * Don't hide its call in the any hooks, as this may ruin the work of the feature.
+ *
+ * ### Setter Methods
+ * Some features have setter methods, like `::set_<name>(<property>)`. These methods are used for configure the feature and can change its behavior.\
+ * It's usually called once before all `::setup()` methods are called. You don't have to follow this rule if it's necessary for the logic of your application.
  */
 class App {
 
@@ -65,7 +73,7 @@ class App {
 	/**
 	 * Get the singleton instance of WP Titan for your project.
 	 */
-	public static function get_instance( string $key, string $root_file = '' ): self {
+	public static function get_instance( string $key, string $root_file = '' ): App {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
 				wpt_die( 'Project root file required on initial call.', null, $key );
@@ -80,7 +88,7 @@ class App {
 	/**
 	 * Get the key for the project.
 	 *
-	 * It's the same key that you passed to the "get_instance" method.
+	 * It's the same key that you passed to the `::get_instance()` method.
 	 */
 	public function get_key( string $slug = '', string $separator = '_' ): string {
 		switch ( $separator ) {
@@ -103,7 +111,7 @@ class App {
 	/**
 	 * Get the project environment.
 	 *
-	 * @return string "plugin" or "theme"
+	 * @return string `'plugin'` or `'theme'`
 	 */
 	public function get_env(): string {
 		return $this->env;
@@ -202,7 +210,7 @@ class App {
 	}
 
 	/**
-	 * Manage project classes that used the "simpleton" pattern.
+	 * Manage project classes that used the simpleton pattern.
 	 */
 	public function simpleton(): Simpleton {
 		return $this->get_feature( $this, $this->core(), 'simpleton', Simpleton::class );

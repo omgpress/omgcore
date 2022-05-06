@@ -1,6 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_2\Integration;
+namespace WP_Titan_1_0_3\Integration;
+
+use WP_Titan_1_0_3\App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,14 +23,14 @@ class Yoast extends Plugin {
 	 *
 	 * Rendering nothing when plugin isn't activated.
 	 */
-	public function render_breadcrumbs( string $before, string $after ): self {
+	public function render_breadcrumbs( string $before, string $after ): App {
 		if ( ! $this->is_active() || is_front_page() ) {
-			return $this;
+			return $this->app;
 		}
 
 		yoast_breadcrumb( $before, $after );
 
-		return $this;
+		return $this->app;
 	}
 
 	/**

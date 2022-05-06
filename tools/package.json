@@ -15,15 +15,15 @@
     "wordpress"
   ],
   "node": "14",
-  "scripts": {
-    "release": "npm run version && npm run zip && cd ../ && composer doc",
-    "zip": "cd .. && composer no-dev && cd tools/scripts && node zip.js && cd ../.. && composer install",
-    "version": "cd scripts && node version.js && cd ../.. && composer optimize"
-  },
   "dependencies": {
     "fs": "~0.0.1-security",
     "glob": "~7.2.0",
     "archiver": "~5.0.0",
     "log-beautify": "~1.2.0"
+  },
+  "scripts": {
+    "release": "npm run version && npm run zip && cd ../ && composer doc",
+    "zip": "cd .. && composer no-dev && cd tools/scripts && node zip.js && cd ../.. && composer install",
+    "version": "cd scripts && node version.js && cd ../.. && composer optimize"
   }
 }

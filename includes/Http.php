@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,13 +23,13 @@ class Http extends Feature {
 		return 'tel:' . str_replace( array( '-', ' ', '(', ')' ), '', $tel );
 	}
 
-	public function redirect( string $url, ?callable $callback = null ): self {
+	public function redirect( string $url, ?callable $callback = null ): App {
 		header( 'Location: ' . $url );
 
 		if ( $callback ) {
 			header_register_callback( $callback );
 		}
 
-		return $this;
+		return $this->app;
 	}
 }

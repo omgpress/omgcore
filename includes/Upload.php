@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,13 +22,13 @@ class Upload extends Feature {
 		return ( $raw ? '' : WP_CONTENT_DIR ) . DIRECTORY_SEPARATOR . $this->path . $path;
 	}
 
-	public function set_content( string $name, string $content, bool $private = false ): self {
+	public function set_content( string $name, string $content, bool $private = false ): App {
 		if ( ! function_exists( 'wp_get_current_user' ) ) {
 			include_once ABSPATH . 'wp-includes' . DIRECTORY_SEPARATOR . 'pluggable.php';
 		}
 
 		if ( ! current_user_can( 'delete_posts' ) ) {
-			return $this;
+			return $this->app;
 		}
 
 		$this->create_base_dir();
@@ -42,7 +42,7 @@ class Upload extends Feature {
 		fwrite( $file, $content ); // phpcs:ignore
 		fclose( $file ); // phpcs:ignore
 
-		return $this;
+		return $this->app;
 	}
 
 	protected function create_dir( string $name, bool $private = false ): void {

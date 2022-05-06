@@ -1,6 +1,6 @@
 {
 	"name": "wp-titan",
-	"version": "1.0.2",
+	"version": "1.0.3",
   "rootPath": "../..",
 	"directories": [
     "assets",
@@ -15,7 +15,6 @@
     ".gitignore",
 		"composer.json",
     "composer.lock",
-    "functions.php",
     "index.php",
     "LICENSE",
     "phpcs.xml",

@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_2\Admin;
+namespace WP_Titan_1_0_3\Admin;
 
-use WP_Titan_1_0_2\App;
-use WP_Titan_1_0_2\Core;
-use WP_Titan_1_0_2\Feature;
+use WP_Titan_1_0_3\App;
+use WP_Titan_1_0_3\Core;
+use WP_Titan_1_0_3\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,10 +26,10 @@ class Notice extends Feature {
 		return get_option( $this->transient_key, array() );
 	}
 
-	protected function update_transients( array $notices ): self {
+	protected function update_transients( array $notices ): App {
 		update_option( $this->transient_key, $notices );
 
-		return $this;
+		return $this->app;
 	}
 
 	/**
@@ -37,9 +37,9 @@ class Notice extends Feature {
 	 *
 	 * @param string $level "info", "success", "warning" or "error".
 	 */
-	public function add_transient( string $message, string $level = 'warning' ): self {
+	public function add_transient( string $message, string $level = 'warning' ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		$notices = $this->get_transients();
@@ -48,7 +48,7 @@ class Notice extends Feature {
 
 		$this->update_transients( $notices );
 
-		return $this;
+		return $this->app;
 	}
 
 	/**
@@ -56,9 +56,9 @@ class Notice extends Feature {
 	 *
 	 * @param string $level "info", "success", "warning" or "error".
 	 */
-	public function render( string $message, string $level = 'warning' ): self {
+	public function render( string $message, string $level = 'warning' ): App {
 		if ( $this->validate_setup() ) {
-			return $this;
+			return $this->app;
 		}
 
 		add_action(
@@ -72,23 +72,24 @@ class Notice extends Feature {
 			}
 		);
 
-		return $this;
+		return $this->app;
 	}
 
 	/**
-	 * Required. Set up the feature.
-	 *
-	 * Do not hide the call in the late hooks, as this may ruin the work of this feature.\
-	 * The best way to call it directly in the "plugins_loaded" or "after_setup_theme" hooks.
+	 * Required.
 	 */
-	public function setup(): self {
+	public function setup(): App {
 		if ( $this->validate_single_call( __FUNCTION__ ) ) {
-			return $this;
+			return $this->app;
 		}
 
-		$this->render_transients();
+		$this->add_setup_action(
+			function (): void {
+				$this->render_transients();
+			}
+		);
 
-		return $this;
+		return $this->app;
 	}
 
 	protected function render_transients(): void {

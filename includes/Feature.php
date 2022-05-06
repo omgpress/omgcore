@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_2;
+namespace WP_Titan_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,5 +42,9 @@ abstract class Feature {
 
 	protected function is_theme(): bool {
 		return 'theme' === $this->app->get_env();
+	}
+
+	protected function add_setup_action( callable $callback, int $priority = H_PRIOR ): void {
+		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 	}
 }
