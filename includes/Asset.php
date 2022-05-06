@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_1;
+namespace WP_Titan_1_0_2;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,14 +9,14 @@ defined( 'ABSPATH' ) || exit;
  */
 class Asset extends Feature {
 
-	protected $fs;
-
-	protected $base_dirname   = 'assets';
+	protected $dirname        = 'assets';
 	protected $font_dirname   = 'fonts';
 	protected $image_dirname  = 'images';
-	protected $style_dirname  = 'styles';
 	protected $script_dirname = 'scripts';
+	protected $style_dirname  = 'styles';
 	protected $postfix        = '.min';
+
+	protected $fs;
 
 	/** @ignore */
 	public function __construct( App $app, Core $core ) {
@@ -30,8 +30,8 @@ class Asset extends Feature {
 	 *
 	 * Default: "assets".
 	 */
-	public function set_base_dirname( string $name ): self {
-		$this->base_dirname = $name;
+	public function set_dirname( string $name ): self {
+		$this->dirname = $name;
 
 		return $this;
 	}
@@ -59,23 +59,23 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Set up a name for the style subdirectory.
-	 *
-	 * Default: "styles".
-	 */
-	public function set_style_dirname( string $name ): self {
-		$this->style_dirname = $name;
-
-		return $this;
-	}
-
-	/**
 	 * Optional. Set up a name for the script subdirectory.
 	 *
 	 * Default: "scripts".
 	 */
 	public function set_script_dirname( string $name ): self {
 		$this->script_dirname = $name;
+
+		return $this;
+	}
+
+	/**
+	 * Optional. Set up a name for the style subdirectory.
+	 *
+	 * Default: "styles".
+	 */
+	public function set_style_dirname( string $name ): self {
+		$this->style_dirname = $name;
 
 		return $this;
 	}
@@ -95,27 +95,80 @@ class Asset extends Feature {
 		$this->fs = $this->app->fs();
 	}
 
-	protected function get_key( string $slug ): string {
+	protected function get_raw_path( string $path = '' ): string {
+		return $this->dirname . ( $this->dirname ? DIRECTORY_SEPARATOR : '' ) . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+	}
+
+	public function get_path( string $path = '', bool $raw = false ): string {
+		return $raw ? $this->get_raw_path( $path ) : $this->fs->get_path( $this->get_raw_path( $path ) );
+	}
+
+	public function get_url( string $url = '' ): string {
+		return $this->fs->get_url( $this->get_raw_path( $url ) );
+	}
+
+	public function get_font_path( string $path = '', bool $raw = false ): string {
+		return $this->get_path( $this->font_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $raw );
+	}
+
+	public function get_font_url( string $url = '' ): string {
+		return $this->get_url( $this->font_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ) );
+	}
+
+	public function get_image_path( string $path = '', bool $raw = false ): string {
+		return $this->get_path( $this->image_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $raw );
+	}
+
+	public function get_image_url( string $url = '' ): string {
+		return $this->get_url( $this->image_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ) );
+	}
+
+	public function get_script_path( string $path = '', bool $raw = false ): string {
+		return $this->get_path( $this->script_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $raw );
+	}
+
+	public function get_script_url( string $url = '' ): string {
+		return $this->get_url( $this->script_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ) );
+	}
+
+	public function get_style_path( string $path = '', bool $raw = false ): string {
+		return $this->get_path( $this->style_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $raw );
+	}
+
+	public function get_style_url( string $url = '' ): string {
+		return $this->get_url( $this->style_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ) );
+	}
+
+	public function get_key( string $slug ): string {
 		return $this->app->get_key( str_replace( '-', '_', $slug ) );
 	}
 
-	public function get_font_url( string $filename = '' ): string {
-		$raw_path = $this->base_dirname . ( $this->font_dirname ? ( DIRECTORY_SEPARATOR . $this->font_dirname ) : '' ) . ( $this->base_dirname ? DIRECTORY_SEPARATOR : '' );
+	public function enqueue_script( string $slug, array $deps = array(), array $args = array(), ?string $args_object_name = null, bool $in_footer = true ): self {
+		$key      = $this->get_key( $slug );
+		$filename = $slug . $this->postfix . '.js';
+		$url      = $this->get_script_url( $filename );
+		$path     = $this->get_script_path( $filename );
 
-		return $this->fs->get_url() . $raw_path . $filename;
-	}
+		if ( ! file_exists( $path ) ) {
+			return $this;
+		}
 
-	public function get_image_url( string $filename = '' ): string {
-		$raw_path = $this->base_dirname . ( $this->image_dirname ? ( DIRECTORY_SEPARATOR . $this->image_dirname ) : '' ) . ( $this->base_dirname ? DIRECTORY_SEPARATOR : '' );
+		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
-		return $this->fs->get_url() . $raw_path . $filename;
+		if ( $args ) {
+			$args_object_name = $args_object_name ?: $this->app->str()->to_camelcase( $key );
+
+			wp_localize_script( $key, $args_object_name, $args );
+		}
+
+		return $this;
 	}
 
 	public function enqueue_style( string $slug, array $deps = array(), /* string|array */ $addition = null ): self {
 		$key      = $this->get_key( $slug );
-		$raw_path = $this->base_dirname . ( $this->style_dirname ? ( DIRECTORY_SEPARATOR . $this->style_dirname ) : '' ) . ( $this->base_dirname ? DIRECTORY_SEPARATOR : '' );
-		$url      = $this->fs->get_url() . $raw_path . $slug . $this->postfix . '.css';
-		$path     = $this->fs->get_path() . $raw_path . $slug . $this->postfix . '.css';
+		$filename = $slug . $this->postfix . '.css';
+		$url      = $this->get_style_url( $filename );
+		$path     = $this->get_style_path( $filename );
 
 		if ( ! file_exists( $path ) ) {
 			return $this;
@@ -143,35 +196,27 @@ class Asset extends Feature {
 		return $this;
 	}
 
-	public function enqueue_script( string $slug, array $deps = array(), array $args = array(), ?string $args_object_name = null, bool $in_footer = true ): self {
-		$key      = $this->get_key( $slug );
-		$raw_path = $this->base_dirname . ( $this->script_dirname ? ( DIRECTORY_SEPARATOR . $this->script_dirname ) : '' ) . ( $this->base_dirname ? DIRECTORY_SEPARATOR : '' );
-		$url      = $this->fs->get_url() . $raw_path . $slug . $this->postfix . '.js';
-		$path     = $this->fs->get_path() . $raw_path . $slug . $this->postfix . '.js';
-
-		if ( ! file_exists( $path ) ) {
-			return $this;
-		}
-
-		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
-
-		if ( $args ) {
-			$args_object_name = $args_object_name ?: $this->app->str()->to_camelcase( $key );
-
-			wp_localize_script( $key, $args_object_name, $args );
-		}
-
-		return $this;
+	public function get_script_args_key( string $object_name ): string {
+		return $this->app->get_key( $object_name );
 	}
 
-	public function external_style( string $slug, string $url ): self {
-		wp_enqueue_style( $this->app->get_key( $slug ), $url, false, null ); // phpcs:ignore
+	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): self {
+		$key = $this->get_script_args_key( $object_name );
+
+		wp_enqueue_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
+		wp_localize_script( $key, $object_name, $args );
 
 		return $this;
 	}
 
 	public function external_script( string $slug, string $url, bool $in_footer = true ): self {
 		wp_enqueue_script( $this->app->get_key( $slug ), $url, false, null, $in_footer ); // phpcs:ignore
+
+		return $this;
+	}
+
+	public function external_style( string $slug, string $url ): self {
+		wp_enqueue_style( $this->app->get_key( $slug ), $url, false, null ); // phpcs:ignore
 
 		return $this;
 	}

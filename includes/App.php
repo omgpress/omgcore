@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_1;
+namespace WP_Titan_1_0_2;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -82,8 +82,15 @@ class App {
 	 *
 	 * It's the same key that you passed to the "get_instance" method.
 	 */
-	public function get_key( string $slug = '' ): string {
-		return $this->key . ( $slug ? ( '_' . $slug ) : '' );
+	public function get_key( string $slug = '', string $separator = '_' ): string {
+		switch ( $separator ) {
+			case 'camel':
+				return $this->str()->to_camelcase( $this->key . ( $slug ? ( '_' . $slug ) : '' ) );
+
+			default:
+			case '_':
+				return $this->key . ( $slug ? ( '_' . $slug ) : '' );
+		}
 	}
 
 	/**

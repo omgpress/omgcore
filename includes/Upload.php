@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_1;
+namespace WP_Titan_1_0_2;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,17 +9,17 @@ defined( 'ABSPATH' ) || exit;
  */
 class Upload extends Feature {
 
-	protected $uploads_path;
+	protected $path;
 
 	/** @ignore */
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
-		$this->uploads_path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $app->get_key() . DIRECTORY_SEPARATOR;
+		$this->path = 'uploads' . DIRECTORY_SEPARATOR . $app->get_key() . DIRECTORY_SEPARATOR;
 	}
 
-	public function get_path( string $path = '' ): string {
-		return $this->uploads_path . $path;
+	public function get_path( string $path = '', bool $raw = false ): string {
+		return ( $raw ? '' : WP_CONTENT_DIR ) . DIRECTORY_SEPARATOR . $this->path . $path;
 	}
 
 	public function set_content( string $name, string $content, bool $private = false ): self {
@@ -37,7 +37,7 @@ class Upload extends Feature {
 			$this->create_dir( dirname( $name ), $private );
 		}
 
-		$file = fopen( $this->uploads_path . $name, 'a' ); // phpcs:ignore
+		$file = fopen( $this->get_path( $name ), 'a' ); // phpcs:ignore
 
 		fwrite( $file, $content ); // phpcs:ignore
 		fclose( $file ); // phpcs:ignore
@@ -46,7 +46,7 @@ class Upload extends Feature {
 	}
 
 	protected function create_dir( string $name, bool $private = false ): void {
-		$path = $this->uploads_path . $name . DIRECTORY_SEPARATOR;
+		$path = $this->get_path( $name ) . DIRECTORY_SEPARATOR;
 
 		if ( is_dir( $path ) ) {
 			return;
@@ -65,10 +65,10 @@ class Upload extends Feature {
 	}
 
 	protected function create_base_dir(): void {
-		if ( is_dir( $this->uploads_path ) ) {
+		if ( is_dir( $this->get_path() ) ) {
 			return;
 		}
 
-		mkdir( $this->uploads_path, 0755, true );
+		mkdir( $this->get_path(), 0755, true );
 	}
 }

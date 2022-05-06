@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_1;
+namespace WP_Titan_1_0_2;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 class Ajax extends Feature {
 
 	/**
-	 * Add a callback for an Ajax action.
+	 * Add a callback function for an Ajax action.
 	 */
 	public function add_action( string $slug, callable $callback ): self {
 		add_action( 'wp_ajax_' . $this->app->get_key( $slug ), $callback );

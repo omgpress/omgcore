@@ -31,7 +31,7 @@ require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_1\App as WP_Titan;
+use WP_Titan_1_0_2\App as WP_Titan;
 
 // Define a function that returns the singleton instance of WP Titan for your project.
 function wpt(): WP_Titan {
@@ -44,7 +44,7 @@ function wpt(): WP_Titan {
 
 ### Documentation
 The latest documentation is published on <a href="https://wpt.dpripa.com" target="_blank">wpt.dpripa.com</a>.\
-For convenience, it's better to start from <a href="https://wpt.dpripa.com/classes/WP-Titan-1-0-1-App.html" target="_blank">the entry point</a> of the library.
+For convenience, it's better to start from <a href="https://wpt.dpripa.com/classes/WP-Titan-1-0-2-App.html" target="_blank">the entry point</a> of the library.
 
 ### Example
 The following is a simple example when WP Titan is used in the plugin environment.\
@@ -67,7 +67,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 
-use WP_Titan_1_0_1\App as WP_Titan;
+use WP_Titan_1_0_2\App as WP_Titan;
 
 function wpt(): WP_Titan {
   return WP_Titan::get_instance( 'my_project', __FILE__ );
@@ -89,7 +89,7 @@ final class Setup {
 
   public function __construct() {
     if ( wpt()->simpleton()->validate( self::class ) ) {
-      // Read more about simpleton: https://wpt.dpripa.com/classes/WP-Titan-1-0-1-Simpleton.html
+      // Read more about simpleton: https://wpt.dpripa.com/classes/WP-Titan-1-0-2-Simpleton.html
       return;
     }
 
@@ -156,6 +156,10 @@ final class Cart {
 ```
 
 ## Changelog
+
+#### 1.0.2
+- Improved "Asset" and "Upload" features.
+- Improved "App::get_key()" method.
 
 #### 1.0.1
 - Added verification of feature setup.
