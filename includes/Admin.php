@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -8,10 +8,6 @@ defined( 'ABSPATH' ) || exit;
  * Features used only for the admin panel.
  */
 class Admin extends Feature {
-
-	protected $default_autoload = array(
-		'notice' => true,
-	);
 
 	protected $notice;
 

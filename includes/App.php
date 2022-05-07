@@ -1,12 +1,13 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WP Titan Entry Point. It's also the best point to start exploring the library.
+ * The Entry Point. The best point to start exploring the library.
  *
+ * ### Getting Started
  * A method that returns instance of a class that extends the `Feature` class is a specific feature, such as helpers, managers, etc.\
  * Of course, a feature contains its own methods and may also contain its own sub-features.\
  * Don't worry about optimization, each feature (and sub-feature) will be initialized only by the first call to its method.
@@ -16,12 +17,13 @@ defined( 'ABSPATH' ) || exit;
  * Don't hide its call in the any hooks, as this may ruin the work of the feature.
  *
  * ### Setter Methods
- * Some features have setter methods, like `::set_<name>(<property>)`. These methods are used for configure the feature and can change its behavior.\
+ * Some features have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
  * It's usually called once before all `::setup()` methods are called. You don't have to follow this rule if it's necessary for the logic of your application.
  */
 class App {
 
-	use Featured;
+	use Helper\Featured;
+	use Helper\Single_Call;
 
 	protected static $instances = array();
 
@@ -35,17 +37,19 @@ class App {
 	protected $arr;
 	protected $asset;
 	protected $customizer;
-	protected $debug;
+	protected $debugger;
 	protected $fs;
 	protected $hook;
 	protected $http;
 	protected $i18n;
 	protected $integration;
 	protected $logger;
+	protected $nav_menu;
 	protected $simpleton;
 	protected $str;
 	protected $template;
-	protected $upload;
+	protected $uploader;
+	protected $writer;
 
 	/** @ignore */
 	protected function __construct( string $key, string $root_file ) {
@@ -117,6 +121,32 @@ class App {
 		return $this->env;
 	}
 
+	public function add_setup_action( callable $callback, int $priority = PRIOR ): self {
+		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
+			return $this;
+		}
+
+		$is_theme = 'theme' === $this->get_env();
+
+		if ( $is_theme ) {
+			add_action(
+				'after_setup_theme',
+				function (): void {
+					add_theme_support( 'title-tag' );
+					add_theme_support( 'automatic-feed-links' );
+					add_theme_support( 'post-thumbnails' );
+					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
+					add_theme_support( 'customize-selective-refresh-widgets' );
+				},
+				1
+			);
+		}
+
+		add_action( $is_theme ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
+
+		return $this;
+	}
+
 	protected function core(): Core {
 		if ( ! is_a( $this->core, Core::class ) ) {
 			$this->core = new Core( $this );
@@ -163,8 +193,8 @@ class App {
 	/**
 	 * Manage debugging.
 	 */
-	public function debug(): Debug {
-		return $this->get_feature( $this, $this->core(), 'debug', Debug::class );
+	public function debugger(): Debugger {
+		return $this->get_feature( $this, $this->core(), 'debugger', Debugger::class );
 	}
 
 	/**
@@ -210,6 +240,13 @@ class App {
 	}
 
 	/**
+	 * Manage navigation menus.
+	 */
+	public function nav_menu(): Nav_Menu {
+		return $this->get_feature( $this, $this->core(), 'nav_menu', Nav_Menu::class );
+	}
+
+	/**
 	 * Manage project classes that used the simpleton pattern.
 	 */
 	public function simpleton(): Simpleton {
@@ -233,7 +270,14 @@ class App {
 	/**
 	 * Manage uploads.
 	 */
-	public function upload(): Upload {
-		return $this->get_feature( $this, $this->core(), 'upload', Upload::class );
+	public function uploader(): Uploader {
+		return $this->get_feature( $this, $this->core(), 'uploader', Uploader::class );
+	}
+
+	/**
+	 * Write to content to file.
+	 */
+	public function writer(): Writer {
+		return $this->get_feature( $this, $this->core(), 'writer', Writer::class );
 	}
 }

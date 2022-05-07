@@ -18,9 +18,9 @@
 			<ignore hidden="true" symlinks="true">
 				<path>includes/Core/**/*</path>
 				<path>includes/Core.php</path>
+				<path>includes/Helper/**/*</path>
 				<path>includes/Integration/Plugin.php</path>
 				<path>includes/Feature.php</path>
-				<path>includes/Featured.php</path>
 			</ignore>
 		</api>
 	</version>

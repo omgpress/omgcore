@@ -1,13 +1,13 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Manage debugging.
  */
-class Debug extends Feature {
+class Debugger extends Feature {
 
 	protected $die_footer_text = null;
 

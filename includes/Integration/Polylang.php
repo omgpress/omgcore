@@ -1,8 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_3\Integration;
+namespace WP_Titan_1_0_4\Integration;
 
-use WP_Titan_1_0_3\App;
+use WP_Titan_1_0_4\App;
+use const WP_Titan_1_0_4\PRIOR;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +23,7 @@ class Polylang extends Plugin {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
 			return $this->app;
 		}
 
@@ -45,7 +46,7 @@ class Polylang extends Plugin {
 			function ( string $path, string $raw_path, $base ): string {
 				return $base ? $path : ( pll_home_url() . ( '/' === $raw_path ? '' : $raw_path ) );
 			},
-			10,
+			PRIOR,
 			3
 		);
 	}

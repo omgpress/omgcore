@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,7 +28,7 @@ class Logger extends Feature {
 		$timestamp = gmdate( 'n/j/Y H:i:s' );
 		$content   = "[$timestamp] $level: $message\n";
 
-		$this->app->upload()->set_content( $this->file, $content, true );
+		$this->app->writer()->add_content( $this->file, $content, true );
 
 		return $this->app;
 	}
@@ -79,7 +79,7 @@ class Logger extends Feature {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
 			return $this->app;
 		}
 

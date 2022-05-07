@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
-use WP_Titan_1_0_3\Customizer\Section;
-use WP_Titan_1_0_3\Customizer\Control;
+use WP_Titan_1_0_4\Customizer\Section;
+use WP_Titan_1_0_4\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -139,7 +139,7 @@ class Customizer extends Feature {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
 			return $this->app;
 		}
 
@@ -156,9 +156,8 @@ class Customizer extends Feature {
 		add_action(
 			'customize_controls_enqueue_scripts',
 			function (): void {
-				$this->core->asset()
-					->enqueue_style( 'customizer', array( 'wp-color-picker' ) )
-					->enqueue_script( 'customizer', array( 'jquery', 'customize-controls', 'wp-color-picker' ) );
+				$this->core->asset()->enqueue_style( 'customizer', array( 'wp-color-picker' ) );
+				$this->core->asset()->enqueue_script( 'customizer', array( 'jquery', 'customize-controls', 'wp-color-picker' ) );
 			}
 		);
 	}

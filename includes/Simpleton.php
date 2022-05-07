@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 use ReflectionClass;
 
@@ -41,7 +41,7 @@ class Simpleton extends Feature {
 			'is_extendable' => $is_extendable,
 		);
 
-		if ( $this->app->debug()->is_enabled() ) {
+		if ( $this->app->debugger()->is_enabled() ) {
 			if ( ! $is_extendable ) {
 				$reflection = new ReflectionClass( $classname );
 

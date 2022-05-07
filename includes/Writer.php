@@ -1,13 +1,13 @@
 <?php
 
-namespace WP_Titan_1_0_3;
+namespace WP_Titan_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manage uploads.
+ * Write to content to file.
  */
-class Upload extends Feature {
+class Writer extends Feature {
 
 	protected $path;
 
@@ -22,7 +22,7 @@ class Upload extends Feature {
 		return ( $raw ? '' : WP_CONTENT_DIR ) . DIRECTORY_SEPARATOR . $this->path . $path;
 	}
 
-	public function set_content( string $name, string $content, bool $private = false ): App {
+	public function add_content( string $name, string $content, bool $private = false ): App {
 		if ( ! function_exists( 'wp_get_current_user' ) ) {
 			include_once ABSPATH . 'wp-includes' . DIRECTORY_SEPARATOR . 'pluggable.php';
 		}
