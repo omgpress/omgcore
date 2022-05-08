@@ -31,11 +31,11 @@ require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_5\App as App;
+use WP_Titan_1_0_6\App as App;
 
 // Define a function that returns the singleton instance of WP Titan for your project.
 function app(): App {
-  return App::get_instance(
+  return App::get(
     'my_project', // Enter the unique key to WP Titan instance as namespace of your plugin or theme.
     __FILE__ // The main (root) file of your plugin or theme, leave it as is.
   );
@@ -44,7 +44,7 @@ function app(): App {
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-5-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-6-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used in the plugin environment.\
@@ -67,10 +67,10 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 
-use WP_Titan_1_0_5\App as App;
+use WP_Titan_1_0_6\App as App;
 
 function app(): App {
-  return App::get_instance( 'my_project', __FILE__ );
+  return App::get( 'my_project', __FILE__ );
 }
 
 // Composer autoloader.
@@ -78,7 +78,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for WordPress projects provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-5-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern for WordPress projects provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-6-Simpleton.html).
 
 #### Setup.php
 ```php

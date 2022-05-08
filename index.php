@@ -1,15 +1,15 @@
 <?php
 
-namespace WP_Titan_1_0_5;
+namespace WP_Titan_1_0_6;
 
 defined( 'ABSPATH' ) || exit;
 
-const ROOT_FILE  = __FILE__;
-const H_PRIORITY = 1;
-const PRIORITY   = 10;
-const L_PRIORITY = 999999;
+if ( ! class_exists( 'WP_Titan_1_0_6\App' ) ) {
+	define( 'WP_Titan_1_0_6\ROOT_FILE', __FILE__ );
+	define( 'WP_Titan_1_0_6\H_PRIORITY', 1 );
+	define( 'WP_Titan_1_0_6\PRIORITY', 10 );
+	define( 'WP_Titan_1_0_6\L_PRIORITY', 999999 );
 
-if ( ! class_exists( 'WP_Titan_1_0_5\App' ) ) {
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 }
 

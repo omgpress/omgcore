@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_5;
+namespace WP_Titan_1_0_6;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -287,7 +287,7 @@ class App {
 	}
 
 	/**
-	 * Write to content to file.
+	 * Write content to file.
 	 */
 	public function writer(): Writer {
 		return $this->get_feature( $this, $this->core(), 'writer', Writer::class );
