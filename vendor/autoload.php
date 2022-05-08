@@ -4,4 +4,4 @@
 
 require_once __DIR__ . '/composer/autoload_real.php';
 
-return ComposerAutoloaderInitacf4823d44a72fea19d0255c1d858465::getLoader();
+return ComposerAutoloaderInit_WP_Titan_1_0_9::getLoader();

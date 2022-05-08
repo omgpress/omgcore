@@ -1,19 +1,19 @@
 <?php
 
-namespace WP_Titan_1_0_8;
+namespace WP_Titan_1_0_9;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WP_Titan_1_0_8\App' ) ) {
-	define( 'WP_Titan_1_0_8\ROOT_FILE', __FILE__ );
-	define( 'WP_Titan_1_0_8\PRIORITY', 10 );
-	define( 'WP_Titan_1_0_8\H_PRIORITY', 1 );
-	define( 'WP_Titan_1_0_8\L_PRIORITY', 999999 );
+if ( ! class_exists( 'WP_Titan_1_0_9\App' ) ) {
+	define( 'WP_Titan_1_0_9\ROOT_FILE', __FILE__ );
+	define( 'WP_Titan_1_0_9\PRIORITY', 10 );
+	define( 'WP_Titan_1_0_9\H_PRIORITY', 1 );
+	define( 'WP_Titan_1_0_9\L_PRIORITY', 999999 );
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_8\wpt_generate_random_str' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_9\wpt_generate_random_str' ) ) {
 	function wpt_generate_random_str( int $length = 64, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
 		$pieces = array();
 		$max    = mb_strlen( $keyspace, '8bit' ) - 1;
@@ -26,7 +26,7 @@ if ( ! function_exists( 'WP_Titan_1_0_8\wpt_generate_random_str' ) ) {
 	}
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_8\wpt_die' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_9\wpt_die' ) ) {
 	function wpt_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, string $footer_text = '' ): void {
 		global $wp_query;
 

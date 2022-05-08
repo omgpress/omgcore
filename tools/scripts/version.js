@@ -5,6 +5,7 @@ const config = require( '../config' );
 const cachePath = '../cache';
 const cache = require( cachePath );
 const PHPClassesRoot = 'includes';
+const newPHPClassName = 'WP_Titan_' + config.version.split( '.' ).join( '_' );
 
 setPHPClassName();
 
@@ -14,17 +15,14 @@ function setPHPClassName() {
 			console.log( err );
 
 		} else {
-			const currentPHPClassName = cache.currentPHPClassName;
-			const newPHPClassName = 'WP_Titan_' + config.version.split( '.' ).join( '_' );
-
 			paths.push( config.rootPath + '/index.php' );
 			paths.push( config.rootPath + '/README.md' );
 
 			paths.forEach( function( path ) {
-				replaceFileText( path, currentPHPClassName, newPHPClassName, replaceDashClassName );
+				replaceFileText( path, cache.currentPHPClassName, newPHPClassName, replaceDashClassName );
 			});
 
-			replaceFileText( config.rootPath + '/composer.json', currentPHPClassName, newPHPClassName, setPackageVersion );
+			replaceFileText( config.rootPath + '/composer.json', cache.currentPHPClassName, newPHPClassName, setPackageVersion );
 
 			cache.currentPHPClassName = newPHPClassName;
 
@@ -60,6 +58,7 @@ function replaceFileText( path, needle, replace, modifyResult = null ) {
 function setPackageVersion( data ) {
 	const json = JSON.parse( data );
 	json.version = config.version;
+	json.config['autoloader-suffix'] = '_' + newPHPClassName;
 
 	return JSON.stringify( json, null, 2 );
 }
