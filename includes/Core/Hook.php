@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_4\Core;
+namespace WP_Titan_1_0_5\Core;
 
-use WP_Titan_1_0_4\App;
-use WP_Titan_1_0_4\Feature;
-use const WP_Titan_1_0_4\PRIOR;
+use WP_Titan_1_0_5\App;
+use WP_Titan_1_0_5\Feature;
+use const WP_Titan_1_0_5\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ class Hook extends Feature {
 		return apply_filters( $this->core->get_key( $slug ), ...$args );
 	}
 
-	public function add_filter( string $slug, callable $callback, int $priority = PRIOR, int $accepted_args = 1 ): App {
+	public function add_filter( string $slug, callable $callback, int $priority = PRIORITY, int $accepted_args = 1 ): App {
 		add_filter( $this->core->get_key( $slug ), $callback, $priority, $accepted_args );
 
 		return $this->app;

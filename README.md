@@ -31,11 +31,11 @@ require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_4\App as WP_Titan;
+use WP_Titan_1_0_5\App as App;
 
 // Define a function that returns the singleton instance of WP Titan for your project.
-function wpt(): WP_Titan {
-  return WP_Titan::get_instance(
+function app(): App {
+  return App::get_instance(
     'my_project', // Enter the unique key to WP Titan instance as namespace of your plugin or theme.
     __FILE__ // The main (root) file of your plugin or theme, leave it as is.
   );
@@ -44,7 +44,7 @@ function wpt(): WP_Titan {
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-4-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-5-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used in the plugin environment.\
@@ -67,10 +67,10 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 
-use WP_Titan_1_0_4\App as WP_Titan;
+use WP_Titan_1_0_5\App as App;
 
-function wpt(): WP_Titan {
-  return WP_Titan::get_instance( 'my_project', __FILE__ );
+function app(): App {
+  return App::get_instance( 'my_project', __FILE__ );
 }
 
 // Composer autoloader.
@@ -78,7 +78,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for WordPress projects provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-4-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern for WordPress projects provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-5-Simpleton.html).
 
 #### Setup.php
 ```php
@@ -89,23 +89,19 @@ defined( 'ABSPATH' ) || exit;
 final class Setup {
 
   public function __construct() {
-    if ( wpt()->simpleton()->validate( self::class ) ) {
+    if ( app()->simpleton()->validate( self::class ) ) {
       return;
     }
 
-    wpt()->i18n()->setup()
-      ->admin()->notice()->setup();
-
-    add_action( 'plugins_loaded', array( $this, 'setup' ) );
-
-    // Only one difference, for the theme we use:
-    // add_action( 'after_setup_theme', array( $this, 'setup' ) );
+    app()->i18n()->setup()
+      ->admin()->notice()->setup()
+      ->add_setup_action( array( $this, 'setup' ) );
   }
 
   public function setup(): void {
-    if ( ! wpt()->integration()->wc()->is_active() ) {
-      wpt()->admin()->notice()->render(
-        wpt()->i18n()->__( 'My Project required WooCommerce.' )
+    if ( ! app()->integration()->wc()->is_active() ) {
+      app()->admin()->notice()->render(
+        app()->i18n()->__( 'My Project required WooCommerce.' )
       );
 
       return;
@@ -119,7 +115,7 @@ final class Setup {
   }
 
   public function enqueue_assets(): void {
-    wpt()->asset()->enqueue_style( 'main' )
+    app()->asset()->enqueue_style( 'main' )
       ->asset()->enqueue_script( 'main' );
   }
 }
@@ -134,7 +130,7 @@ defined( 'ABSPATH' ) || exit;
 final class Cart {
 
   public function __construct() {
-    if ( wpt()->simpleton()->validate( self::class ) ) {
+    if ( app()->simpleton()->validate( self::class ) ) {
       return;
     }
 
@@ -142,11 +138,11 @@ final class Cart {
   }
 
   public static function get_product_limit(): int {
-    return get_option( wpt()->get_key( 'cart_product_limit' ), 100 );
+    return get_option( app()->get_key( 'cart_product_limit' ), 100 );
   }
 
   public function enqueue_assets(): void {
-    wpt()->asset()->enqueue_style( 'cart' )
+    app()->asset()->enqueue_style( 'cart' )
       ->asset()->enqueue_script( 'cart' );
   }
 }

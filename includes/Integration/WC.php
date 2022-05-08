@@ -1,9 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_4\Integration;
+namespace WP_Titan_1_0_5\Integration;
 
-use WP_Titan_1_0_4\App;
-use const WP_Titan_1_0_4\PRIOR;
+use WP_Titan_1_0_5\App;
+use const WP_Titan_1_0_5\H_PRIORITY;
+use const WP_Titan_1_0_5\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -32,7 +33,7 @@ class WC extends Plugin {
 				add_theme_support( 'wc-product-gallery-lightbox' );
 				add_theme_support( 'wc-product-gallery-slider' );
 			},
-			1
+			H_PRIORITY
 		);
 
 		return $this->app;
@@ -68,7 +69,7 @@ class WC extends Plugin {
 
 						return $can_edit;
 					},
-					PRIOR,
+					PRIORITY,
 					2
 				);
 			}

@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_4\Integration;
+namespace WP_Titan_1_0_5\Integration;
 
-use WP_Titan_1_0_4\App;
-use const WP_Titan_1_0_4\PRIOR;
+use WP_Titan_1_0_5\App;
+use const WP_Titan_1_0_5\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -46,7 +46,7 @@ class Polylang extends Plugin {
 			function ( string $path, string $raw_path, $base ): string {
 				return $base ? $path : ( pll_home_url() . ( '/' === $raw_path ? '' : $raw_path ) );
 			},
-			PRIOR,
+			PRIORITY,
 			3
 		);
 	}

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_4;
+namespace WP_Titan_1_0_5;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,13 +23,13 @@ defined( 'ABSPATH' ) || exit;
 class App {
 
 	use Helper\Featured;
-	use Helper\Single_Call;
 
 	protected static $instances = array();
 
 	protected $key;
 	protected $root_file;
 	protected $env;
+	protected $priority = PRIORITY;
 	protected $core;
 
 	protected $admin;
@@ -50,6 +50,8 @@ class App {
 	protected $template;
 	protected $uploader;
 	protected $writer;
+
+	protected $is_called_setup_action = false;
 
 	/** @ignore */
 	protected function __construct( string $key, string $root_file ) {
@@ -77,7 +79,7 @@ class App {
 	/**
 	 * Get the singleton instance of WP Titan for your project.
 	 */
-	public static function get_instance( string $key, string $root_file = '' ): App {
+	public static function get( string $key, string $root_file = '' ): App {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
 				wpt_die( 'Project root file required on initial call.', null, $key );
@@ -121,28 +123,38 @@ class App {
 		return $this->env;
 	}
 
-	public function add_setup_action( callable $callback, int $priority = PRIOR ): self {
-		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
-			return $this;
+	protected function is_theme(): bool {
+		return 'theme' === $this->get_env();
+	}
+
+	protected function set_priority( int $priority ): self {
+		$this->priority = $priority;
+
+		return $this;
+	}
+
+	public function add_setup_action( callable $callback ): self {
+		$priority = $this->priority;
+
+		if ( ! $this->is_called_setup_action ) {
+			if ( $this->is_theme() ) {
+				add_action(
+					'after_setup_theme',
+					function (): void {
+						add_theme_support( 'title-tag' );
+						add_theme_support( 'automatic-feed-links' );
+						add_theme_support( 'post-thumbnails' );
+						add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
+						add_theme_support( 'customize-selective-refresh-widgets' );
+					},
+					H_PRIORITY
+				);
+			}
+		} else {
+			++$priority;
 		}
 
-		$is_theme = 'theme' === $this->get_env();
-
-		if ( $is_theme ) {
-			add_action(
-				'after_setup_theme',
-				function (): void {
-					add_theme_support( 'title-tag' );
-					add_theme_support( 'automatic-feed-links' );
-					add_theme_support( 'post-thumbnails' );
-					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
-					add_theme_support( 'customize-selective-refresh-widgets' );
-				},
-				1
-			);
-		}
-
-		add_action( $is_theme ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
+		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;
 	}

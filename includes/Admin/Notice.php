@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_4\Admin;
+namespace WP_Titan_1_0_5\Admin;
 
-use WP_Titan_1_0_4\App;
-use WP_Titan_1_0_4\Core;
-use WP_Titan_1_0_4\Feature;
+use WP_Titan_1_0_5\App;
+use WP_Titan_1_0_5\Core;
+use WP_Titan_1_0_5\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,7 +35,7 @@ class Notice extends Feature {
 	/**
 	 * Add a notice to render it in the transient queue.
 	 *
-	 * @param string $level "info", "success", "warning" or "error".
+	 * @param string $level `'info'`, `'success'`, `'warning'` or `'error'`.
 	 */
 	public function add_transient( string $message, string $level = 'warning' ): App {
 		if ( $this->validate_setup() ) {
@@ -54,7 +54,7 @@ class Notice extends Feature {
 	/**
 	 * Render a notice.
 	 *
-	 * @param string $level "info", "success", "warning" or "error".
+	 * @param string $level `'info", `'success'`, `'warning'` or `'error'`.
 	 */
 	public function render( string $message, string $level = 'warning' ): App {
 		if ( $this->validate_setup() ) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_4;
+namespace WP_Titan_1_0_5;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ class Writer extends Feature {
 		return ( $raw ? '' : WP_CONTENT_DIR ) . DIRECTORY_SEPARATOR . $this->path . $path;
 	}
 
-	public function add_content( string $name, string $content, bool $private = false ): App {
+	public function add_content( string $file, string $content, bool $private = false ): App {
 		if ( ! function_exists( 'wp_get_current_user' ) ) {
 			include_once ABSPATH . 'wp-includes' . DIRECTORY_SEPARATOR . 'pluggable.php';
 		}
@@ -33,11 +33,11 @@ class Writer extends Feature {
 
 		$this->create_base_dir();
 
-		if ( 1 < count( explode( DIRECTORY_SEPARATOR, $name ) ) ) {
-			$this->create_dir( dirname( $name ), $private );
+		if ( 1 < count( explode( DIRECTORY_SEPARATOR, $file ) ) ) {
+			$this->create_dir( dirname( $file ), $private );
 		}
 
-		$file = fopen( $this->get_path( $name ), 'a' ); // phpcs:ignore
+		$file = fopen( $this->get_path( $file ), 'a' ); // phpcs:ignore
 
 		fwrite( $file, $content ); // phpcs:ignore
 		fclose( $file ); // phpcs:ignore
