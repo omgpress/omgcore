@@ -45,6 +45,7 @@ class App {
 	protected $integration;
 	protected $logger;
 	protected $nav_menu;
+	protected $setting;
 	protected $simpleton;
 	protected $str;
 	protected $template;
@@ -251,6 +252,13 @@ class App {
 	 */
 	public function nav_menu(): Nav_Menu {
 		return $this->get_feature( $this, $this->core(), 'nav_menu', Nav_Menu::class );
+	}
+
+	/**
+	 * Manage settings.
+	 */
+	public function setting(): Setting {
+		return $this->get_feature( $this, $this->core(), 'setting', Setting::class );
 	}
 
 	/**
