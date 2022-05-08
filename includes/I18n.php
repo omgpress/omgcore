@@ -1,11 +1,11 @@
 <?php
 
-namespace WP_Titan_1_0_7;
+namespace WP_Titan_1_0_8;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manage i18n (translations) for the project.
+ * Manage i18n (translations) for the application.
  */
 class I18n extends Feature {
 
@@ -67,7 +67,7 @@ class I18n extends Feature {
 			return $this->app;
 		}
 
-		wp_set_script_translations( $this->app->get_key( $slug ), $this->app->get_key(), $this->get_path() );
+		wp_set_script_translations( $this->app->asset()->get_key( $slug ), $this->app->get_key(), $this->get_path() );
 
 		return $this->app;
 	}

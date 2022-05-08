@@ -3,8 +3,8 @@
 <a href="https://packagist.org/packages/dpripa/wp-titan"><img src="https://img.shields.io/packagist/v/dpripa/wp-titan" alt="Packagist version"/></a>
 
 One entry point to get all you need for developing a WordPress plugin or a theme.\
-WP Titan introduces a smart layer between WordPress and your project.\
-P.S. It's also easy to start using in a live project.
+WP Titan introduces a smart layer between WordPress and your application.\
+P.S. It's also easy to start using in a live application.
 
 - [System Requirements](#system-requirements)
 - [Installation](#installation)
@@ -19,24 +19,24 @@ P.S. It's also easy to start using in a live project.
 - Composer (optional)
 
 ## Installation
-Run the following command in root directory of the project to install using Composer:\
+Run the following command in root directory of the application to install using Composer:\
 `composer require dpripa/wp-titan`.\
-Alternatively, you can [download the latest version](https://github.com/dpripa/wp-titan/releases) directly and place unarchived folder in the root directory of the project.
+Alternatively, you can [download the latest version](https://github.com/dpripa/wp-titan/releases) directly and place unarchived folder in the root directory of the application.
 
 ## Initialization
-To initialize WP Titan for your project use the following reference code to configure your plugin or theme main file (index.php, functions.php, etc.).
+To initialize WP Titan for your application use the following reference code to configure your plugin or theme main file (index.php, functions.php, etc.).
 ```php
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_7\App as App;
+use WP_Titan_1_0_8\App as App;
 
-// Define a function that returns the singleton instance of WP Titan for your project.
+// Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
   return App::get(
-    'my_project', // Enter the unique key to WP Titan instance as namespace of your plugin or theme.
+    'my_app', // Enter the unique key to WP Titan instance as namespace of your application.
     __FILE__ // The main (root) file of your plugin or theme, leave it as is.
   );
 }
@@ -44,11 +44,11 @@ function app(): App {
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-7-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-8-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used in the plugin environment.\
-Don't worry, for the theme all is the same. WP Titan auto-detects your project environment and provides a universal API.
+Don't worry, for the theme all is the same. WP Titan auto-detects your application environment and provides a universal API.
 
 #### index.php
 ```php
@@ -61,16 +61,16 @@ Don't worry, for the theme all is the same. WP Titan auto-detects your project e
  * Author URI:  https://example.com
  */
 
-namespace My_Project;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 
-use WP_Titan_1_0_7\App as App;
+use WP_Titan_1_0_8\App as App;
 
 function app(): App {
-  return App::get( 'my_project', __FILE__ );
+  return App::get( 'my_app', __FILE__ );
 }
 
 // Composer autoloader.
@@ -78,11 +78,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for WordPress projects provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-7-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-8-Simpleton.html).
 
 #### Setup.php
 ```php
-namespace My_Project;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -95,13 +95,15 @@ final class Setup {
 
     app()->i18n()->setup()
       ->admin()->notice()->setup()
+      // Optional. You can call the following method on a theme environment.
+      // ->set_theme_support()
       ->add_setup_action( array( $this, 'setup' ) );
   }
 
   public function setup(): void {
     if ( ! app()->integration()->wc()->is_active() ) {
       app()->admin()->notice()->render(
-        app()->i18n()->__( 'My Project required WooCommerce.' )
+        app()->i18n()->__( 'My Application required WooCommerce.' )
       );
 
       return;
@@ -123,7 +125,7 @@ final class Setup {
 
 #### Cart.php
 ```php
-namespace My_Project;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 

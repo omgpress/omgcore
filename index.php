@@ -1,19 +1,19 @@
 <?php
 
-namespace WP_Titan_1_0_7;
+namespace WP_Titan_1_0_8;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WP_Titan_1_0_7\App' ) ) {
-	define( 'WP_Titan_1_0_7\ROOT_FILE', __FILE__ );
-	define( 'WP_Titan_1_0_7\PRIORITY', 10 );
-	define( 'WP_Titan_1_0_7\H_PRIORITY', 1 );
-	define( 'WP_Titan_1_0_7\L_PRIORITY', 999999 );
+if ( ! class_exists( 'WP_Titan_1_0_8\App' ) ) {
+	define( 'WP_Titan_1_0_8\ROOT_FILE', __FILE__ );
+	define( 'WP_Titan_1_0_8\PRIORITY', 10 );
+	define( 'WP_Titan_1_0_8\H_PRIORITY', 1 );
+	define( 'WP_Titan_1_0_8\L_PRIORITY', 999999 );
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_7\wpt_generate_random_str' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_8\wpt_generate_random_str' ) ) {
 	function wpt_generate_random_str( int $length = 64, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
 		$pieces = array();
 		$max    = mb_strlen( $keyspace, '8bit' ) - 1;
@@ -26,8 +26,8 @@ if ( ! function_exists( 'WP_Titan_1_0_7\wpt_generate_random_str' ) ) {
 	}
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_7\wpt_die' ) ) {
-	function wpt_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, $footer_text = null ): void {
+if ( ! function_exists( 'WP_Titan_1_0_8\wpt_die' ) ) {
+	function wpt_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, string $footer_text = '' ): void {
 		global $wp_query;
 
 		if ( ! isset( $wp_query ) ) {
@@ -101,13 +101,17 @@ if ( ! function_exists( 'WP_Titan_1_0_7\wpt_die' ) ) {
 			?>
 			<hr style="margin-top: 35px; border-top: 1px solid #dadada; border-bottom: 0;">
 			<p style="margin-top: 15px; font-size: 12px; color: #9b9b9b;">
-				<?php echo empty( $footer_text ) ? 'This error message comes from <a href="https://github.com/dpripa/wp-titan" target="_blank" style="color: #9b9b9b;">WP Titan</a>.' : wp_kses_post( $footer_text ); ?>
-				<br>
-				<?php if ( $key ) { ?>
-					Instance: <code style="color: #444;"><?php echo esc_html( $key ); ?></code>
+				<?php
+				if ( $footer_text ) {
+					echo wp_kses_post( $footer_text ) . '</br>';
+				}
+
+				if ( $key ) {
+					?>
+					Application: <code style="color: #444;"><?php echo esc_html( $key ); ?></code>
 					&ensp;|&ensp;
 				<?php } ?>
-				Level: <code style="color: #444;"><?php echo $is_core ? 'core' : 'app'; ?></code>
+				Source: <code style="color: #444;"><?php echo $is_core ? 'WordPress Titan' : 'application'; ?></code>
 			</p>
 			<?php
 		}
