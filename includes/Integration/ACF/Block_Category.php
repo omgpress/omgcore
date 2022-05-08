@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_6\Integration\ACF;
+namespace WP_Titan_1_0_7\Integration\ACF;
 
-use WP_Titan_1_0_6\App;
-use WP_Titan_1_0_6\Feature;
+use WP_Titan_1_0_7\App;
+use WP_Titan_1_0_7\Feature;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_6\Core;
+namespace WP_Titan_1_0_7\Core;
 
-use WP_Titan_1_0_6\App;
-use WP_Titan_1_0_6\Feature;
-use const WP_Titan_1_0_6\PRIORITY;
+use WP_Titan_1_0_7\App;
+use WP_Titan_1_0_7\Feature;
+use const WP_Titan_1_0_7\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
