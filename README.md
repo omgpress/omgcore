@@ -14,8 +14,8 @@ P.S. It's also easy to start using in a live application.
 - [License](#license)
 
 ## System Requirements
-- PHP 7.2+
-- WordPress 5.0+
+- PHP: ^7.2.0
+- WordPress: ^5.0.0
 - Composer (optional)
 
 ## Installation
@@ -36,7 +36,7 @@ use WP_Titan_1_0_9\App as App;
 // Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
   return App::get(
-    'my_app', // Enter the unique key to WP Titan instance as namespace of your application.
+    'my_plugin', // Enter the unique key to WP Titan instance as namespace of your application.
     __FILE__ // The main (root) file of your plugin or theme, leave it as is.
   );
 }
@@ -53,28 +53,26 @@ Don't worry, for the theme all is the same. WP Titan auto-detects your applicati
 #### index.php
 ```php
 /**
- * Plugin Name: My Project
+ * Plugin Name: My Plugin
  * Plugin URI:  https://example.com
- * Description: Plugin for tests
+ * Description: Just my plugin.
  * Version:     1.0.0
  * Author:      Some Dude
  * Author URI:  https://example.com
  */
 
-namespace My_App;
+namespace My_Plugin;
 
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use WP_Titan_1_0_9\App as App;
 
 function app(): App {
-  return App::get( 'my_app', __FILE__ );
+  return App::get( 'my_plugin', __FILE__ );
 }
-
-// Composer autoloader.
-require_once __DIR__ . '/vendor/autoload.php';
 
 new Setup();
 ```
@@ -82,7 +80,7 @@ You can see an example of simpleton usage here. It's a structural pattern for th
 
 #### Setup.php
 ```php
-namespace My_App;
+namespace My_Plugin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -95,7 +93,7 @@ final class Setup {
 
     app()->i18n()->setup()
       ->admin()->notice()->setup()
-      // Optional. You can call the following method on a theme environment.
+      // Optional. You can call the following method on a theme environment:
       // ->set_theme_support()
       ->add_setup_action( array( $this, 'setup' ) );
   }
@@ -103,7 +101,7 @@ final class Setup {
   public function setup(): void {
     if ( ! app()->integration()->wc()->is_active() ) {
       app()->admin()->notice()->render(
-        app()->i18n()->__( 'My Application required WooCommerce.' )
+        app()->i18n()->__( 'My Plugin require WooCommerce.' )
       );
 
       return;
@@ -125,7 +123,7 @@ final class Setup {
 
 #### Cart.php
 ```php
-namespace My_App;
+namespace My_Plugin;
 
 defined( 'ABSPATH' ) || exit;
 
