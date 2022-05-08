@@ -54,11 +54,11 @@ Don't worry, for the theme all is the same. WP Titan auto-detects your applicati
 ```php
 /**
  * Plugin Name: My Plugin
- * Plugin URI:  https://example.com
+ * Plugin URI:  https://wordpress.org
  * Description: Just my plugin.
  * Version:     1.0.0
  * Author:      Some Dude
- * Author URI:  https://example.com
+ * Author URI:  https://wordpress.org
  */
 
 namespace My_Plugin;
