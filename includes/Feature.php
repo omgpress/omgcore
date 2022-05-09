@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9;
+namespace WP_Titan_1_0_10;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ abstract class Feature {
 		$classname = static::class;
 		$not_setup = ! in_array( 'setup', $this->single_calls, true );
 
-		if ( $not_setup && $this->app->debugger()->is_enabled() ) {
+		if ( $not_setup && wpt_is_debug_enabled() ) {
 			wpt_die( "Need to setup the <code>${classname}</code> feature first.", null, $this->app->get_key() );
 		}
 

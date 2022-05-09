@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_9\Integration;
+namespace WP_Titan_1_0_10\Integration;
 
-use WP_Titan_1_0_9\App;
-use const WP_Titan_1_0_9\H_PRIORITY;
-use const WP_Titan_1_0_9\PRIORITY;
+use WP_Titan_1_0_10\App;
+use const WP_Titan_1_0_10\H_PRIORITY;
+use const WP_Titan_1_0_10\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ class WC extends Plugin {
 	 * Is WooCommerce active.
 	 */
 	public function is_active(): bool {
-		return class_exists( 'woocommerce' );
+		return class_exists( 'woocommerce', false );
 	}
 
 	public function set_theme_support(): App {

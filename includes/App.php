@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9;
+namespace WP_Titan_1_0_10;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -83,7 +83,7 @@ class App {
 	public static function get( string $key, string $root_file = '' ): App {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				wpt_die( 'Application root file required on initial call.', null, $key );
+				wpt_die( 'Application root file is required on initial call.', null, $key );
 			}
 
 			self::$instances[ $key ] = new self( $key, $root_file );
@@ -128,27 +128,21 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
-	public function set_theme_support(): self {
-		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
-			return $this;
+	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
+		if ( $this->is_theme() && ! $this->validate_single_call( __FUNCTION__, $this, true ) ) {
+			add_action(
+				'after_setup_theme',
+				function (): void {
+					add_theme_support( 'title-tag' );
+					add_theme_support( 'automatic-feed-links' );
+					add_theme_support( 'post-thumbnails' );
+					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
+					add_theme_support( 'customize-selective-refresh-widgets' );
+				},
+				H_PRIORITY
+			);
 		}
 
-		add_action(
-			'after_setup_theme',
-			function (): void {
-				add_theme_support( 'title-tag' );
-				add_theme_support( 'automatic-feed-links' );
-				add_theme_support( 'post-thumbnails' );
-				add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
-				add_theme_support( 'customize-selective-refresh-widgets' );
-			},
-			H_PRIORITY
-		);
-
-		return $this;
-	}
-
-	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
 		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;

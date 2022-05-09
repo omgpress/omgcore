@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9;
+namespace WP_Titan_1_0_10;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ class Debugger extends Feature {
 	}
 
 	public function is_enabled(): bool {
-		return defined( 'WP_DEBUG' ) && WP_DEBUG;
+		return wpt_is_debug_enabled();
 	}
 
 	public function die( string $message, ?string $title = null, bool $enable_backtrace = true ): void {

@@ -21,7 +21,7 @@ P.S. It's also easy to start using in a live application.
 ## Installation
 Run the following command in root directory of the application to install using Composer:\
 `composer require dpripa/wp-titan`.\
-Alternatively, you can [download the latest version](https://github.com/dpripa/wp-titan/releases) directly and place unarchived folder in the root directory of the application.
+Alternatively, you can [download the latest release](https://github.com/dpripa/wp-titan/releases/latest) directly and place unarchived folder in the root directory of the application.
 
 ## Initialization
 To initialize WP Titan for your application use the following reference code to configure your plugin or theme main file (index.php, functions.php, etc.).
@@ -31,7 +31,7 @@ require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_9\App as App;
+use WP_Titan_1_0_10\App as App;
 
 // Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
@@ -44,7 +44,7 @@ function app(): App {
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-9-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-10-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used in the plugin environment.\
@@ -68,7 +68,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WP_Titan_1_0_9\App as App;
+use WP_Titan_1_0_10\App as App;
 
 function app(): App {
   return App::get( 'my_plugin', __FILE__ );
@@ -76,7 +76,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-9-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-10-Simpleton.html).
 
 #### Setup.php
 ```php
@@ -93,8 +93,6 @@ final class Setup {
 
     app()->i18n()->setup()
       ->admin()->notice()->setup()
-      // Optional. You can call the following method on a theme environment:
-      // ->set_theme_support()
       ->add_setup_action( array( $this, 'setup' ) );
   }
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_9\Integration;
+namespace WP_Titan_1_0_10\Integration;
 
-use WP_Titan_1_0_9\App;
-use const WP_Titan_1_0_9\PRIORITY;
+use WP_Titan_1_0_10\App;
+use const WP_Titan_1_0_10\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,7 @@ class Polylang extends Plugin {
 	 * Is Polylang active.
 	 */
 	public function is_active(): bool {
-		return class_exists( 'Polylang' );
+		return class_exists( 'Polylang', false );
 	}
 
 	/**
