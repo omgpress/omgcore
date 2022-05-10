@@ -1,18 +1,18 @@
 <?php
 
-namespace WP_Titan_1_0_10;
+namespace WP_Titan_1_0_11;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Helpers for working with popular third-party WordPress plugins.
+ * Helpers for working with third-party WordPress plugins.
  */
 class Integration extends Feature {
 
 	protected $acf;
 	protected $polylang;
-	protected $wc;
 	protected $yoast;
+	protected $wc;
 
 	/**
 	 * Advanced Custom Fields / ACF Pro.
@@ -43,13 +43,17 @@ class Integration extends Feature {
 	}
 
 	/**
-	 * @param string $reference A namespace containing the `Setup` class, or the fully qualified classname.
+	 * @param string $reference A namespace containing the `Setup` or `Setting` classes, or the fully qualified classname.
 	 * @param string $active_method_name Optional. The name of a method of the reference that returns statement of plugin activation. This piece of logic will be skipped if this method don't exist.
 	 */
 	public function is_active( string $reference, string $active_method_name = 'is_active' ): bool {
-		$reference = class_exists( "$reference\\Setup", false ) ? "$reference\\Setup" : ( class_exists( $reference, false ) ? $reference : '' );
+		if ( class_exists( "$reference\\Setting", false ) ) {
+			$reference = "$reference\\Setting";
 
-		if ( empty( $reference ) ) {
+		} elseif ( class_exists( "$reference\\Setup", false ) ) {
+			$reference = "$reference\\Setup";
+
+		} elseif ( ! class_exists( $reference, false ) ) {
 			return false;
 		}
 

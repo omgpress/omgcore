@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_10;
+namespace WP_Titan_1_0_11;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -80,7 +80,7 @@ class App {
 	 * @param string $key A unique key to WP Titan instance as namespace of your application.
 	 * @param string $root_file The main (root) file of your plugin or theme. Pass `__FILE__` on initial call.
 	 */
-	public static function get( string $key, string $root_file = '' ): App {
+	public static function get( string $key, string $root_file = '' ): self {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
 				wpt_die( 'Application root file is required on initial call.', null, $key );

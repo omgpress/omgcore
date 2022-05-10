@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_10;
+namespace WP_Titan_1_0_11;
 
 use ReflectionClass;
 
@@ -31,7 +31,7 @@ class Simpleton extends Feature {
 	 * }
 	 * ```
 	 *
-	 * @param bool $is_extendable Is current class extendable. Default is `false` because in most cases' simpleton class isn't extended-friendly.
+	 * @param bool $is_extendable Is current class extendable. Default is `false` because in most cases' simpleton class isn't extended-friendly and should be `final`.
 	 */
 	public function validate( string $classname, bool $is_extendable = false ): bool {
 		$has_instance = in_array( $classname, array_keys( $this->instances ), true );
