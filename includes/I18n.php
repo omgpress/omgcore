@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_11;
+namespace WP_Titan_1_0_12;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,10 +25,10 @@ class I18n extends Feature {
 	/**
 	 * Get a path to the directory that contains the i18n files.
 	 */
-	public function get_path(): string {
+	public function get_path( bool $raw = false ): string {
 		$this->validate_setup();
 
-		return $this->app->fs()->get_path( $this->dirname );
+		return $raw ? $this->dirname : $this->app->fs()->get_path( $this->dirname );
 	}
 
 	/**
@@ -76,23 +76,11 @@ class I18n extends Feature {
 		return translate( $text, $this->validate_setup() ? 'default' : $this->app->get_key() ); // phpcs:ignore
 	}
 
-	public function esc_html__( string $text ): string {
-		return esc_html( $this->__( $text ) ); // phpcs:ignore
-	}
-
-	public function esc_attr__( string $text ): string {
-		return esc_attr( $this->__( $text ) ); // phpcs:ignore
+	public function _x( string $text, string $context ): string {
+		return translate_with_gettext_context( $text, $context, $this->validate_setup() ? 'default' : $this->app->get_key() ); // phpcs:ignore
 	}
 
 	public function _n( string $single, string $plural, int $number ): string {
 		return _n( $single, $plural, $number, $this->validate_setup() ? 'default' : $this->app->get_key() ); // phpcs:ignore
-	}
-
-	public function esc_html_n( string $single, string $plural, int $number ): string {
-		return esc_html( $this->_n( $single, $plural, $number ) );
-	}
-
-	public function esc_attr_n( string $single, string $plural, int $number ): string {
-		return esc_attr( $this->_n( $single, $plural, $number ) );
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_11;
+namespace WP_Titan_1_0_12;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,5 +17,15 @@ class Ajax extends Feature {
 		add_action( 'wp_ajax_nopriv_' . $this->app->get_key( $slug ), $callback );
 
 		return $this->app;
+	}
+
+	public function get_url( string $action = '' ): string {
+		$url = admin_url( 'admin-ajax.php' );
+
+		if ( $action ) {
+			$url = add_query_arg( $url, array( 'action' => $this->app->get_key( $action ) ) );
+		}
+
+		return $url;
 	}
 }

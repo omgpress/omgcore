@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_11;
+namespace WP_Titan_1_0_12;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,12 +9,22 @@ defined( 'ABSPATH' ) || exit;
  */
 class Template extends Feature {
 
-	protected $base_path = 'template-parts';
+	protected $path;
+
+	public function __construct( App $app, Core $core ) {
+		parent::__construct( $app, $core );
+
+		$this->path = $this->is_theme() ? 'template-parts' : 'templates';
+	}
 
 	public function set_base_path( string $path ): App {
-		$this->base_path = $path;
+		$this->path = $path;
 
 		return $this->app;
+	}
+
+	public function get_path( string $path = '' ): string {
+		return $this->app->fs()->get_path( $this->path . ( $path ? ( DIRECTORY_SEPARATOR . $path ) : '' ) );
 	}
 
 	public function get( string $name, array $args = array() ): string {
@@ -26,7 +36,7 @@ class Template extends Feature {
 			$this->render( $name, $args );
 
 		} else {
-			include $this->app->fs()->get_path( $this->base_path . DIRECTORY_SEPARATOR . $name . '.php' );
+			include $this->app->fs()->get_path( $this->path . DIRECTORY_SEPARATOR . $name . '.php' );
 		}
 
 		return ob_get_clean();
@@ -34,7 +44,7 @@ class Template extends Feature {
 
 	public function render( string $name, array $args = array() ): App {
 		if ( $this->is_theme() ) {
-			get_template_part( $this->base_path . DIRECTORY_SEPARATOR . $name, null, $args );
+			get_template_part( $this->path . DIRECTORY_SEPARATOR . $name, null, $args );
 
 		} else {
 			echo $this->get( $name, $args ); // phpcs:ignore
