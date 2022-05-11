@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_14;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,7 +29,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'assets'.
 	 */
 	public function set_dirname( string $name ): App {
-		$this->dirname = $name;
+		$this->set_property( 'dirname', $name );
 
 		return $this->app;
 	}
@@ -38,7 +38,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'fonts'.
 	 */
 	public function set_font_dirname( string $name ): App {
-		$this->font_dirname = $name;
+		$this->set_property( 'font_dirname', $name );
 
 		return $this->app;
 	}
@@ -47,7 +47,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'images'.
 	 */
 	public function set_image_dirname( string $name ): App {
-		$this->image_dirname = $name;
+		$this->set_property( 'image_dirname', $name );
 
 		return $this->app;
 	}
@@ -56,7 +56,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'scripts'.
 	 */
 	public function set_script_dirname( string $name ): App {
-		$this->script_dirname = $name;
+		$this->set_property( 'script_dirname', $name );
 
 		return $this->app;
 	}
@@ -65,7 +65,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'styles'.
 	 */
 	public function set_style_dirname( string $name ): App {
-		$this->style_dirname = $name;
+		$this->set_property( 'style_dirname', $name );
 
 		return $this->app;
 	}
@@ -74,7 +74,7 @@ class Asset extends Feature {
 	 * Optional. Default: '.min'.
 	 */
 	public function set_postfix( string $postfix ): App {
-		$this->postfix = $postfix;
+		$this->set_property( 'postfix', $postfix );
 
 		return $this->app;
 	}

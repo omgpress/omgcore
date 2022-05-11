@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_13\Integration;
+namespace WP_Titan_1_0_14\Integration;
 
-use WP_Titan_1_0_13\App;
-use const WP_Titan_1_0_13\PRIORITY;
+use WP_Titan_1_0_14\App;
+use const WP_Titan_1_0_14\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,11 +23,8 @@ class Polylang extends Plugin {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
-			return $this->app;
-		}
-
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				if ( ! $this->is_active() ) {
 					return;

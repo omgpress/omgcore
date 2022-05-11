@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_14;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * ### Setter Methods
  * Some features have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
- * It's usually called once before all `::setup()` methods are called. You don't have to follow this rule if it's necessary for the logic of your application.
+ * It must be called before any `::setup()` methods are called.
  */
 class App {
 
@@ -31,6 +31,7 @@ class App {
 	protected $key;
 	protected $root_file;
 	protected $env;
+	protected $priority = PRIORITY;
 	protected $core;
 
 	protected $admin;
@@ -128,8 +129,28 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
-	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
-		if ( $this->is_theme() && ! $this->validate_single_call( __FUNCTION__, $this, true ) ) {
+	public function set_priority( int $priority ): self {
+		if ( $this->is_setted_up() ) {
+			wpt_die( 'It\'s too late to change the priority since the application has already been setted up.', null, $this->key );
+
+			return $this;
+		}
+
+		$this->priority = $priority;
+
+		return $this;
+	}
+
+	public function get_priority(): int {
+		return $this->priority;
+	}
+
+	public function setup( callable $callback ): self {
+		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
+			return $this;
+		}
+
+		if ( $this->is_theme() ) {
 			add_action(
 				'after_setup_theme',
 				function (): void {
@@ -143,9 +164,13 @@ class App {
 			);
 		}
 
-		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
+		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $this->priority );
 
 		return $this;
+	}
+
+	public function is_setted_up(): bool {
+		return $this->is_single_called( 'setup' );
 	}
 
 	protected function core(): Core {

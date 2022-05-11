@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_14;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ class Template extends Feature {
 	}
 
 	public function set_base_path( string $path ): App {
-		$this->path = $path;
+		$this->set_property( 'path', $path );
 
 		return $this->app;
 	}

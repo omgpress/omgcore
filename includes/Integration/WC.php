@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_13\Integration;
+namespace WP_Titan_1_0_14\Integration;
 
-use WP_Titan_1_0_13\App;
-use const WP_Titan_1_0_13\H_PRIORITY;
-use const WP_Titan_1_0_13\PRIORITY;
+use WP_Titan_1_0_14\App;
+use const WP_Titan_1_0_14\H_PRIORITY;
+use const WP_Titan_1_0_14\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ class WC extends Plugin {
 	}
 
 	public function set_theme_support(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
+		if ( $this->validate_setter() || $this->validate_single_call( __FUNCTION__, $this->app ) ) {
 			return $this->app;
 		}
 
@@ -40,11 +40,12 @@ class WC extends Plugin {
 	}
 
 	public function set_block_support(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
+		if ( $this->validate_setter() ) {
 			return $this->app;
 		}
 
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				if ( ! $this->is_active() ) {
 					return;
