@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_14;
+namespace WP_Titan_1_0_15;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -84,7 +84,7 @@ class Asset extends Feature {
 	}
 
 	protected function get_raw_path( string $path = '' ): string {
-		return $this->dirname . ( $this->dirname ? DIRECTORY_SEPARATOR : '' ) . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+		return $this->dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	public function get_path( string $path = '', bool $raw = false ): string {
@@ -185,7 +185,7 @@ class Asset extends Feature {
 	}
 
 	public function get_script_args_key( string $object_name ): string {
-		return $this->app->get_key( $object_name );
+		return $this->app->get_key( wpt_generate_random_str( 5 ) . '_' . $object_name );
 	}
 
 	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): App {

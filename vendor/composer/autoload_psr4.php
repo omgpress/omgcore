@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WP_Titan_1_0_14\\' => array($baseDir . '/includes'),
+    'WP_Titan_1_0_15\\' => array($baseDir . '/includes'),
 );

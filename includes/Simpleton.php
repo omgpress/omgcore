@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_14;
+namespace WP_Titan_1_0_15;
 
 use ReflectionClass;
 

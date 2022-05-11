@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_14;
+namespace WP_Titan_1_0_15;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,7 +31,6 @@ class App {
 	protected $key;
 	protected $root_file;
 	protected $env;
-	protected $priority = PRIORITY;
 	protected $core;
 
 	protected $admin;
@@ -98,13 +97,13 @@ class App {
 	 *
 	 * It's the namespace that you passed to the `App::get()` method.
 	 */
-	public function get_key( string $slug = '', string $separator = '_' ): string {
-		switch ( $separator ) {
+	public function get_key( string $slug = '', string $case = 'snake' ): string {
+		switch ( $case ) {
 			case 'camel':
 				return $this->str()->to_camelcase( $this->key . ( $slug ? ( '_' . $slug ) : '' ) );
 
 			default:
-			case '_':
+			case 'snake':
 				return $this->key . ( $slug ? ( '_' . $slug ) : '' );
 		}
 	}
@@ -129,23 +128,7 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
-	public function set_priority( int $priority ): self {
-		if ( $this->is_setted_up() ) {
-			wpt_die( 'It\'s too late to change the priority since the application has already been setted up.', null, $this->key );
-
-			return $this;
-		}
-
-		$this->priority = $priority;
-
-		return $this;
-	}
-
-	public function get_priority(): int {
-		return $this->priority;
-	}
-
-	public function setup( callable $callback ): self {
+	public function setup( callable $callback, int $priority = PRIORITY ): self {
 		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
 			return $this;
 		}
@@ -164,7 +147,7 @@ class App {
 			);
 		}
 
-		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $this->priority );
+		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;
 	}

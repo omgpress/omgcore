@@ -4,17 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit_WP_Titan_1_0_14
+class ComposerStaticInit_WP_Titan_1_0_15
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
-            'WP_Titan_1_0_14\\' => 16,
+            'WP_Titan_1_0_15\\' => 16,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_Titan_1_0_14\\' => 
+        'WP_Titan_1_0_15\\' => 
         array (
             0 => __DIR__ . '/../..' . '/includes',
         ),
@@ -22,52 +22,52 @@ class ComposerStaticInit_WP_Titan_1_0_14
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'WP_Titan_1_0_14\\Admin' => __DIR__ . '/../..' . '/includes/Admin.php',
-        'WP_Titan_1_0_14\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Admin/Notice.php',
-        'WP_Titan_1_0_14\\Ajax' => __DIR__ . '/../..' . '/includes/Ajax.php',
-        'WP_Titan_1_0_14\\App' => __DIR__ . '/../..' . '/includes/App.php',
-        'WP_Titan_1_0_14\\Arr' => __DIR__ . '/../..' . '/includes/Arr.php',
-        'WP_Titan_1_0_14\\Asset' => __DIR__ . '/../..' . '/includes/Asset.php',
-        'WP_Titan_1_0_14\\Core' => __DIR__ . '/../..' . '/includes/Core.php',
-        'WP_Titan_1_0_14\\Core\\Asset' => __DIR__ . '/../..' . '/includes/Core/Asset.php',
-        'WP_Titan_1_0_14\\Core\\FS' => __DIR__ . '/../..' . '/includes/Core/FS.php',
-        'WP_Titan_1_0_14\\Core\\Hook' => __DIR__ . '/../..' . '/includes/Core/Hook.php',
-        'WP_Titan_1_0_14\\Customizer' => __DIR__ . '/../..' . '/includes/Customizer.php',
-        'WP_Titan_1_0_14\\Customizer\\Control\\Alpha_Color' => __DIR__ . '/../..' . '/includes/Customizer/Control/Alpha_Color.php',
-        'WP_Titan_1_0_14\\Customizer\\Control\\Line' => __DIR__ . '/../..' . '/includes/Customizer/Control/Line.php',
-        'WP_Titan_1_0_14\\Customizer\\Control\\Notice' => __DIR__ . '/../..' . '/includes/Customizer/Control/Notice.php',
-        'WP_Titan_1_0_14\\Customizer\\Control\\Radio_Image' => __DIR__ . '/../..' . '/includes/Customizer/Control/Radio_Image.php',
-        'WP_Titan_1_0_14\\Customizer\\Section\\Link' => __DIR__ . '/../..' . '/includes/Customizer/Section/Link.php',
-        'WP_Titan_1_0_14\\Debugger' => __DIR__ . '/../..' . '/includes/Debugger.php',
-        'WP_Titan_1_0_14\\FS' => __DIR__ . '/../..' . '/includes/FS.php',
-        'WP_Titan_1_0_14\\Feature' => __DIR__ . '/../..' . '/includes/Feature.php',
-        'WP_Titan_1_0_14\\Helper\\Featured' => __DIR__ . '/../..' . '/includes/Helper/Featured.php',
-        'WP_Titan_1_0_14\\Helper\\Single_Call' => __DIR__ . '/../..' . '/includes/Helper/Single_Call.php',
-        'WP_Titan_1_0_14\\Hook' => __DIR__ . '/../..' . '/includes/Hook.php',
-        'WP_Titan_1_0_14\\Http' => __DIR__ . '/../..' . '/includes/Http.php',
-        'WP_Titan_1_0_14\\I18n' => __DIR__ . '/../..' . '/includes/I18n.php',
-        'WP_Titan_1_0_14\\Integration' => __DIR__ . '/../..' . '/includes/Integration.php',
-        'WP_Titan_1_0_14\\Integration\\ACF' => __DIR__ . '/../..' . '/includes/Integration/ACF.php',
-        'WP_Titan_1_0_14\\Integration\\ACF\\Block_Category' => __DIR__ . '/../..' . '/includes/Integration/ACF/Block_Category.php',
-        'WP_Titan_1_0_14\\Integration\\Plugin' => __DIR__ . '/../..' . '/includes/Integration/Plugin.php',
-        'WP_Titan_1_0_14\\Integration\\Polylang' => __DIR__ . '/../..' . '/includes/Integration/Polylang.php',
-        'WP_Titan_1_0_14\\Integration\\WC' => __DIR__ . '/../..' . '/includes/Integration/WC.php',
-        'WP_Titan_1_0_14\\Integration\\Yoast' => __DIR__ . '/../..' . '/includes/Integration/Yoast.php',
-        'WP_Titan_1_0_14\\Logger' => __DIR__ . '/../..' . '/includes/Logger.php',
-        'WP_Titan_1_0_14\\Nav_Menu' => __DIR__ . '/../..' . '/includes/Nav_Menu.php',
-        'WP_Titan_1_0_14\\Simpleton' => __DIR__ . '/../..' . '/includes/Simpleton.php',
-        'WP_Titan_1_0_14\\Str' => __DIR__ . '/../..' . '/includes/Str.php',
-        'WP_Titan_1_0_14\\Template' => __DIR__ . '/../..' . '/includes/Template.php',
-        'WP_Titan_1_0_14\\Uploader' => __DIR__ . '/../..' . '/includes/Uploader.php',
-        'WP_Titan_1_0_14\\Writer' => __DIR__ . '/../..' . '/includes/Writer.php',
+        'WP_Titan_1_0_15\\Admin' => __DIR__ . '/../..' . '/includes/Admin.php',
+        'WP_Titan_1_0_15\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Admin/Notice.php',
+        'WP_Titan_1_0_15\\Ajax' => __DIR__ . '/../..' . '/includes/Ajax.php',
+        'WP_Titan_1_0_15\\App' => __DIR__ . '/../..' . '/includes/App.php',
+        'WP_Titan_1_0_15\\Arr' => __DIR__ . '/../..' . '/includes/Arr.php',
+        'WP_Titan_1_0_15\\Asset' => __DIR__ . '/../..' . '/includes/Asset.php',
+        'WP_Titan_1_0_15\\Core' => __DIR__ . '/../..' . '/includes/Core.php',
+        'WP_Titan_1_0_15\\Core\\Asset' => __DIR__ . '/../..' . '/includes/Core/Asset.php',
+        'WP_Titan_1_0_15\\Core\\FS' => __DIR__ . '/../..' . '/includes/Core/FS.php',
+        'WP_Titan_1_0_15\\Core\\Hook' => __DIR__ . '/../..' . '/includes/Core/Hook.php',
+        'WP_Titan_1_0_15\\Customizer' => __DIR__ . '/../..' . '/includes/Customizer.php',
+        'WP_Titan_1_0_15\\Customizer\\Control\\Alpha_Color' => __DIR__ . '/../..' . '/includes/Customizer/Control/Alpha_Color.php',
+        'WP_Titan_1_0_15\\Customizer\\Control\\Line' => __DIR__ . '/../..' . '/includes/Customizer/Control/Line.php',
+        'WP_Titan_1_0_15\\Customizer\\Control\\Notice' => __DIR__ . '/../..' . '/includes/Customizer/Control/Notice.php',
+        'WP_Titan_1_0_15\\Customizer\\Control\\Radio_Image' => __DIR__ . '/../..' . '/includes/Customizer/Control/Radio_Image.php',
+        'WP_Titan_1_0_15\\Customizer\\Section\\Link' => __DIR__ . '/../..' . '/includes/Customizer/Section/Link.php',
+        'WP_Titan_1_0_15\\Debugger' => __DIR__ . '/../..' . '/includes/Debugger.php',
+        'WP_Titan_1_0_15\\FS' => __DIR__ . '/../..' . '/includes/FS.php',
+        'WP_Titan_1_0_15\\Feature' => __DIR__ . '/../..' . '/includes/Feature.php',
+        'WP_Titan_1_0_15\\Helper\\Featured' => __DIR__ . '/../..' . '/includes/Helper/Featured.php',
+        'WP_Titan_1_0_15\\Helper\\Single_Call' => __DIR__ . '/../..' . '/includes/Helper/Single_Call.php',
+        'WP_Titan_1_0_15\\Hook' => __DIR__ . '/../..' . '/includes/Hook.php',
+        'WP_Titan_1_0_15\\Http' => __DIR__ . '/../..' . '/includes/Http.php',
+        'WP_Titan_1_0_15\\I18n' => __DIR__ . '/../..' . '/includes/I18n.php',
+        'WP_Titan_1_0_15\\Integration' => __DIR__ . '/../..' . '/includes/Integration.php',
+        'WP_Titan_1_0_15\\Integration\\ACF' => __DIR__ . '/../..' . '/includes/Integration/ACF.php',
+        'WP_Titan_1_0_15\\Integration\\ACF\\Block_Category' => __DIR__ . '/../..' . '/includes/Integration/ACF/Block_Category.php',
+        'WP_Titan_1_0_15\\Integration\\Plugin' => __DIR__ . '/../..' . '/includes/Integration/Plugin.php',
+        'WP_Titan_1_0_15\\Integration\\Polylang' => __DIR__ . '/../..' . '/includes/Integration/Polylang.php',
+        'WP_Titan_1_0_15\\Integration\\WC' => __DIR__ . '/../..' . '/includes/Integration/WC.php',
+        'WP_Titan_1_0_15\\Integration\\Yoast' => __DIR__ . '/../..' . '/includes/Integration/Yoast.php',
+        'WP_Titan_1_0_15\\Logger' => __DIR__ . '/../..' . '/includes/Logger.php',
+        'WP_Titan_1_0_15\\Nav_Menu' => __DIR__ . '/../..' . '/includes/Nav_Menu.php',
+        'WP_Titan_1_0_15\\Simpleton' => __DIR__ . '/../..' . '/includes/Simpleton.php',
+        'WP_Titan_1_0_15\\Str' => __DIR__ . '/../..' . '/includes/Str.php',
+        'WP_Titan_1_0_15\\Template' => __DIR__ . '/../..' . '/includes/Template.php',
+        'WP_Titan_1_0_15\\Uploader' => __DIR__ . '/../..' . '/includes/Uploader.php',
+        'WP_Titan_1_0_15\\Writer' => __DIR__ . '/../..' . '/includes/Writer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit_WP_Titan_1_0_14::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit_WP_Titan_1_0_14::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit_WP_Titan_1_0_14::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit_WP_Titan_1_0_15::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit_WP_Titan_1_0_15::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit_WP_Titan_1_0_15::$classMap;
 
         }, null, ClassLoader::class);
     }
