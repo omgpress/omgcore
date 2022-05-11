@@ -50,7 +50,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-13-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-13-Simpleton.html).
 
 #### Setup.php
 ```php
