@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_12;
+namespace WP_Titan_1_0_13;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,7 +20,7 @@ class Ajax extends Feature {
 	}
 
 	public function get_url( string $action = '' ): string {
-		$url = admin_url( 'admin-ajax.php' );
+		$url = $this->app->admin()->get_url( 'admin-ajax' );
 
 		if ( $action ) {
 			$url = add_query_arg( $url, array( 'action' => $this->app->get_key( $action ) ) );

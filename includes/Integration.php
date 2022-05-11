@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_12;
+namespace WP_Titan_1_0_13;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -44,22 +44,20 @@ class Integration extends Feature {
 
 	/**
 	 * @param string $reference A namespace containing the `Setup` or `Setting` classes, or the fully qualified classname.
-	 * @param string $active_method_name Optional. The name of a method of the reference that returns statement of plugin activation. This piece of logic will be skipped if this method don't exist.
+	 * @param string|null $active_method_name Optional. The name of a method of the reference that returns statement of plugin activation. This piece of logic will be skipped if this method don't exist.
 	 */
-	public function is_active( string $reference, string $active_method_name = 'is_active' ): bool {
-		$reference = "\\$reference";
+	public function is_active( string $reference, ?string $active_method_name = 'is_active' ): bool {
+		if ( class_exists( "$reference\Setting" ) ) {
+			$reference = "$reference\Setting";
 
-		if ( class_exists( "$reference\\Setting", false ) ) {
-			$reference = "$reference\\Setting";
+		} elseif ( class_exists( "$reference\Setup" ) ) {
+			$reference = "$reference\Setup";
 
-		} elseif ( class_exists( "$reference\\Setup", false ) ) {
-			$reference = "$reference\\Setup";
-
-		} elseif ( ! class_exists( $reference, false ) ) {
+		} elseif ( ! class_exists( $reference ) ) {
 			return false;
 		}
 
-		if ( method_exists( $reference, $active_method_name ) ) {
+		if ( $active_method_name && method_exists( $reference, $active_method_name ) ) {
 			return call_user_func( array( $reference, $active_method_name ) );
 		}
 
