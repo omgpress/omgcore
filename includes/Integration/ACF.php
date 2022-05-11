@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_15\Integration;
+namespace WP_Titan_1_0_16\Integration;
 
 defined( 'ABSPATH' ) || exit;
 

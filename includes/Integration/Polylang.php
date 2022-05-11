@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_15\Integration;
+namespace WP_Titan_1_0_16\Integration;
 
-use WP_Titan_1_0_15\App;
-use const WP_Titan_1_0_15\PRIORITY;
+use WP_Titan_1_0_16\App;
+use const WP_Titan_1_0_16\PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 

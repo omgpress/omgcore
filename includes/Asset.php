@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_15;
+namespace WP_Titan_1_0_16;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -144,7 +144,7 @@ class Asset extends Feature {
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
 		if ( $args ) {
-			$args_object_name = $args_object_name ?: $this->app->str()->to_camelcase( $key );
+			$args_object_name = $args_object_name ?: wpt_to_camelcase( $key );
 
 			wp_localize_script( $key, $args_object_name, $args );
 		}
@@ -185,13 +185,13 @@ class Asset extends Feature {
 	}
 
 	public function get_script_args_key( string $object_name ): string {
-		return $this->app->get_key( wpt_generate_random_str( 5 ) . '_' . $object_name );
+		return $this->app->get_key( 'args_object_' . $object_name );
 	}
 
 	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): App {
 		$key = $this->get_script_args_key( $object_name );
 
-		wp_enqueue_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
+		wp_register_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
 		wp_localize_script( $key, $object_name, $args );
 
 		return $this->app;
