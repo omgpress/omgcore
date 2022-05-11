@@ -85,7 +85,7 @@ final class Setup {
 
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
-	// In most cases we call simpleton classes inside the setup action, when the WordPress core is fully loaded.
+    // In most cases we call simpleton classes inside the setup action, when the WordPress core is fully loaded.
     new Cart();
     // new Checkout();
   }
