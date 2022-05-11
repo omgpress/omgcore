@@ -8,7 +8,6 @@ P.S. It's also easy to start using in a live application.
 
 - [System Requirements](#system-requirements)
 - [Installation](#installation)
-- [Initialization](#initialization)
 - [Documentation](#documentation)
 - [Example](#example)
 - [License](#license)
@@ -21,66 +20,41 @@ P.S. It's also easy to start using in a live application.
 ## Installation
 Run the following command in root directory of the application to install using Composer:\
 `composer require dpripa/wp-titan`.\
-Alternatively, you can [download the latest version](https://github.com/dpripa/wp-titan/releases) directly and place unarchived folder in the root directory of the application.
-
-## Initialization
-To initialize WP Titan for your application use the following reference code to configure your plugin or theme main file (index.php, functions.php, etc.).
-```php
-require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
-
-// Always be sure that the WP Titan namespace matches the installed version of the library.
-// This is because other plugin and theme may use a different version.
-// For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_0_9\App as App;
-
-// Define a function that returns the singleton instance of WP Titan for your application.
-function app(): App {
-  return App::get(
-    'my_plugin', // Enter the unique key to WP Titan instance as namespace of your application.
-    __FILE__ // The main (root) file of your plugin or theme, leave it as is.
-  );
-}
-```
+Alternatively, you can [download the latest release](https://github.com/dpripa/wp-titan/releases/latest) directly and place unarchived folder in the root directory of the application.
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-9-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-0-13-App.html) of the library.
 
 ## Example
-The following is a simple example when WP Titan is used in the plugin environment.\
-Don't worry, for the theme all is the same. WP Titan auto-detects your application environment and provides a universal API.
+The following is a simple example when WP Titan is used. It doesn't matter which environment (plugin or theme) you run this code in, WP Titan automatically detects your app's environment and provides a universal API.
 
-#### index.php
+#### Root File (index.php / functions.php)
 ```php
-/**
- * Plugin Name: My Plugin
- * Plugin URI:  https://wordpress.org
- * Description: Just my plugin.
- * Version:     1.0.0
- * Author:      Some Dude
- * Author URI:  https://wordpress.org
- */
-
-namespace My_Plugin;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/vendor/dpripa/wp-titan/index.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WP_Titan_1_0_9\App as App;
+// Always be sure that the WP Titan namespace matches the installed version of the library.
+// This is because other plugin and theme may use a different version.
+// For example, where 'WP_Titan_x_x_x' version is x.x.x.
+use WP_Titan_1_0_13\App as App;
 
+// Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
-  return App::get( 'my_plugin', __FILE__ );
+  return App::get( __NAMESPACE__, __FILE__ );
 }
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-9-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern for the WordPress based applications provided by WP Titan. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-13-Simpleton.html).
 
 #### Setup.php
 ```php
-namespace My_Plugin;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -93,15 +67,17 @@ final class Setup {
 
     app()->i18n()->setup()
       ->admin()->notice()->setup()
-      // Optional. You can call the following method on a theme environment:
-      // ->set_theme_support()
       ->add_setup_action( array( $this, 'setup' ) );
+
+    // The simpleton classes can be called earlier if necessary for the application logic.
+    // For example, it could be database initialization logic:
+    // new DB();
   }
 
   public function setup(): void {
     if ( ! app()->integration()->wc()->is_active() ) {
       app()->admin()->notice()->render(
-        app()->i18n()->__( 'My Plugin require WooCommerce.' )
+        app()->i18n()->__( 'My App require WooCommerce.' )
       );
 
       return;
@@ -109,9 +85,9 @@ final class Setup {
 
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
+	// In most cases we call simpleton classes inside the setup action, when the WordPress core is fully loaded.
     new Cart();
-    new Checkout();
-    // ... other parts of logic.
+    // new Checkout();
   }
 
   public function enqueue_assets(): void {
@@ -123,7 +99,7 @@ final class Setup {
 
 #### Cart.php
 ```php
-namespace My_Plugin;
+namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 

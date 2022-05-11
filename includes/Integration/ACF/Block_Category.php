@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_9\Integration\ACF;
+namespace WP_Titan_1_0_13\Integration\ACF;
 
-use WP_Titan_1_0_9\App;
-use WP_Titan_1_0_9\Feature;
+use WP_Titan_1_0_13\App;
+use WP_Titan_1_0_13\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ class Block_Category extends Feature {
 	public function add( string $category, string $path, string $title ): App {
 		if ( function_exists( 'acf_register_block_type' ) && function_exists( 'register_block_type' ) ) {
 			$this->add_category( $category, $title );
-			$this->add_blocks_autoloader( $category, $path );
+			$this->add_template_autoloader( $category, $path );
 		}
 
 		return $this->app;
@@ -45,51 +45,55 @@ class Block_Category extends Feature {
 		);
 	}
 
-	protected function add_blocks_autoloader( string $category, string $path ): void {
+	protected function add_template_autoloader( string $category, string $path ): void {
 		add_action(
 			'acf/init',
 			function() use ( $category, $path ): void {
 				$dir = $this->app->fs()->get_path( $path );
 
-				if ( file_exists( $dir ) ) {
-					$dir_iterator = new \DirectoryIterator( $dir );
+				if ( ! file_exists( $dir ) ) {
+					return;
+				}
 
-					foreach ( $dir_iterator as $fileinfo ) {
-						if ( ! $fileinfo->isDot() ) {
-							$slug = str_replace( '.php', '', $fileinfo->getFilename() );
+				$dir_iterator = new \DirectoryIterator( $dir );
 
-							$file_headers = get_file_data(
-								$this->app->fs()->get_path( "${path}/${slug}.php" ),
-								array(
-									'name'        => 'Block Name',
-									'description' => 'Block Description',
-									'icon'        => 'Block Icon',
-									'keywords'    => 'Block Keywords',
-									'post_types'  => 'Block Post Types',
-								)
-							);
-
-							acf_register_block_type(
-								array(
-									'name'            => $slug,
-									'title'           => esc_html__( $file_headers['name'], $this->app->get_key() ), // phpcs:ignore
-									'description'     => esc_html__( $file_headers['description'], $this->app->get_key() ), // phpcs:ignore
-									'category'        => $this->app->get_key( $category ),
-									'icon'            => $file_headers['icon'],
-									'keywords'        => explode( ', ', $file_headers['keywords'] ),
-									'post_types'      => explode( ', ', trim( $file_headers['post_types'] ) ),
-									'mode'            => 'edit',
-									'supports'        => array(
-										'mode'  => false,
-										'align' => false,
-									),
-									'render_callback' => function ( array &$args ) use ( $path, $slug ) {
-										require_once $this->app->fs()->get_path( "${path}/${slug}.php" );
-									},
-								)
-							);
-						}
+				foreach ( $dir_iterator as $file ) {
+					if ( $file->isDot() ) {
+						continue;
 					}
+
+					$slug = str_replace( '.php', '', $file->getFilename() );
+
+					$file_headers = get_file_data(
+						$this->app->fs()->get_path( "${path}/${slug}.php" ),
+						array(
+							'name'        => 'Block Name',
+							'description' => 'Block Description',
+							'icon'        => 'Block Icon',
+							'keywords'    => 'Block Keywords',
+							'post_types'  => 'Block Post Types',
+						)
+					);
+
+					acf_register_block_type(
+						array(
+							'name'            => $slug,
+							'title'           => esc_html__( $file_headers['name'], $this->app->get_key() ), // phpcs:ignore
+							'description'     => esc_html__( $file_headers['description'], $this->app->get_key() ), // phpcs:ignore
+							'category'        => $this->app->get_key( $category ),
+							'icon'            => $file_headers['icon'],
+							'keywords'        => explode( ', ', $file_headers['keywords'] ),
+							'post_types'      => explode( ', ', trim( $file_headers['post_types'] ) ),
+							'mode'            => 'edit',
+							'supports'        => array(
+								'mode'  => false,
+								'align' => false,
+							),
+							'render_callback' => function ( array &$args ) use ( $path, $slug ) {
+								require_once $this->app->fs()->get_path( "${path}/${slug}.php" );
+							},
+						)
+					);
 				}
 			}
 		);

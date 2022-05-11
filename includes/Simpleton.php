@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9;
+namespace WP_Titan_1_0_13;
 
 use ReflectionClass;
 
@@ -26,12 +26,12 @@ class Simpleton extends Feature {
 	 *
 	 * To declare current class as simpleton, just paste the following code at the beginning of the class constructor:
 	 * ```php
-	 * if ( wpt()->simpleton()->validate( self::class ) ) {
+	 * if ( app()->simpleton()->validate( self::class ) ) {
 	 *   return;
 	 * }
 	 * ```
 	 *
-	 * @param bool $is_extendable
+	 * @param bool $is_extendable Is current class extendable. Default is `false` because in most cases' simpleton class isn't extended-friendly and should be `final`.
 	 */
 	public function validate( string $classname, bool $is_extendable = false ): bool {
 		$has_instance = in_array( $classname, array_keys( $this->instances ), true );
@@ -41,7 +41,7 @@ class Simpleton extends Feature {
 			'is_extendable' => $is_extendable,
 		);
 
-		if ( $this->app->debugger()->is_enabled() ) {
+		if ( wpt_is_debug_enabled() ) {
 			if ( ! $is_extendable ) {
 				$reflection = new ReflectionClass( $classname );
 

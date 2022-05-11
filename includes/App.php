@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9;
+namespace WP_Titan_1_0_13;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,7 +10,8 @@ defined( 'ABSPATH' ) || exit;
  * ### Getting Started
  * A method that returns instance of a class that extends the `Feature` class is a specific feature, such as helpers, managers, etc.\
  * Of course, a feature contains its own methods and may also contain its own sub-features.\
- * Don't worry about optimization, each feature (and sub-feature) will be initialized only by the first call to its method.
+ * Don't worry about optimization, each feature (and sub-feature) will be initialized only by the first call to its method.\
+ * <a href="https://github.com/dpripa/wp-titan#example" target="_blank">Explore an example</a> of the WP Titan usage for more details.
  *
  * ### Setup Methods
  * Some features have `::setup()` method. Calling of this method is __required__ when you want to start use this feature.\
@@ -25,7 +26,7 @@ class App {
 	use Helper\Featured;
 	use Helper\Single_Call;
 
-	protected static $instances = array();
+	protected static $namespaces = array();
 
 	protected $key;
 	protected $root_file;
@@ -78,25 +79,24 @@ class App {
 	/**
 	 * Get the singleton instance of WP Titan for your application.
 	 *
-	 * @param string $key A unique key to WP Titan instance as namespace of your application.
-	 * @param string $root_file The main (root) file of your plugin or theme. Pass `__FILE__` on initial call.
+	 * @param string $namespace The namespace of your application to be used as the key of WP Titan instance.
 	 */
-	public static function get( string $key, string $root_file = '' ): App {
-		if ( empty( self::$instances[ $key ] ) ) {
+	public static function get( string $namespace, string $root_file = '' ): self {
+		if ( empty( self::$namespaces[ $namespace ] ) ) {
 			if ( empty( $root_file ) ) {
-				wpt_die( 'Application root file required on initial call.', null, $key );
+				wpt_die( 'Application root file is required on initial call.', null, $namespace );
 			}
 
-			self::$instances[ $key ] = new self( $key, $root_file );
+			self::$namespaces[ $namespace ] = new self( $namespace, $root_file );
 		}
 
-		return self::$instances[ $key ];
+		return self::$namespaces[ $namespace ];
 	}
 
 	/**
 	 * Get the key for the application.
 	 *
-	 * It's the same key that you passed to the `::get_instance()` method.
+	 * It's the namespace that you passed to the `App::get()` method.
 	 */
 	public function get_key( string $slug = '', string $separator = '_' ): string {
 		switch ( $separator ) {
@@ -129,27 +129,21 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
-	public function set_theme_support(): self {
-		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
-			return $this;
+	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
+		if ( $this->is_theme() && ! $this->validate_single_call( __FUNCTION__, $this, true ) ) {
+			add_action(
+				'after_setup_theme',
+				function (): void {
+					add_theme_support( 'title-tag' );
+					add_theme_support( 'automatic-feed-links' );
+					add_theme_support( 'post-thumbnails' );
+					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
+					add_theme_support( 'customize-selective-refresh-widgets' );
+				},
+				H_PRIORITY
+			);
 		}
 
-		add_action(
-			'after_setup_theme',
-			function (): void {
-				add_theme_support( 'title-tag' );
-				add_theme_support( 'automatic-feed-links' );
-				add_theme_support( 'post-thumbnails' );
-				add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
-				add_theme_support( 'customize-selective-refresh-widgets' );
-			},
-			H_PRIORITY
-		);
-
-		return $this;
-	}
-
-	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
 		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;

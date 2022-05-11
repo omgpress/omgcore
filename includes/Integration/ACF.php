@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_9\Integration;
+namespace WP_Titan_1_0_13\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,14 +15,14 @@ class ACF extends Plugin {
 	 * Is ACF or ACF Pro active.
 	 */
 	public function is_active(): bool {
-		return class_exists( 'ACF' );
+		return class_exists( 'ACF', false );
 	}
 
 	/**
 	 * Is ACF Pro active.
 	 */
 	public function is_active_pro(): bool {
-		return class_exists( 'acf_pro' );
+		return class_exists( 'acf_pro', false );
 	}
 
 	/**
