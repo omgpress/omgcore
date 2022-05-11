@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -116,7 +116,7 @@ class Str extends Feature {
 
 		if ( $args['html'] ) {
 			foreach ( $open_tags as $tag ) {
-				$truncate .= '</' . $tag . '>';
+				$truncate .= "</$tag>";
 			}
 		}
 

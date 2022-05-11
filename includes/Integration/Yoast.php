@@ -1,8 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_16\Integration;
+namespace WP_Titan_1_0_17\Integration;
 
-use WP_Titan_1_0_16\App;
+use WP_Titan_1_0_17\App;
 
 defined( 'ABSPATH' ) || exit;
 

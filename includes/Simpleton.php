@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 use ReflectionClass;
 
@@ -46,20 +46,12 @@ class Simpleton extends Feature {
 				$reflection = new ReflectionClass( $classname );
 
 				if ( ! $reflection->isFinal() ) {
-					wpt_die(
-						'Simpleton class <code>' . $classname . '</code> must be final.',
-						'Not final Simpleton class found',
-						$this->app->get_key()
-					);
+					wpt_die( "Simpleton class <code>$classname</code> must be final.", null, $this->app->get_key() );
 				}
 			}
 
 			if ( $has_instance ) {
-				wpt_die(
-					'Simpleton class <code>' . $classname . '</code> must have just one instance call.',
-					'Duplicate Simpleton class instance found',
-					$this->app->get_key()
-				);
+				wpt_die( "Simpleton class <code>$classname</code> must have just one instance call.", null, $this->app->get_key() );
 			}
 		}
 

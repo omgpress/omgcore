@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +26,7 @@ class App {
 	use Helper\Featured;
 	use Helper\Single_Call;
 
-	protected static $namespaces = array();
+	protected static $instances = array();
 
 	protected $key;
 	protected $root_file;
@@ -78,33 +78,32 @@ class App {
 	/**
 	 * Get the singleton instance of WP Titan for your application.
 	 *
-	 * @param string $namespace The namespace of your application to be used as the key of WP Titan instance.
+	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant. Be careful when changing this parameter in a live application because it'll just become a new clean application.
+	 * @param string $root_file Required only on initial call. Use the `__FILE__` constant of the application's root file (index.php / functions.php).
 	 */
-	public static function get( string $namespace, string $root_file = '' ): self {
-		if ( empty( self::$namespaces[ $namespace ] ) ) {
+	public static function get( string $key, string $root_file = '' ): self {
+		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				wpt_die( 'Application root file is required on initial call.', null, $namespace );
+				wpt_die( 'Application root file is required on initial call.', null, $key );
 			}
 
-			self::$namespaces[ $namespace ] = new self( $namespace, $root_file );
+			self::$instances[ $key ] = new self( $key, $root_file );
 		}
 
-		return self::$namespaces[ $namespace ];
+		return self::$instances[ $key ];
 	}
 
 	/**
-	 * Get the key for the application.
-	 *
-	 * It's the namespace that you passed to the `App::get()` method.
+	 * Get the application key.
 	 */
 	public function get_key( string $slug = '', string $case = 'snake' ): string {
 		switch ( $case ) {
 			case 'camel':
-				return $this->str()->to_camelcase( $this->key . ( $slug ? ( '_' . $slug ) : '' ) );
+				return $this->str()->to_camelcase( $this->key . ( $slug ? ( "_$slug" ) : '' ) );
 
 			default:
 			case 'snake':
-				return $this->key . ( $slug ? ( '_' . $slug ) : '' );
+				return $this->key . ( $slug ? ( "_$slug" ) : '' );
 		}
 	}
 
@@ -128,6 +127,9 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
+	/**
+	 * Call the application setup action.
+	 */
 	public function setup( callable $callback, int $priority = PRIORITY ): self {
 		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
 			return $this;
@@ -152,7 +154,10 @@ class App {
 		return $this;
 	}
 
-	public function is_setted_up(): bool {
+	/**
+	 * Is the setup action complete.
+	 */
+	public function is_setup_complete(): bool {
 		return $this->is_single_called( 'setup' );
 	}
 

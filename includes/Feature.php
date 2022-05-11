@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,45 +17,41 @@ abstract class Feature {
 		$this->core = $core;
 	}
 
-	protected function set_property( $property, $value ): void {
-		if ( $this->validate_setter() ) {
-			return;
-		}
+	protected function set_property( string $property, /* mixed */ $value ): void {
+		$this->validate_setter();
 
 		$this->$property = $value;
 	}
 
-	protected function get_property( $property ) /* mixed */ {
-		if ( $this->validate_setup() ) {
-			return null;
-		}
+	protected function get_property( string $property ) /* mixed */ {
+		$this->validate_setup();
 
 		return $this->$property;
 	}
 
 	protected function validate_setter(): bool {
-		$classname        = static::class;
-		$is_setted_up     = $this->is_single_called( 'setup' );
-		$is_app_setted_up = $this->app->is_setted_up();
+		$classname             = static::class;
+		$is_app_setup_complete = $this->app->is_setup_complete();
+		$is_setup_complete     = $this->is_single_called( 'setup' );
 
-		if ( ( $is_setted_up || $is_app_setted_up ) && wpt_is_debug_enabled() ) {
-			$trigger = $is_app_setted_up ? 'application' : 'feature';
+		if ( ( $is_app_setup_complete || $is_setup_complete ) && wpt_is_debug_enabled() ) {
+			$trigger = $is_app_setup_complete ? 'application' : 'feature';
 
-			wpt_die( "It's too late to change something in the <code>$classname</code> since the $trigger has already been setted up.", null, $this->app->get_key() );
+			wpt_die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete.", null, $this->app->get_key() );
 		}
 
-		return $is_setted_up || $is_app_setted_up;
+		return $is_setup_complete || $is_app_setup_complete;
 	}
 
 	protected function validate_setup(): bool {
-		$classname = static::class;
-		$not_setup = ! $this->is_single_called( 'setup' );
+		$classname         = static::class;
+		$is_setup_complete = $this->is_single_called( 'setup' );
 
-		if ( $not_setup && wpt_is_debug_enabled() ) {
+		if ( ! $is_setup_complete && wpt_is_debug_enabled() ) {
 			wpt_die( "Need to setup the <code>$classname</code> feature first.", null, $this->app->get_key() );
 		}
 
-		return $not_setup;
+		return ! $is_setup_complete;
 	}
 
 	protected function is_theme(): bool {
@@ -63,6 +59,12 @@ abstract class Feature {
 	}
 
 	protected function add_setup_action( string $function, callable $callback, int $priority = H_PRIORITY ): void {
+		if ( $this->app->is_setup_complete() && wpt_is_debug_enabled() ) {
+			$classname = static::class;
+
+			wpt_die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete.", null, $this->app->get_key() );
+		}
+
 		if ( $this->validate_single_call( $function, $this->app ) ) {
 			return;
 		}

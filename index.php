@@ -1,25 +1,25 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WP_Titan_1_0_16\App' ) ) {
-	define( 'WP_Titan_1_0_16\ROOT_FILE', __FILE__ );
-	define( 'WP_Titan_1_0_16\PRIORITY', 10 );
-	define( 'WP_Titan_1_0_16\H_PRIORITY', 1 );
-	define( 'WP_Titan_1_0_16\L_PRIORITY', 999999 );
+if ( ! class_exists( 'WP_Titan_1_0_17\App' ) ) {
+	define( 'WP_Titan_1_0_17\ROOT_FILE', __FILE__ );
+	define( 'WP_Titan_1_0_17\PRIORITY', 10 );
+	define( 'WP_Titan_1_0_17\H_PRIORITY', 1 );
+	define( 'WP_Titan_1_0_17\L_PRIORITY', 999999 );
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_16\wpt_is_debug_enabled' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_17\wpt_is_debug_enabled' ) ) {
 	function wpt_is_debug_enabled(): bool {
 		return defined( 'WP_DEBUG' ) && WP_DEBUG;
 	}
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_16\wpt_to_camelcase' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_17\wpt_to_camelcase' ) ) {
 	function wpt_to_camelcase( string $text, string $separator = '_' ): string {
 		return array_reduce(
 			explode( $separator, $text ),
@@ -31,8 +31,8 @@ if ( ! function_exists( 'WP_Titan_1_0_16\wpt_to_camelcase' ) ) {
 	}
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_16\wpt_generate_random_str' ) ) {
-	function wpt_generate_random_str( int $length = 64, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
+if ( ! function_exists( 'WP_Titan_1_0_17\wpt_generate_random_str' ) ) {
+	function wpt_generate_random_str( int $length = 16, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
 		$pieces = array();
 		$max    = mb_strlen( $keyspace, '8bit' ) - 1;
 
@@ -44,7 +44,7 @@ if ( ! function_exists( 'WP_Titan_1_0_16\wpt_generate_random_str' ) ) {
 	}
 }
 
-if ( ! function_exists( 'WP_Titan_1_0_16\wpt_die' ) ) {
+if ( ! function_exists( 'WP_Titan_1_0_17\wpt_die' ) ) {
 	function wpt_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, string $footer_text = '' ): void {
 		global $wp_query;
 

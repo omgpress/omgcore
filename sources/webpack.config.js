@@ -1,5 +1,5 @@
 const fs = require( 'fs' );
-const config = fs.existsSync( './config.json' ) ? require( './config' ) : require( './config-sample' );
+const config = fs.existsSync( './config.json' ) ? require( './config' ) : require( './config-default' );
 const entry = require( './entry' );
 const path = require( 'path' );
 const Webpack = require( 'webpack' );
@@ -85,7 +85,15 @@ if ( isDev ) {
 				path.resolve( __dirname, '../**/*.php' )
 			],
 			port: config.browsersync.port,
-			proxy: config.browsersync.proxy,
+			proxy: {
+				target: config.browsersync.proxy,
+				proxyReq: [
+					function( proxyReq ) {
+						proxyReq.setHeader( 'X-Webpack-Dev-Server', 'yes' );
+						proxyReq.setHeader( 'X-Webpack-Dev-Server-Base-URL', config.browsersync.proxy );
+					}
+				]
+			},
 			open: false,
 			ui: false,
 			ghostMode: false

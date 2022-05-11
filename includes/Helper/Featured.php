@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_16\Helper;
+namespace WP_Titan_1_0_17\Helper;
 
-use WP_Titan_1_0_16\App;
-use WP_Titan_1_0_16\Core;
+use WP_Titan_1_0_17\App;
+use WP_Titan_1_0_17\Core;
 
 defined( 'ABSPATH' ) || exit;
 

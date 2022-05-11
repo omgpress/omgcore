@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -178,14 +178,14 @@ class Asset extends Feature {
 				$css_vars .= '--' . str_replace( '_', '-', $this->app->get_key( $var_slug ) ) . ':' . $var_val . ';';
 			}
 
-			wp_add_inline_style( $key, $css_vars . '}' );
+			wp_add_inline_style( $key, "$css_vars}" );
 		}
 
 		return $this->app;
 	}
 
 	public function get_script_args_key( string $object_name ): string {
-		return $this->app->get_key( 'args_object_' . $object_name );
+		return $this->app->get_key( "args_object_$object_name" );
 	}
 
 	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): App {

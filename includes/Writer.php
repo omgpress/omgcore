@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -54,11 +54,11 @@ class Writer extends Feature {
 
 		mkdir( $path, 0755, true );
 
-		if ( ! $private || file_exists( $path . '.htaccess' ) ) {
+		if ( ! $private || file_exists( "$path.htaccess" ) ) {
 			return;
 		}
 
-		$htaccess = fopen( $path . '.htaccess', 'w' ); // phpcs:ignore
+		$htaccess = fopen( "$path.htaccess", 'w' ); // phpcs:ignore
 
 		fwrite( $htaccess, 'deny from all' ); // phpcs:ignore
 		fclose( $htaccess ); // phpcs:ignore

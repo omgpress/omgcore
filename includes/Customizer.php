@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_16;
+namespace WP_Titan_1_0_17;
 
-use WP_Titan_1_0_16\Customizer\Section;
-use WP_Titan_1_0_16\Customizer\Control;
+use WP_Titan_1_0_17\Customizer\Section;
+use WP_Titan_1_0_17\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,7 +35,7 @@ class Customizer extends Feature {
 	protected $default_control_args = array();
 
 	protected function get_key( string $slug ): string {
-		return $this->app->get_key( 'customizer_' . $slug );
+		return $this->app->get_key( "customizer_$slug" );
 	}
 
 	public function add_panel( string $panel, array $args, ?string $panel_class = null ): App {
@@ -94,7 +94,7 @@ class Customizer extends Feature {
 			return $this->app;
 		}
 
-		$key = $this->get_key( $section . '_' . $setting );
+		$key = $this->get_key( "{$section}_$setting" );
 
 		if ( isset( $args['default'] ) ) {
 			$this->settings[ $section ][ $setting ]['default'] = $args['default'];
@@ -132,7 +132,7 @@ class Customizer extends Feature {
 	public function get_setting( string $setting, string $section ) /* mixed */ {
 		$this->validate_setup();
 
-		$key = $this->get_key( $section . '_' . $setting );
+		$key = $this->get_key( "{$section}_$setting" );
 
 		return get_option( $key, $this->settings[ $section ][ $setting ]['default'] ?? false );
 	}
