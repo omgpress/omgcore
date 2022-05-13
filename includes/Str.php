@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,11 +10,11 @@ defined( 'ABSPATH' ) || exit;
 class Str extends Feature {
 
 	public function to_camelcase( string $text, string $separator = '_' ): string {
-		return wpt_to_camelcase( $text, $separator );
+		return to_camelcase( $text, $separator );
 	}
 
 	public function generate_random( int $length = 64, string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ): string {
-		return wpt_generate_random_str( $length, $keyspace );
+		return generate_random_str( $length, $keyspace );
 	}
 
 	public function truncate( string $string, int $length = 100, array $args = array() ): string {

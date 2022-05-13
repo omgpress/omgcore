@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,6 +33,9 @@ class App {
 	protected $env;
 	protected $core;
 
+	protected $requires_wp  = '5.0.0';
+	protected $requires_php = '7.2.0';
+
 	protected $admin;
 	protected $ajax;
 	protected $arr;
@@ -43,6 +46,7 @@ class App {
 	protected $hook;
 	protected $http;
 	protected $i18n;
+	protected $info;
 	protected $integration;
 	protected $logger;
 	protected $nav_menu;
@@ -64,7 +68,19 @@ class App {
 		$this->env       = $is_theme ? 'theme' : 'plugin';
 
 		if ( ! $is_theme && ! $is_plugin ) {
-			wpt_die( 'Wrong application root file.', null, $key );
+			_die( 'Wrong application root file.', null, $key );
+		}
+
+		$app_requires_wp = $this->info()->get_requires_wp();
+
+		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '<=' ) ) {
+			_die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement.", null, $key );
+		}
+
+		$app_requires_php = $this->info()->get_requires_php();
+
+		if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '<=' ) ) {
+			_die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement.", null, $key );
 		}
 	}
 
@@ -72,19 +88,19 @@ class App {
 
 	/** @ignore */
 	public function __wakeup() {
-		wpt_die( 'Cannot unserialize a singleton.', null, $this->key );
+		_die( 'Cannot unserialize a singleton.', null, $this->key );
 	}
 
 	/**
 	 * Get the singleton instance of WP Titan for your application.
 	 *
-	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant. Be careful when changing this parameter in a live application because it'll just become a new clean application.
+	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant on initial call. Be careful when changing this parameter in a live application because it'll make the application as new to the environment.
 	 * @param string $root_file Required only on initial call. Use the `__FILE__` constant of the application's root file (index.php / functions.php).
 	 */
 	public static function get( string $key, string $root_file = '' ): self {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				wpt_die( 'Application root file is required on initial call.', null, $key );
+				_die( 'Application root file is required on initial call.', null, $key );
 			}
 
 			self::$instances[ $key ] = new self( $key, $root_file );
@@ -130,7 +146,7 @@ class App {
 	/**
 	 * Call the application setup action.
 	 */
-	public function setup( callable $callback, int $priority = PRIORITY ): self {
+	public function setup( callable $callback, int $priority = DEFAULT_PRIORITY ): self {
 		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
 			return $this;
 		}
@@ -145,7 +161,7 @@ class App {
 					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
 					add_theme_support( 'customize-selective-refresh-widgets' );
 				},
-				H_PRIORITY
+				HIGH_PRIORITY
 			);
 		}
 
@@ -237,6 +253,13 @@ class App {
 	 */
 	public function i18n(): I18n {
 		return $this->get_feature( $this, $this->core(), 'i18n', I18n::class );
+	}
+
+	/**
+	 *  Information from the application metadata.
+	 */
+	public function info(): Info {
+		return $this->get_feature( $this, $this->core(), 'info', Info::class );
 	}
 
 	/**

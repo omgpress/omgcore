@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -36,7 +36,7 @@ class Template extends Feature {
 			$this->render( $name, $args );
 
 		} else {
-			include $this->app->fs()->get_path( $this->path . DIRECTORY_SEPARATOR . $name . '.php' );
+			include $this->get_path( "$name.php" );
 		}
 
 		return ob_get_clean();

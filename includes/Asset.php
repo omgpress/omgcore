@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -144,7 +144,7 @@ class Asset extends Feature {
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
 		if ( $args ) {
-			$args_object_name = $args_object_name ?: wpt_to_camelcase( $key );
+			$args_object_name = $args_object_name ?: to_camelcase( $key );
 
 			wp_localize_script( $key, $args_object_name, $args );
 		}

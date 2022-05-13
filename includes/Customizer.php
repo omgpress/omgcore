@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
-use WP_Titan_1_0_17\Customizer\Section;
-use WP_Titan_1_0_17\Customizer\Control;
+use WP_Titan_1_0_18\Customizer\Section;
+use WP_Titan_1_0_18\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -77,8 +77,8 @@ class Customizer extends Feature {
 				if ( $section_class ) {
 					$wp_customize->add_section( new $section_class( $wp_customize, $key, $args ) );
 
-				} elseif ( isset( $args['wpt_type'] ) && in_array( $args['wpt_type'], array_keys( $this->extended_sections ), true ) ) {
-					$wp_customize->add_section( new $this->extended_sections[ $args['wpt_type'] ]( $wp_customize, $key, $args ) );
+				} elseif ( isset( $args['type'] ) && in_array( $args['type'], array_keys( $this->extended_sections ), true ) ) {
+					$wp_customize->add_section( new $this->extended_sections[ $args['type'] ]( $wp_customize, $key, $args ) );
 
 				} else {
 					$wp_customize->add_section( $key, $args );
@@ -90,10 +90,6 @@ class Customizer extends Feature {
 	}
 
 	public function add_setting( string $setting, string $section, array $args, array $control_args, ?string $control_class = null ): App {
-		if ( $this->validate_setup() ) {
-			return $this->app;
-		}
-
 		$key = $this->get_key( "{$section}_$setting" );
 
 		if ( isset( $args['default'] ) ) {
@@ -102,6 +98,10 @@ class Customizer extends Feature {
 
 		if ( isset( $args['type'] ) ) {
 			$this->settings[ $section ][ $setting ]['type'] = $args['type'];
+		}
+
+		if ( $this->validate_setup() ) {
+			return $this->app;
 		}
 
 		$args         = wp_parse_args( $args, $this->default_setting_args );
@@ -117,8 +117,8 @@ class Customizer extends Feature {
 				if ( $control_class ) {
 					$wp_customize->add_control( new $control_class( $wp_customize, $key, $control_args ) );
 
-				} elseif ( isset( $control_args['wpt_type'] ) && in_array( $control_args['wpt_type'], array_keys( $this->extended_controls ), true ) ) {
-					$wp_customize->add_control( new $this->extended_controls[ $control_args['wpt_type'] ]( $wp_customize, $key, $control_args ) );
+				} elseif ( isset( $control_args['type'] ) && in_array( $control_args['type'], array_keys( $this->extended_controls ), true ) ) {
+					$wp_customize->add_control( new $this->extended_controls[ $control_args['type'] ]( $wp_customize, $key, $control_args ) );
 
 				} else {
 					$wp_customize->add_control( $key, $control_args );

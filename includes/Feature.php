@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_17;
+namespace WP_Titan_1_0_18;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,10 +34,10 @@ abstract class Feature {
 		$is_app_setup_complete = $this->app->is_setup_complete();
 		$is_setup_complete     = $this->is_single_called( 'setup' );
 
-		if ( ( $is_app_setup_complete || $is_setup_complete ) && wpt_is_debug_enabled() ) {
+		if ( ( $is_app_setup_complete || $is_setup_complete ) && is_debug_enabled() ) {
 			$trigger = $is_app_setup_complete ? 'application' : 'feature';
 
-			wpt_die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete.", null, $this->app->get_key() );
+			_die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete.", null, $this->app->get_key() );
 		}
 
 		return $is_setup_complete || $is_app_setup_complete;
@@ -47,8 +47,8 @@ abstract class Feature {
 		$classname         = static::class;
 		$is_setup_complete = $this->is_single_called( 'setup' );
 
-		if ( ! $is_setup_complete && wpt_is_debug_enabled() ) {
-			wpt_die( "Need to setup the <code>$classname</code> feature first.", null, $this->app->get_key() );
+		if ( ! $is_setup_complete && is_debug_enabled() ) {
+			_die( "Need to setup the <code>$classname</code> feature first.", null, $this->app->get_key() );
 		}
 
 		return ! $is_setup_complete;
@@ -58,11 +58,11 @@ abstract class Feature {
 		return 'theme' === $this->app->get_env();
 	}
 
-	protected function add_setup_action( string $function, callable $callback, int $priority = H_PRIORITY ): void {
-		if ( $this->app->is_setup_complete() && wpt_is_debug_enabled() ) {
+	protected function add_setup_action( string $function, callable $callback, int $priority = HIGH_PRIORITY ): void {
+		if ( $this->app->is_setup_complete() && is_debug_enabled() ) {
 			$classname = static::class;
 
-			wpt_die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete.", null, $this->app->get_key() );
+			_die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete.", null, $this->app->get_key() );
 		}
 
 		if ( $this->validate_single_call( $function, $this->app ) ) {
