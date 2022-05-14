@@ -1,16 +1,16 @@
 <?php
 
-namespace WP_Titan_1_0_18;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manage Ajax actions.
+ * Manage ajax actions.
  */
 class Ajax extends Feature {
 
 	/**
-	 * Add a callback function for an Ajax action.
+	 * Add a callback function for an ajax action.
 	 */
 	public function add_action( string $action, callable $callback ): App {
 		$key = $this->app->get_key( $action );

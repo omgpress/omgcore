@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_18;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,13 +31,20 @@ class Info extends Feature {
 		'requires_php' => 'Requires PHP',
 	);
 
+	/** @ignore */
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
 		if ( $this->is_theme() ) {
+			$this->headers['name'] = 'Theme Name';
+			$this->headers['url']  = 'Theme URI';
+
 			$info = $this->get_theme_data();
 
 		} else {
+			$this->headers['name'] = 'Plugin Name';
+			$this->headers['url']  = 'Plugin URI';
+
 			$info = $this->get_plugin_data();
 		}
 
@@ -49,8 +56,8 @@ class Info extends Feature {
 		$this->author_url   = $info['author_url'];
 		$this->textdomain   = $info['textdomain'];
 		$this->domain_path  = $info['domain_path'];
-		$this->requires_php = $info['requires_wp'];
-		$this->requires_wp  = $info['requires_php'];
+		$this->requires_wp  = $info['requires_wp'];
+		$this->requires_php = $info['requires_php'];
 	}
 
 	public function get_name(): string {
@@ -94,9 +101,6 @@ class Info extends Feature {
 	}
 
 	protected function get_plugin_data(): array {
-		$this->headers['name'] = 'Plugin Name';
-		$this->headers['url']  = 'Plugin URI';
-
 		return get_file_data(
 			$this->app->get_root_file(),
 			$this->headers
@@ -104,9 +108,6 @@ class Info extends Feature {
 	}
 
 	protected function get_theme_data(): array {
-		$this->headers['name'] = 'Theme Name';
-		$this->headers['url']  = 'Theme URI';
-
 		return get_file_data(
 			$this->app->fs()->get_path( 'style.css' ),
 			$this->headers

@@ -1,12 +1,12 @@
 <?php
 
-namespace WP_Titan_1_0_18\Core;
+namespace WP_Titan_1_0_19\Core;
 
-use const WP_Titan_1_0_18\ROOT_FILE;
+use const WP_Titan_1_0_19\ROOT_FILE;
 
 defined( 'ABSPATH' ) || exit;
 
-class FS extends \WP_Titan_1_0_18\FS {
+class FS extends \WP_Titan_1_0_19\FS {
 
 	public function get_path( string $path = '', bool $parent_theme = false ): string {
 		return dirname( ROOT_FILE ) . DIRECTORY_SEPARATOR . $path;

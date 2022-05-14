@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_18;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -71,16 +71,17 @@ class App {
 			_die( 'Wrong application root file.', null, $key );
 		}
 
-		$app_requires_wp = $this->info()->get_requires_wp();
+		if ( is_debug_enabled() ) {
+			$app_requires_wp  = $this->info()->get_requires_wp();
+			$app_requires_php = $this->info()->get_requires_php();
 
-		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '<=' ) ) {
-			_die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement.", null, $key );
-		}
+			if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
+				_die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement.", null, $key );
+			}
 
-		$app_requires_php = $this->info()->get_requires_php();
-
-		if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '<=' ) ) {
-			_die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement.", null, $key );
+			if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
+				_die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement.", null, $key );
+			}
 		}
 	}
 
@@ -113,13 +114,18 @@ class App {
 	 * Get the application key.
 	 */
 	public function get_key( string $slug = '', string $case = 'snake' ): string {
+		$key = $this->key . ( $slug ? ( "_$slug" ) : '' );
+
 		switch ( $case ) {
 			case 'camel':
-				return $this->str()->to_camelcase( $this->key . ( $slug ? ( "_$slug" ) : '' ) );
+				return to_camelcase( $key );
+
+			case 'kebab':
+				return str_replace( '_', '-', $key );
 
 			default:
 			case 'snake':
-				return $this->key . ( $slug ? ( "_$slug" ) : '' );
+				return $key;
 		}
 	}
 
@@ -193,7 +199,7 @@ class App {
 	}
 
 	/**
-	 * Manage Ajax actions.
+	 * Manage ajax actions.
 	 */
 	public function ajax(): Ajax {
 		return $this->get_feature( $this, $this->core(), 'ajax', Ajax::class );

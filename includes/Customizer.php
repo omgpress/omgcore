@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_18;
+namespace WP_Titan_1_0_19;
 
-use WP_Titan_1_0_18\Customizer\Section;
-use WP_Titan_1_0_18\Customizer\Control;
+use WP_Titan_1_0_19\Customizer\Section;
+use WP_Titan_1_0_19\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 

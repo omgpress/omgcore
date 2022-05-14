@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_18\Helper;
+namespace WP_Titan_1_0_19\Helper;
 
-use WP_Titan_1_0_18\App;
-use function WP_Titan_1_0_18\_die;
-use function WP_Titan_1_0_18\is_debug_enabled;
+use WP_Titan_1_0_19\App;
+use function WP_Titan_1_0_19\_die;
+use function WP_Titan_1_0_19\is_debug_enabled;
 
 defined( 'ABSPATH' ) || exit;
 

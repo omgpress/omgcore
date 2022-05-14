@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_18;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,6 +11,7 @@ class Template extends Feature {
 
 	protected $path;
 
+	/** @ignore */
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
