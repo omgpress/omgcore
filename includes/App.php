@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,19 +19,22 @@ defined( 'ABSPATH' ) || exit;
  *
  * ### Setter Methods
  * Some features have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
- * It's usually called once before all `::setup()` methods are called. You don't have to follow this rule if it's necessary for the logic of your application.
+ * It must be called before any `::setup()` methods are called.
  */
 class App {
 
 	use Helper\Featured;
 	use Helper\Single_Call;
 
-	protected static $namespaces = array();
+	protected static $instances = array();
 
 	protected $key;
 	protected $root_file;
 	protected $env;
 	protected $core;
+
+	protected $requires_wp  = '5.0.0';
+	protected $requires_php = '7.2.0';
 
 	protected $admin;
 	protected $ajax;
@@ -43,6 +46,7 @@ class App {
 	protected $hook;
 	protected $http;
 	protected $i18n;
+	protected $info;
 	protected $integration;
 	protected $logger;
 	protected $nav_menu;
@@ -65,7 +69,20 @@ class App {
 		$this->env       = $is_theme ? 'theme' : 'plugin';
 
 		if ( ! $is_theme && ! $is_plugin ) {
-			wpt_die( 'Wrong application root file.', null, $key );
+			_die( 'Wrong application root file.', null, $key );
+		}
+
+		if ( is_debug_enabled() ) {
+			$app_requires_wp  = $this->info()->get_requires_wp();
+			$app_requires_php = $this->info()->get_requires_php();
+
+			if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
+				_die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement.", null, $key );
+			}
+
+			if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
+				_die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement.", null, $key );
+			}
 		}
 	}
 
@@ -73,39 +90,43 @@ class App {
 
 	/** @ignore */
 	public function __wakeup() {
-		wpt_die( 'Cannot unserialize a singleton.', null, $this->key );
+		_die( 'Cannot unserialize a singleton.', null, $this->key );
 	}
 
 	/**
 	 * Get the singleton instance of WP Titan for your application.
 	 *
-	 * @param string $namespace The namespace of your application to be used as the key of WP Titan instance.
+	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant on initial call. Be careful when changing this parameter in a live application because it'll make the application as new to the environment.
+	 * @param string $root_file Required only on initial call. Use the `__FILE__` constant of the application's root file (index.php / functions.php).
 	 */
-	public static function get( string $namespace, string $root_file = '' ): self {
-		if ( empty( self::$namespaces[ $namespace ] ) ) {
+	public static function get( string $key, string $root_file = '' ): self {
+		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				wpt_die( 'Application root file is required on initial call.', null, $namespace );
+				_die( 'Application root file is required on initial call.', null, $key );
 			}
 
-			self::$namespaces[ $namespace ] = new self( $namespace, $root_file );
+			self::$instances[ $key ] = new self( $key, $root_file );
 		}
 
-		return self::$namespaces[ $namespace ];
+		return self::$instances[ $key ];
 	}
 
 	/**
-	 * Get the key for the application.
-	 *
-	 * It's the namespace that you passed to the `App::get()` method.
+	 * Get the application key.
 	 */
-	public function get_key( string $slug = '', string $separator = '_' ): string {
-		switch ( $separator ) {
+	public function get_key( string $slug = '', string $case = 'snake' ): string {
+		$key = $this->key . ( $slug ? ( "_$slug" ) : '' );
+
+		switch ( $case ) {
 			case 'camel':
-				return $this->str()->to_camelcase( $this->key . ( $slug ? ( '_' . $slug ) : '' ) );
+				return to_camelcase( $key );
+
+			case 'kebab':
+				return str_replace( '_', '-', $key );
 
 			default:
-			case '_':
-				return $this->key . ( $slug ? ( '_' . $slug ) : '' );
+			case 'snake':
+				return $key;
 		}
 	}
 
@@ -129,8 +150,15 @@ class App {
 		return 'theme' === $this->get_env();
 	}
 
-	public function add_setup_action( callable $callback, int $priority = PRIORITY ): self {
-		if ( $this->is_theme() && ! $this->validate_single_call( __FUNCTION__, $this, true ) ) {
+	/**
+	 * Call the application setup action.
+	 */
+	public function setup( callable $callback, int $priority = DEFAULT_PRIORITY ): self {
+		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
+			return $this;
+		}
+
+		if ( $this->is_theme() ) {
 			add_action(
 				'after_setup_theme',
 				function (): void {
@@ -140,13 +168,20 @@ class App {
 					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
 					add_theme_support( 'customize-selective-refresh-widgets' );
 				},
-				H_PRIORITY
+				HIGH_PRIORITY
 			);
 		}
 
 		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;
+	}
+
+	/**
+	 * Is the setup action complete.
+	 */
+	public function is_setup_complete(): bool {
+		return $this->is_single_called( 'setup' );
 	}
 
 	protected function core(): Core {
@@ -165,7 +200,7 @@ class App {
 	}
 
 	/**
-	 * Manage Ajax actions.
+	 * Manage ajax actions.
 	 */
 	public function ajax(): Ajax {
 		return $this->get_feature( $this, $this->core(), 'ajax', Ajax::class );
@@ -225,6 +260,13 @@ class App {
 	 */
 	public function i18n(): I18n {
 		return $this->get_feature( $this, $this->core(), 'i18n', I18n::class );
+	}
+
+	/**
+	 *  Information from the application metadata.
+	 */
+	public function info(): Info {
+		return $this->get_feature( $this, $this->core(), 'info', Info::class );
 	}
 
 	/**

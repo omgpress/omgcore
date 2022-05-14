@@ -1,7 +1,7 @@
 {
 	"name": "wp-titan",
   "basePHPClassName": "WP_Titan",
-	"version": "1.0.13",
+	"version": "1.0.19",
   "rootPath": "../..",
 	"directories": [
     "assets",

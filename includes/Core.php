@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,11 +17,11 @@ class Core {
 
 	public function __construct( App $app ) {
 		$this->app = $app;
-		$this->key = wpt_generate_random_str( 16 );
+		$this->key = generate_random_str();
 	}
 
 	public function get_key( string $slug = '' ): string {
-		return $this->key . ( $slug ? ( '_' . $slug ) : '' );
+		return $this->key . ( $slug ? ( "_$slug" ) : '' );
 	}
 
 	public function asset(): Core\Asset {

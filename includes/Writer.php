@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,11 +15,11 @@ class Writer extends Feature {
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
-		$this->path = 'uploads' . DIRECTORY_SEPARATOR . $app->get_key() . DIRECTORY_SEPARATOR;
+		$this->path = $app->uploader()->get_path( $app->get_key() );
 	}
 
-	public function get_path( string $path = '', bool $raw = false ): string {
-		return ( $raw ? '' : WP_CONTENT_DIR ) . DIRECTORY_SEPARATOR . $this->path . $path;
+	public function get_path( string $path = '' ): string {
+		return $this->path . ( $path ? ( DIRECTORY_SEPARATOR . $path ) : '' );
 	}
 
 	public function add_content( string $file, string $content, bool $private = false ): App {
@@ -54,11 +54,11 @@ class Writer extends Feature {
 
 		mkdir( $path, 0755, true );
 
-		if ( ! $private || file_exists( $path . '.htaccess' ) ) {
+		if ( ! $private || file_exists( "$path.htaccess" ) ) {
 			return;
 		}
 
-		$htaccess = fopen( $path . '.htaccess', 'w' ); // phpcs:ignore
+		$htaccess = fopen( "$path.htaccess", 'w' ); // phpcs:ignore
 
 		fwrite( $htaccess, 'deny from all' ); // phpcs:ignore
 		fclose( $htaccess ); // phpcs:ignore

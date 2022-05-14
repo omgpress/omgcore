@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,6 +11,7 @@ class Template extends Feature {
 
 	protected $path;
 
+	/** @ignore */
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
@@ -18,7 +19,7 @@ class Template extends Feature {
 	}
 
 	public function set_base_path( string $path ): App {
-		$this->path = $path;
+		$this->set_property( 'path', $path );
 
 		return $this->app;
 	}
@@ -36,7 +37,7 @@ class Template extends Feature {
 			$this->render( $name, $args );
 
 		} else {
-			include $this->app->fs()->get_path( $this->path . DIRECTORY_SEPARATOR . $name . '.php' );
+			include $this->get_path( "$name.php" );
 		}
 
 		return ob_get_clean();

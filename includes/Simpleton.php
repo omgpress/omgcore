@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 use ReflectionClass;
 
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * - The simpleton can be called everywhere.
  * - Simpleton is guarantee that a functionality of this class (part of logic) has be called only once.
- * - The simpleton constructor using for declaring WordPress hooks and other simpleton classes.
+ * - The simpleton `__constructor` using for declaring WordPress hooks and other simpleton classes.
  * - In most cases' simpleton classes are called without assignment to a variable. But you can do it if you have the need.
  * - Methods that calling by hook needs to be public. Because of this, we consider that all non-static methods of the simpleton class are reserved for a hook-based logic.
  * - Simpleton may also contain public static methods associated to the logic of the current class.
@@ -24,7 +24,7 @@ class Simpleton extends Feature {
 	/**
 	 * Validate if current simpleton class was called.
 	 *
-	 * To declare current class as simpleton, just paste the following code at the beginning of the class constructor:
+	 * To declare current class as simpleton, just paste the following code at the beginning of the class `__constructor`:
 	 * ```php
 	 * if ( app()->simpleton()->validate( self::class ) ) {
 	 *   return;
@@ -41,25 +41,17 @@ class Simpleton extends Feature {
 			'is_extendable' => $is_extendable,
 		);
 
-		if ( wpt_is_debug_enabled() ) {
+		if ( is_debug_enabled() ) {
 			if ( ! $is_extendable ) {
 				$reflection = new ReflectionClass( $classname );
 
 				if ( ! $reflection->isFinal() ) {
-					wpt_die(
-						'Simpleton class <code>' . $classname . '</code> must be final.',
-						'Not final Simpleton class found',
-						$this->app->get_key()
-					);
+					_die( "Simpleton class <code>$classname</code> must be final.", null, $this->app->get_key() );
 				}
 			}
 
 			if ( $has_instance ) {
-				wpt_die(
-					'Simpleton class <code>' . $classname . '</code> must have just one instance call.',
-					'Duplicate Simpleton class instance found',
-					$this->app->get_key()
-				);
+				_die( "Simpleton class <code>$classname</code> must have just one instance call.", null, $this->app->get_key() );
 			}
 		}
 

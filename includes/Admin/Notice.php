@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_13\Admin;
+namespace WP_Titan_1_0_19\Admin;
 
-use WP_Titan_1_0_13\App;
-use WP_Titan_1_0_13\Core;
-use WP_Titan_1_0_13\Feature;
+use WP_Titan_1_0_19\App;
+use WP_Titan_1_0_19\Core;
+use WP_Titan_1_0_19\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -79,11 +79,8 @@ class Notice extends Feature {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
-			return $this->app;
-		}
-
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				$this->render_transients();
 			}

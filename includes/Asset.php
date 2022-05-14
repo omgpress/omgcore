@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,7 +29,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'assets'.
 	 */
 	public function set_dirname( string $name ): App {
-		$this->dirname = $name;
+		$this->set_property( 'dirname', $name );
 
 		return $this->app;
 	}
@@ -38,7 +38,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'fonts'.
 	 */
 	public function set_font_dirname( string $name ): App {
-		$this->font_dirname = $name;
+		$this->set_property( 'font_dirname', $name );
 
 		return $this->app;
 	}
@@ -47,7 +47,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'images'.
 	 */
 	public function set_image_dirname( string $name ): App {
-		$this->image_dirname = $name;
+		$this->set_property( 'image_dirname', $name );
 
 		return $this->app;
 	}
@@ -56,7 +56,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'scripts'.
 	 */
 	public function set_script_dirname( string $name ): App {
-		$this->script_dirname = $name;
+		$this->set_property( 'script_dirname', $name );
 
 		return $this->app;
 	}
@@ -65,7 +65,7 @@ class Asset extends Feature {
 	 * Optional. Default: 'styles'.
 	 */
 	public function set_style_dirname( string $name ): App {
-		$this->style_dirname = $name;
+		$this->set_property( 'style_dirname', $name );
 
 		return $this->app;
 	}
@@ -74,7 +74,7 @@ class Asset extends Feature {
 	 * Optional. Default: '.min'.
 	 */
 	public function set_postfix( string $postfix ): App {
-		$this->postfix = $postfix;
+		$this->set_property( 'postfix', $postfix );
 
 		return $this->app;
 	}
@@ -84,7 +84,7 @@ class Asset extends Feature {
 	}
 
 	protected function get_raw_path( string $path = '' ): string {
-		return $this->dirname . ( $this->dirname ? DIRECTORY_SEPARATOR : '' ) . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
+		return $this->dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	public function get_path( string $path = '', bool $raw = false ): string {
@@ -144,7 +144,7 @@ class Asset extends Feature {
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
 		if ( $args ) {
-			$args_object_name = $args_object_name ?: $this->app->str()->to_camelcase( $key );
+			$args_object_name = $args_object_name ?: to_camelcase( $key );
 
 			wp_localize_script( $key, $args_object_name, $args );
 		}
@@ -178,20 +178,20 @@ class Asset extends Feature {
 				$css_vars .= '--' . str_replace( '_', '-', $this->app->get_key( $var_slug ) ) . ':' . $var_val . ';';
 			}
 
-			wp_add_inline_style( $key, $css_vars . '}' );
+			wp_add_inline_style( $key, "$css_vars}" );
 		}
 
 		return $this->app;
 	}
 
 	public function get_script_args_key( string $object_name ): string {
-		return $this->app->get_key( $object_name );
+		return $this->app->get_key( "args_object_$object_name" );
 	}
 
 	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): App {
 		$key = $this->get_script_args_key( $object_name );
 
-		wp_enqueue_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
+		wp_register_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
 		wp_localize_script( $key, $object_name, $args );
 
 		return $this->app;

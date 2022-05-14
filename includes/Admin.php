@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,6 +19,6 @@ class Admin extends Feature {
 	}
 
 	public function get_url( string $slug = '', ?int $blog_id = null ): string {
-		return get_admin_url( $blog_id, $slug ? ( $slug . '.php' ) : '' );
+		return get_admin_url( $blog_id, $slug ? "$slug.php" : '' );
 	}
 }

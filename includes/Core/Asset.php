@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_13\Core;
+namespace WP_Titan_1_0_19\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-class Asset extends \WP_Titan_1_0_13\Asset {
+class Asset extends \WP_Titan_1_0_19\Asset {
 
 	protected function set_fs(): void {
 		$this->fs = $this->core->fs();

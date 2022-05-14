@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ class I18n extends Feature {
 	 * Default: "languages".
 	 */
 	public function set_dirname( string $dirname ): App {
-		$this->dirname = $dirname;
+		$this->set_property( 'dirname', $dirname );
 
 		return $this->app;
 	}
@@ -44,11 +44,8 @@ class I18n extends Feature {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
-			return $this->app;
-		}
-
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				if ( $this->is_theme() ) {
 					load_theme_textdomain( $this->app->get_key(), $this->get_path() );

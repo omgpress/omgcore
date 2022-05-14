@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_13\Integration;
+namespace WP_Titan_1_0_19\Integration;
 
-use WP_Titan_1_0_13\App;
-use const WP_Titan_1_0_13\H_PRIORITY;
-use const WP_Titan_1_0_13\PRIORITY;
+use WP_Titan_1_0_19\App;
+use const WP_Titan_1_0_19\HIGH_PRIORITY;
+use const WP_Titan_1_0_19\DEFAULT_PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,6 +21,8 @@ class WC extends Plugin {
 	}
 
 	public function set_theme_support(): App {
+		$this->validate_setter();
+
 		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
 			return $this->app;
 		}
@@ -33,18 +35,17 @@ class WC extends Plugin {
 				add_theme_support( 'wc-product-gallery-lightbox' );
 				add_theme_support( 'wc-product-gallery-slider' );
 			},
-			H_PRIORITY
+			HIGH_PRIORITY
 		);
 
 		return $this->app;
 	}
 
 	public function set_block_support(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
-			return $this->app;
-		}
+		$this->validate_setter();
 
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				if ( ! $this->is_active() ) {
 					return;
@@ -69,7 +70,7 @@ class WC extends Plugin {
 
 						return $can_edit;
 					},
-					PRIORITY,
+					DEFAULT_PRIORITY,
 					2
 				);
 			}

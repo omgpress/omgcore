@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_0_13;
+namespace WP_Titan_1_0_19;
 
-use WP_Titan_1_0_13\Customizer\Section;
-use WP_Titan_1_0_13\Customizer\Control;
+use WP_Titan_1_0_19\Customizer\Section;
+use WP_Titan_1_0_19\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,7 +35,7 @@ class Customizer extends Feature {
 	protected $default_control_args = array();
 
 	protected function get_key( string $slug ): string {
-		return $this->app->get_key( 'customizer_' . $slug );
+		return $this->app->get_key( "customizer_$slug" );
 	}
 
 	public function add_panel( string $panel, array $args, ?string $panel_class = null ): App {
@@ -77,8 +77,8 @@ class Customizer extends Feature {
 				if ( $section_class ) {
 					$wp_customize->add_section( new $section_class( $wp_customize, $key, $args ) );
 
-				} elseif ( isset( $args['wpt_type'] ) && in_array( $args['wpt_type'], array_keys( $this->extended_sections ), true ) ) {
-					$wp_customize->add_section( new $this->extended_sections[ $args['wpt_type'] ]( $wp_customize, $key, $args ) );
+				} elseif ( isset( $args['type'] ) && in_array( $args['type'], array_keys( $this->extended_sections ), true ) ) {
+					$wp_customize->add_section( new $this->extended_sections[ $args['type'] ]( $wp_customize, $key, $args ) );
 
 				} else {
 					$wp_customize->add_section( $key, $args );
@@ -90,11 +90,7 @@ class Customizer extends Feature {
 	}
 
 	public function add_setting( string $setting, string $section, array $args, array $control_args, ?string $control_class = null ): App {
-		if ( $this->validate_setup() ) {
-			return $this->app;
-		}
-
-		$key = $this->get_key( $section . '_' . $setting );
+		$key = $this->get_key( "{$section}_$setting" );
 
 		if ( isset( $args['default'] ) ) {
 			$this->settings[ $section ][ $setting ]['default'] = $args['default'];
@@ -102,6 +98,10 @@ class Customizer extends Feature {
 
 		if ( isset( $args['type'] ) ) {
 			$this->settings[ $section ][ $setting ]['type'] = $args['type'];
+		}
+
+		if ( $this->validate_setup() ) {
+			return $this->app;
 		}
 
 		$args         = wp_parse_args( $args, $this->default_setting_args );
@@ -117,8 +117,8 @@ class Customizer extends Feature {
 				if ( $control_class ) {
 					$wp_customize->add_control( new $control_class( $wp_customize, $key, $control_args ) );
 
-				} elseif ( isset( $control_args['wpt_type'] ) && in_array( $control_args['wpt_type'], array_keys( $this->extended_controls ), true ) ) {
-					$wp_customize->add_control( new $this->extended_controls[ $control_args['wpt_type'] ]( $wp_customize, $key, $control_args ) );
+				} elseif ( isset( $control_args['type'] ) && in_array( $control_args['type'], array_keys( $this->extended_controls ), true ) ) {
+					$wp_customize->add_control( new $this->extended_controls[ $control_args['type'] ]( $wp_customize, $key, $control_args ) );
 
 				} else {
 					$wp_customize->add_control( $key, $control_args );
@@ -130,7 +130,9 @@ class Customizer extends Feature {
 	}
 
 	public function get_setting( string $setting, string $section ) /* mixed */ {
-		$key = $this->get_key( $section . '_' . $setting );
+		$this->validate_setup();
+
+		$key = $this->get_key( "{$section}_$setting" );
 
 		return get_option( $key, $this->settings[ $section ][ $setting ]['default'] ?? false );
 	}
@@ -139,11 +141,8 @@ class Customizer extends Feature {
 	 * Required.
 	 */
 	public function setup(): App {
-		if ( $this->validate_single_call( __FUNCTION__, $this->app ) ) {
-			return $this->app;
-		}
-
 		$this->add_setup_action(
+			__FUNCTION__,
 			function (): void {
 				$this->enqueue_assets();
 			}
@@ -156,8 +155,8 @@ class Customizer extends Feature {
 		add_action(
 			'customize_controls_enqueue_scripts',
 			function (): void {
-				$this->core->asset()->enqueue_style( 'customizer', array( 'wp-color-picker' ) );
 				$this->core->asset()->enqueue_script( 'customizer', array( 'jquery', 'customize-controls', 'wp-color-picker' ) );
+				$this->core->asset()->enqueue_style( 'customizer', array( 'wp-color-picker' ) );
 			}
 		);
 	}
