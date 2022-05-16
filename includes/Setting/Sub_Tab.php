@@ -4,4 +4,4 @@ namespace WP_Titan_1_0_19\Setting;
 
 defined( 'ABSPATH' ) || exit;
 
-class Setting {}
+class Sub_Tab {}

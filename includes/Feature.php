@@ -4,18 +4,10 @@ namespace WP_Titan_1_0_19;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Feature {
+abstract class Feature extends Basic_Feature {
 
 	use Helper\Featured;
 	use Helper\Single_Call;
-
-	protected $app;
-	protected $core;
-
-	public function __construct( App $app, Core $core ) {
-		$this->app  = $app;
-		$this->core = $core;
-	}
 
 	protected function set_property( string $property, /* mixed */ $value ): void {
 		$this->validate_setter();

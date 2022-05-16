@@ -2,12 +2,12 @@
 
 namespace WP_Titan_1_0_19\Core;
 
-use WP_Titan_1_0_19\Feature;
+use WP_Titan_1_0_19\Basic_Feature;
 use const WP_Titan_1_0_19\DEFAULT_PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
-class Hook extends Feature {
+class Hook extends Basic_Feature {
 
 	public function apply_filters( string $slug, /* mixed */ ...$args ) /* mixed */ {
 		return apply_filters( $this->core->get_key( $slug ), ...$args );

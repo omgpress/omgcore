@@ -20,7 +20,9 @@
 				<path>includes/Core.php</path>
 				<path>includes/Helper/**/*</path>
 				<path>includes/Integration/Plugin.php</path>
+				<path>includes/Basic_Feature.php</path>
 				<path>includes/Feature.php</path>
+				<path>includes/Setting/**/*</path>
 			</ignore>
 		</api>
 	</version>
