@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -44,7 +44,7 @@ class Integration extends Feature {
 
 	/**
 	 * @param string $reference A namespace containing the `Setup` or `Setting` classes, or the fully qualified classname.
-	 * @param string|null $active_method_name Optional. The name of a method of the reference that returns statement of plugin activation. This piece of logic will be skipped if this method don't exist.
+	 * @param string|null $active_method_name Optional. The name of a static method of the reference that returns statement of plugin activation. This piece of logic will be skipped if this method don't exist.
 	 */
 	public function is_active( string $reference, ?string $active_method_name = 'is_active' ): bool {
 		if ( class_exists( "$reference\Setting" ) ) {

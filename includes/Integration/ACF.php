@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19\Integration;
+namespace WP_Titan_1_0_21\Integration;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,7 +33,7 @@ class ACF extends Plugin {
 	}
 
 	/**
-	 * Block categories manager.
+	 * Block categories manager for ACF Pro.
 	 */
 	public function block_category(): ACF\Block_Category {
 		return $this->get_feature( $this->app, $this->core, 'block_category', ACF\Block_Category::class );

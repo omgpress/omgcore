@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +13,7 @@ class Hook extends Feature {
 		return apply_filters( $this->app->get_key( $slug ), ...$args );
 	}
 
-	public function add_filter( string $slug, callable $callback, int $priority = DEFAULT_PRIORITY, int $accepted_args = 1 ): App {
+	public function add_filter( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): App {
 		add_filter( $this->app->get_key( $slug ), $callback, $priority, $accepted_args );
 
 		return $this->app;
@@ -25,7 +25,7 @@ class Hook extends Feature {
 		return $this->app;
 	}
 
-	public function add_action( string $slug, callable $callback, int $priority = DEFAULT_PRIORITY, int $accepted_args = 1 ): App {
+	public function add_action( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): App {
 		add_action( $this->app->get_key( $slug ), $callback, $priority, $accepted_args );
 
 		return $this->app;

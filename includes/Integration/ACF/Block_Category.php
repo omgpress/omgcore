@@ -1,14 +1,14 @@
 <?php
 
-namespace WP_Titan_1_0_19\Integration\ACF;
+namespace WP_Titan_1_0_21\Integration\ACF;
 
-use WP_Titan_1_0_19\App;
-use WP_Titan_1_0_19\Feature;
+use WP_Titan_1_0_21\App;
+use WP_Titan_1_0_21\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Block categories manager.
+ * Block categories manager for ACF Pro.
  */
 class Block_Category extends Feature {
 

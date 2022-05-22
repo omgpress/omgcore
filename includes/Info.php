@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,108 +9,43 @@ defined( 'ABSPATH' ) || exit;
  */
 class Info extends Feature {
 
-	protected $name;
-	protected $url;
-	protected $version;
-	protected $description;
-	protected $author;
-	protected $author_url;
-	protected $textdomain;
-	protected $domain_path;
-	protected $requires_php;
-	protected $requires_wp;
-
-	protected $headers = array(
-		'version'      => 'Version',
-		'description'  => 'Description',
-		'author'       => 'Author',
-		'author_url'   => 'Author URI',
-		'textdomain'   => 'Text Domain',
-		'domain_path'  => 'Domain Path',
-		'requires_wp'  => 'Requires at least',
-		'requires_php' => 'Requires PHP',
-	);
-
-	/** @ignore */
-	public function __construct( App $app, Core $core ) {
-		parent::__construct( $app, $core );
-
-		if ( $this->is_theme() ) {
-			$this->headers['name'] = 'Theme Name';
-			$this->headers['url']  = 'Theme URI';
-
-			$info = $this->get_theme_data();
-
-		} else {
-			$this->headers['name'] = 'Plugin Name';
-			$this->headers['url']  = 'Plugin URI';
-
-			$info = $this->get_plugin_data();
-		}
-
-		$this->name         = $info['name'];
-		$this->url          = $info['url'];
-		$this->version      = $info['version'];
-		$this->description  = $info['description'];
-		$this->author       = $info['author'];
-		$this->author_url   = $info['author_url'];
-		$this->textdomain   = $info['textdomain'];
-		$this->domain_path  = $info['domain_path'];
-		$this->requires_wp  = $info['requires_wp'];
-		$this->requires_php = $info['requires_php'];
-	}
-
 	public function get_name(): string {
-		return $this->name;
+		return $this->core->info()->get_name();
 	}
 
 	public function get_url(): string {
-		return $this->name;
+		return $this->core->info()->get_url();
 	}
 
 	public function get_version(): string {
-		return $this->version;
+		return $this->core->info()->get_version();
 	}
 
 	public function get_description(): string {
-		return $this->description;
+		return $this->core->info()->get_description();
 	}
 
 	public function get_author(): string {
-		return $this->author;
+		return $this->core->info()->get_author();
 	}
 
 	public function get_author_url(): string {
-		return $this->author_url;
+		return $this->core->info()->get_author_url();
 	}
 
 	public function get_textdomain(): string {
-		return $this->textdomain;
+		return $this->core->info()->get_textdomain();
 	}
 
 	public function get_domain_path(): string {
-		return $this->domain_path;
+		return $this->core->info()->get_domain_path();
 	}
 
 	public function get_requires_php(): string {
-		return $this->requires_php;
+		return $this->core->info()->get_requires_php();
 	}
 
 	public function get_requires_wp(): string {
-		return $this->requires_wp;
-	}
-
-	protected function get_plugin_data(): array {
-		return get_file_data(
-			$this->app->get_root_file(),
-			$this->headers
-		);
-	}
-
-	protected function get_theme_data(): array {
-		return get_file_data(
-			$this->app->fs()->get_path( 'style.css' ),
-			$this->headers
-		);
+		return $this->core->info()->get_requires_wp();
 	}
 }

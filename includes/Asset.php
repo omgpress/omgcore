@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,17 +16,8 @@ class Asset extends Feature {
 	protected $style_dirname  = 'styles';
 	protected $postfix        = '.min';
 
-	protected $fs;
-
-	/** @ignore */
-	public function __construct( App $app, Core $core ) {
-		parent::__construct( $app, $core );
-
-		$this->set_fs();
-	}
-
 	/**
-	 * Optional. Default: 'assets'.
+	 * Default: 'assets'.
 	 */
 	public function set_dirname( string $name ): App {
 		$this->set_property( 'dirname', $name );
@@ -35,7 +26,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Default: 'fonts'.
+	 * Default: 'fonts'.
 	 */
 	public function set_font_dirname( string $name ): App {
 		$this->set_property( 'font_dirname', $name );
@@ -44,7 +35,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Default: 'images'.
+	 * Default: 'images'.
 	 */
 	public function set_image_dirname( string $name ): App {
 		$this->set_property( 'image_dirname', $name );
@@ -53,7 +44,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Default: 'scripts'.
+	 * Default: 'scripts'.
 	 */
 	public function set_script_dirname( string $name ): App {
 		$this->set_property( 'script_dirname', $name );
@@ -62,7 +53,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Default: 'styles'.
+	 * Default: 'styles'.
 	 */
 	public function set_style_dirname( string $name ): App {
 		$this->set_property( 'style_dirname', $name );
@@ -71,7 +62,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * Optional. Default: '.min'.
+	 * Default: '.min'.
 	 */
 	public function set_postfix( string $postfix ): App {
 		$this->set_property( 'postfix', $postfix );
@@ -79,20 +70,16 @@ class Asset extends Feature {
 		return $this->app;
 	}
 
-	protected function set_fs(): void {
-		$this->fs = $this->app->fs();
-	}
-
 	protected function get_raw_path( string $path = '' ): string {
 		return $this->dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	public function get_path( string $path = '', bool $raw = false ): string {
-		return $raw ? $this->get_raw_path( $path ) : $this->fs->get_path( $this->get_raw_path( $path ) );
+		return $raw ? $this->get_raw_path( $path ) : $this->app->fs()->get_path( $this->get_raw_path( $path ) );
 	}
 
 	public function get_url( string $url = '', bool $stamp = false ): string {
-		return $this->fs->get_url( $this->get_raw_path( $url ), $stamp );
+		return $this->app->fs()->get_url( $this->get_raw_path( $url ), $stamp );
 	}
 
 	public function get_font_path( string $path = '', bool $raw = false ): string {
@@ -144,7 +131,7 @@ class Asset extends Feature {
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
 
 		if ( $args ) {
-			$args_object_name = $args_object_name ?: to_camelcase( $key );
+			$args_object_name = $args_object_name ?: $this->core->str()->to_camelcase( $key );
 
 			wp_localize_script( $key, $args_object_name, $args );
 		}
@@ -184,26 +171,42 @@ class Asset extends Feature {
 		return $this->app;
 	}
 
-	public function get_script_args_key( string $object_name ): string {
-		return $this->app->get_key( "args_object_$object_name" );
+	public function get_global_args_key( string $js_object_name ): string {
+		return $this->app->get_key( "args_object_$js_object_name" );
 	}
 
-	public function enqueue_script_args( string $object_name, array $args, bool $in_footer = true ): App {
-		$key = $this->get_script_args_key( $object_name );
+	/**
+	 * @deprecated
+	 */
+	public function get_script_args_key( string $object_name ): string {
+		return $this->get_global_args_key( $object_name );
+	}
 
-		wp_register_script( $key, null, array(), null, $in_footer ); // phpcs:ignore
+	public function enqueue_global_args( string $object_name, array $args ): App {
+		$key = $this->get_global_args_key( $object_name );
+
+		wp_register_script( $key, null, array(), null ); // phpcs:ignore
 		wp_localize_script( $key, $object_name, $args );
 
 		return $this->app;
 	}
 
-	public function external_script( string $slug, string $url, bool $in_footer = true ): App {
+	/**
+	 * @deprecated
+	 */
+	public function enqueue_script_args( string $object_name, array $args ): App {
+		$this->enqueue_global_args( $object_name, $args );
+
+		return $this->app;
+	}
+
+	public function enqueue_external_script( string $slug, string $url, bool $in_footer = true ): App {
 		wp_enqueue_script( $this->app->get_key( $slug ), $url, false, null, $in_footer ); // phpcs:ignore
 
 		return $this->app;
 	}
 
-	public function external_style( string $slug, string $url ): App {
+	public function enqueue_external_style( string $slug, string $url ): App {
 		wp_enqueue_style( $this->app->get_key( $slug ), $url, false, null ); // phpcs:ignore
 
 		return $this->app;

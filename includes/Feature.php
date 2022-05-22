@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,13 +23,13 @@ abstract class Feature extends Basic_Feature {
 
 	protected function validate_setter(): bool {
 		$classname             = static::class;
-		$is_app_setup_complete = $this->app->is_setup_complete();
+		$is_app_setup_complete = $this->app->is_setup_called();
 		$is_setup_complete     = $this->is_single_called( 'setup' );
 
-		if ( ( $is_app_setup_complete || $is_setup_complete ) && is_debug_enabled() ) {
+		if ( $is_app_setup_complete || $is_setup_complete ) {
 			$trigger = $is_app_setup_complete ? 'application' : 'feature';
 
-			_die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete.", null, $this->app->get_key() );
+			$this->core->debugger()->die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete." );
 		}
 
 		return $is_setup_complete || $is_app_setup_complete;
@@ -39,8 +39,8 @@ abstract class Feature extends Basic_Feature {
 		$classname         = static::class;
 		$is_setup_complete = $this->is_single_called( 'setup' );
 
-		if ( ! $is_setup_complete && is_debug_enabled() ) {
-			_die( "Need to setup the <code>$classname</code> feature first.", null, $this->app->get_key() );
+		if ( ! $is_setup_complete ) {
+			$this->core->debugger()->die( "Need to setup the <code>$classname</code> feature first." );
 		}
 
 		return ! $is_setup_complete;
@@ -51,10 +51,10 @@ abstract class Feature extends Basic_Feature {
 	}
 
 	protected function add_setup_action( string $function, callable $callback, int $priority = HIGH_PRIORITY ): void {
-		if ( $this->app->is_setup_complete() && is_debug_enabled() ) {
+		if ( $this->app->is_setup_called() ) {
 			$classname = static::class;
 
-			_die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete.", null, $this->app->get_key() );
+			$this->core->debugger()->die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete." );
 		}
 
 		if ( $this->validate_single_call( $function, $this->app ) ) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * Don't hide its call in the any hooks, as this may ruin the work of the feature.
  *
  * ### Setter Methods
- * Some features have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
+ * In addition, some features also have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
  * It must be called before any `::setup()` methods are called.
  */
 class App {
@@ -69,20 +69,23 @@ class App {
 		$this->env       = $is_theme ? 'theme' : 'plugin';
 
 		if ( ! $is_theme && ! $is_plugin ) {
-			_die( 'Wrong application root file.', null, $key );
+			Core\Debugger::raw_die( 'Wrong application root file.', null, $key );
 		}
 
-		if ( is_debug_enabled() ) {
-			$app_requires_wp  = $this->info()->get_requires_wp();
-			$app_requires_php = $this->info()->get_requires_php();
+		$app_textdomain   = $this->info()->get_textdomain();
+		$app_requires_wp  = $this->info()->get_requires_wp();
+		$app_requires_php = $this->info()->get_requires_php();
 
-			if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
-				_die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement.", null, $key );
-			}
+		if ( $app_textdomain && $app_textdomain !== $key ) {
+			$this->core()->debugger()->die( "The textdomain in the application metadata must match the application key: <code>$key</code>." );
+		}
 
-			if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
-				_die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement.", null, $key );
-			}
+		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
+			$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement in metadata." );
+		}
+
+		if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
+			$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement in metadata." );
 		}
 	}
 
@@ -90,7 +93,7 @@ class App {
 
 	/** @ignore */
 	public function __wakeup() {
-		_die( 'Cannot unserialize a singleton.', null, $this->key );
+		$this->core()->debugger()->die( 'Cannot unserialize a singleton.' );
 	}
 
 	/**
@@ -102,7 +105,7 @@ class App {
 	public static function get( string $key, string $root_file = '' ): self {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				_die( 'Application root file is required on initial call.', null, $key );
+				Core\Debugger::raw_die( 'Application root file is required on initial call.', null, $key );
 			}
 
 			self::$instances[ $key ] = new self( $key, $root_file );
@@ -114,18 +117,18 @@ class App {
 	/**
 	 * Get the application key.
 	 */
-	public function get_key( string $slug = '', string $case = 'snake' ): string {
+	public function get_key( string $slug = '', string $case = '_' ): string {
 		$key = $this->key . ( $slug ? ( "_$slug" ) : '' );
 
 		switch ( $case ) {
-			case 'camel':
-				return to_camelcase( $key );
-
-			case 'kebab':
+			case '-':
 				return str_replace( '_', '-', $key );
 
+			case 'c':
+				return $this->core()->str()->to_camelcase( $key );
+
 			default:
-			case 'snake':
+			case '_':
 				return $key;
 		}
 	}
@@ -151,9 +154,20 @@ class App {
 	}
 
 	/**
-	 * Call the application setup action.
+	 * Required. Call the application setup action.
+	 *
+	 * Must be called after all other `::setup()` methods.\
+	 * This is a special wrapper for `'plugins_loaded'` or `'after_setup_theme'` hook, depending on the environment. It also contains logic to ensure the stability of the application.\
+	 * In the theme environment will be auto-initialized support for the basic features of the theme:
+	 * ```php
+	 * add_theme_support( 'title-tag' );
+	 * add_theme_support( 'automatic-feed-links' );
+	 * add_theme_support( 'post-thumbnails' );
+	 * add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
+	 * add_theme_support( 'customize-selective-refresh-widgets' );
+	 * ```
 	 */
-	public function setup( callable $callback, int $priority = DEFAULT_PRIORITY ): self {
+	public function setup( callable $callback, int $priority = 10 ): self {
 		if ( $this->validate_single_call( __FUNCTION__, $this ) ) {
 			return $this;
 		}
@@ -178,18 +192,14 @@ class App {
 	}
 
 	/**
-	 * Is the setup action complete.
+	 * Is the setup action called.
 	 */
-	public function is_setup_complete(): bool {
+	public function is_setup_called(): bool {
 		return $this->is_single_called( 'setup' );
 	}
 
 	protected function core(): Core {
-		if ( ! is_a( $this->core, Core::class ) ) {
-			$this->core = new Core( $this );
-		}
-
-		return $this->core;
+		return $this->get_feature( $this, null, 'core', Core::class );
 	}
 
 	/**
