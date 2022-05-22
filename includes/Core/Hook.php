@@ -1,8 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_20\Core;
+namespace WP_Titan_1_0_21\Core;
 
-use const WP_Titan_1_0_20\DEFAULT_PRIORITY;
+use const WP_Titan_1_0_21\DEFAULT_PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 

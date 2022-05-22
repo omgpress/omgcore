@@ -1,20 +1,38 @@
 <?php
 
-namespace WP_Titan_1_0_20\Core;
+namespace WP_Titan_1_0_21\Core;
 
 defined( 'ABSPATH' ) || exit;
 
 class Debugger extends Feature {
 
-	public function die( string $message, ?string $title = null ) {
-		static::_die( $message, $title, $this->core->get_app_key() );
+	protected $notice_shown = false;
+
+	public function die( string $message, ?string $title = null ): void {
+		if ( ! static::is_enabled() && ! $this->notice_shown ) {
+			$env      = $this->core->get_env();
+			$name     = '"' . $this->core->info()->get_name() . '"';
+			$message  = "<b>Some Error(s) was found in $name $env.</b><br/>";
+			$message .= "They have been suppressed, but this can lead to unexpected application behavior. Please, contact the $env author.<br/><br/>";
+			$message .= 'Or you can enable <code>WP_DEBUG</code> to see complete information.<br/>';
+			$message .= '<i>Carefully! In debug mode the application will completely stop immediately at the first error.</i><br/>';
+			$message .= static::get_wp_debug_doc_url();
+
+			$this->core->admin()->notice()->render( $message );
+
+			$this->notice_shown = true;
+
+			return;
+		}
+
+		static::raw_die( $message, $title, $this->core->get_app_key() );
 	}
 
 	public static function is_enabled(): bool {
 		return defined( 'WP_DEBUG' ) && WP_DEBUG;
 	}
 
-	public static function _die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, string $footer_text = '' ): void {
+	public static function raw_die( string $message, ?string $title = null, ?string $key = null, bool $enable_backtrace = true, bool $is_core = true, string $footer_text = '' ): void {
 		global $wp_query;
 
 		if ( ! isset( $wp_query ) ) {
@@ -23,12 +41,12 @@ class Debugger extends Feature {
 		}
 
 		if ( ! static::is_enabled() ) {
-			static::die_basic();
+			static::basic_die();
 		}
 
 		ob_start();
 
-		$title = ( $is_core ? 'WP Titan Basics Error' : 'Error' ) . ( $title ? ( ': ' . $title ) : '' );
+		$title = ( $is_core ? 'WP Titan Core Error' : 'Error' ) . ( $title ? ( ': ' . $title ) : '' );
 		?>
 		<h2><?php echo esc_html( $title ); ?></h2>
 		<p><?php echo wp_kses_post( $message ); ?></p>
@@ -54,17 +72,15 @@ class Debugger extends Feature {
 			<?php
 		}
 
-		wp_die( ob_get_clean(), $title ); // phpcs:ignore
+		wp_die( ob_get_clean(), 'Error' ); // phpcs:ignore
 	}
 
-	protected static function die_basic(): void {
+	protected static function basic_die(): void {
 		ob_start();
 		?>
 		<h2>Error</h2>
 		<p>Something went wrong. Enable <code>WP_DEBUG</code> to see complete information.</p>
-		<p>
-			<a href="https://wordpress.org/support/article/debugging-in-wordpress/" target="_blank">Read about debugging in WordPress</a>
-		</p>
+		<p><?php echo wp_kses_post( static::get_wp_debug_doc_url() ); ?></p>
 		<?php
 		wp_die( ob_get_clean(), 'Error' ); // phpcs:ignore
 	}
@@ -112,5 +128,9 @@ class Debugger extends Feature {
 			</ul>
 		</div>
 		<?php
+	}
+
+	protected static function get_wp_debug_doc_url(): string {
+		return '<a href="https://wordpress.org/support/article/debugging-in-wordpress/" target="_blank">Read about debugging in WordPress</a>';
 	}
 }

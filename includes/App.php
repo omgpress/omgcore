@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_20;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -68,25 +68,23 @@ class App {
 		$this->env       = $is_theme ? 'theme' : 'plugin';
 
 		if ( ! $is_theme && ! $is_plugin ) {
-			$this->core()->debugger()->die( 'Wrong application root file.' );
+			Core\Debugger::raw_die( 'Wrong application root file.', null, $key );
 		}
 
-		if ( Core\Debugger::is_enabled() ) {
-			$app_textdomain   = $this->info()->get_textdomain();
-			$app_requires_wp  = $this->info()->get_requires_wp();
-			$app_requires_php = $this->info()->get_requires_php();
+		$app_textdomain   = $this->info()->get_textdomain();
+		$app_requires_wp  = $this->info()->get_requires_wp();
+		$app_requires_php = $this->info()->get_requires_php();
 
-			if ( $app_textdomain && $app_textdomain !== $key ) {
-				$this->core()->debugger()->die( "The textdomain in the application metadata must match the application key: <code>$key</code>." );
-			}
+		if ( $app_textdomain && $app_textdomain !== $key ) {
+			$this->core()->debugger()->die( "The textdomain in the application metadata must match the application key: <code>$key</code>." );
+		}
 
-			if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
-				$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement in metadata." );
-			}
+		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
+			$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least WordPress $this->requires_wp requirement in metadata." );
+		}
 
-			if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
-				$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement in metadata." );
-			}
+		if ( $app_requires_php && version_compare( $this->requires_php, $app_requires_php, '>' ) ) {
+			$this->core()->debugger()->die( "Since application uses WP Titan, it must have at least PHP $this->requires_php requirement in metadata." );
 		}
 	}
 
@@ -106,7 +104,7 @@ class App {
 	public static function get( string $key, string $root_file = '' ): self {
 		if ( empty( self::$instances[ $key ] ) ) {
 			if ( empty( $root_file ) ) {
-				Core\Debugger::_die( 'Application root file is required on initial call.', null, $key );
+				Core\Debugger::raw_die( 'Application root file is required on initial call.', null, $key );
 			}
 
 			self::$instances[ $key ] = new self( $key, $root_file );

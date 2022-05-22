@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_20\Customizer\Section;
+namespace WP_Titan_1_0_21\Customizer\Section;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_0_20\Admin;
+namespace WP_Titan_1_0_21\Admin;
 
-use WP_Titan_1_0_20\App;
-use WP_Titan_1_0_20\Core;
-use WP_Titan_1_0_20\Feature;
+use WP_Titan_1_0_21\App;
+use WP_Titan_1_0_21\Core;
+use WP_Titan_1_0_21\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -61,16 +61,7 @@ class Notice extends Feature {
 			return $this->app;
 		}
 
-		add_action(
-			'admin_notices',
-			function () use ( $message, $level ): void {
-				?>
-				<div class="notice notice-<?php echo esc_attr( $level ); ?> is-dismissible">
-					<p><?php echo wp_kses_post( $message ); ?></p>
-				</div>
-				<?php
-			}
-		);
+		$this->core->admin()->notice()->render( $message, $level );
 
 		return $this->app;
 	}
