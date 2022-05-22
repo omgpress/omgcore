@@ -1,9 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_19\Core;
+namespace WP_Titan_1_0_20\Core;
 
-use WP_Titan_1_0_19\Feature;
-use const WP_Titan_1_0_19\DEFAULT_PRIORITY;
+use const WP_Titan_1_0_20\DEFAULT_PRIORITY;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +20,7 @@ class Hook extends Feature {
 		do_action( $this->core->get_key( $slug ), ...$args );
 	}
 
-	public function add_action( string $slug, callable $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	public function add_action( string $slug, callable $callback, int $priority = DEFAULT_PRIORITY, int $accepted_args = 1 ): void {
 		add_action( $this->core->get_key( $slug ), $callback, $priority, $accepted_args );
 	}
 }

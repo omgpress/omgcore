@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_20;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,5 +17,17 @@ class Arr extends Feature {
 		}
 
 		return $result;
+	}
+
+	public function insert_to_position( array $value, int $position, array $array ): array {
+		if ( empty( $array ) ) {
+			return $value;
+		}
+
+		return array_merge(
+			array_slice( $array, 0, $position ),
+			$value,
+			array_slice( $array, $position )
+		);
 	}
 }

@@ -192,8 +192,8 @@ export default function initControlAlphaColor() {
 		// Proceed with stock color.js hex output.
 		var hex = parseInt( this._color, 10 ).toString( 16 );
 		if ( this.error ) {
- return '';
-}
+		 return '';
+		}
 		if ( 6 > hex.length ) {
 			for ( var i = 6 - hex.length - 1; 0 <= i; i-- ) {
 				hex = '0' + hex;

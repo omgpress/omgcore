@@ -1,10 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_19\Helper;
+namespace WP_Titan_1_0_20\Helper;
 
-use WP_Titan_1_0_19\App;
-use function WP_Titan_1_0_19\_die;
-use function WP_Titan_1_0_19\is_debug_enabled;
+use WP_Titan_1_0_20\App;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,8 +13,8 @@ trait Single_Call {
 	protected function validate_single_call( string $function, App $app, bool $silent = false ): bool {
 		$called = $this->is_single_called( $function );
 
-		if ( ! $silent && $called && is_debug_enabled() ) {
-			_die( "<code>${$function}</code> can be called only once.", null, $app->get_key() );
+		if ( ! $silent && $called ) {
+			$this->core->debugger()->die( "<code>${$function}</code> can be called only once." );
 		}
 
 		$this->single_calls[] = $function;

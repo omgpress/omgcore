@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_20;
 
 use ReflectionClass;
 
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * - The simpleton can be called everywhere.
  * - Simpleton is guarantee that a functionality of this class (part of logic) has be called only once.
- * - The simpleton `__constructor` using for declaring WordPress hooks and other simpleton classes.
+ * - The simpleton `__constructor` is mainly used to call WordPress hooks and other simpleton classes.
  * - In most cases' simpleton classes are called without assignment to a variable. But you can do it if you have the need.
  * - Methods that calling by hook needs to be public. Because of this, we consider that all non-static methods of the simpleton class are reserved for a hook-based logic.
  * - Simpleton may also contain public static methods associated to the logic of the current class.
@@ -41,17 +41,17 @@ class Simpleton extends Feature {
 			'is_extendable' => $is_extendable,
 		);
 
-		if ( is_debug_enabled() ) {
+		if ( Core\Debugger::is_enabled() ) {
 			if ( ! $is_extendable ) {
 				$reflection = new ReflectionClass( $classname );
 
 				if ( ! $reflection->isFinal() ) {
-					_die( "Simpleton class <code>$classname</code> must be final.", null, $this->app->get_key() );
+					$this->core->debugger()->die( "Simpleton class <code>$classname</code> must be final." );
 				}
 			}
 
 			if ( $has_instance ) {
-				_die( "Simpleton class <code>$classname</code> must have just one instance call.", null, $this->app->get_key() );
+				$this->core->debugger()->die( "Simpleton class <code>$classname</code> must have just one instance call." );
 			}
 		}
 

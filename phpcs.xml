@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="WPTCS">
-	<description>WordPress Titan Coding Standards</description>
-
+<ruleset name="WPHPCS">
 	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs"/>
 	<rule ref="WordPress"/>
 	<config name="minimum_supported_wp_version" value="5.0.0"/>
@@ -40,5 +38,4 @@
 		</properties>
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
 	</rule>
-
 </ruleset>
