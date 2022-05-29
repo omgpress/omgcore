@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_0_21;
+namespace WP_Titan_1_1_0;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -168,7 +168,7 @@ class Setting extends Feature {
 	/**
 	 * Add a setting.
 	 *
-	 * @param string $type Type of setting control. <a href="https://wpt.dpripa.com/namespaces/WP-Titan-1-0-21-Setting-Control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
+	 * @param string $type Type of setting control. <a href="https://wpt.dpripa.com/namespaces/WP-Titan-1-1-0-Setting-Control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
 	 * @param array $args Configuration of the setting. A control can have its own additional arguments, you can find them on the control's documentation page. General arguments:
 	 *  - `'default'` - default value.
 	 *  - `'description'` - setting description.

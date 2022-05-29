@@ -1,8 +1,8 @@
 <?php
 
-namespace WP_Titan_1_0_21\Core;
+namespace WP_Titan_1_1_0\Core;
 
-use const WP_Titan_1_0_21\ROOT_FILE;
+use const WP_Titan_1_1_0\ROOT_FILE;
 
 defined( 'ABSPATH' ) || exit;
 
