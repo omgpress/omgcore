@@ -4,9 +4,15 @@ namespace WP_Titan_1_0_21\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Type: 'radio_image'.
+ */
 class Radio_Image extends \WP_Customize_Control {
 
-	public $type       = 'wpt_radio_image';
+	/** @ignore */
+	public $type = 'wpt_radio_image';
+
+	/** @ignore */
 	public $item_width = 100;
 
 	protected function render_content() {

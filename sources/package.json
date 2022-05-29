@@ -22,7 +22,9 @@
     "ie 11"
   ],
   "dependencies": {
-    "jquery": "^3.5.1"
+    "jquery": "^3.5.1",
+    "jquery.are-you-sure": "^1.9.0",
+    "select2": "^4.0.13"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

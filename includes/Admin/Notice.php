@@ -19,7 +19,7 @@ class Notice extends Feature {
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
-		$this->transient_key = $app->get_key( 'transient_admin_notices' );
+		$this->transient_key = $app->get_key( 'transient_admin_notices', 'l' );
 	}
 
 	protected function get_transients(): array {
@@ -74,7 +74,9 @@ class Notice extends Feature {
 			__FUNCTION__,
 			function (): void {
 				$this->render_transients();
-			}
+			},
+			1,
+			true
 		);
 
 		return $this->app;

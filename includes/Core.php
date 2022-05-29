@@ -10,12 +10,12 @@ class Core {
 
 	protected $app;
 	protected $key;
-
 	protected $admin;
 	protected $asset;
 	protected $debugger;
 	protected $fs;
 	protected $hook;
+	protected $http;
 	protected $info;
 	protected $str;
 
@@ -58,6 +58,10 @@ class Core {
 
 	public function hook(): Core\Hook {
 		return $this->get_feature( null, $this, 'hook', Core\Hook::class );
+	}
+
+	public function http(): Core\Http {
+		return $this->get_feature( null, $this, 'http', Core\Http::class );
 	}
 
 	public function info(): Core\Info {

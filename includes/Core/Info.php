@@ -30,7 +30,6 @@ class Info extends Feature {
 		'requires_php' => 'Requires PHP',
 	);
 
-	/** @ignore */
 	public function __construct( Core $core ) {
 		parent::__construct( $core );
 

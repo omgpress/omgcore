@@ -4,8 +4,12 @@ namespace WP_Titan_1_0_21\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Type: 'notice'.
+ */
 class Notice extends \WP_Customize_Control {
 
+	/** @ignore */
 	public $type = 'wpt_notice';
 
 	protected function render_content() {

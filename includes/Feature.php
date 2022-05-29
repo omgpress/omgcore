@@ -23,12 +23,6 @@ abstract class Feature {
 		$this->$property = $value;
 	}
 
-	protected function get_property( string $property ) /* mixed */ {
-		$this->validate_setup();
-
-		return $this->$property;
-	}
-
 	protected function validate_setter(): bool {
 		$classname             = static::class;
 		$is_app_setup_complete = $this->app->is_setup_called();
@@ -37,7 +31,7 @@ abstract class Feature {
 		if ( $is_app_setup_complete || $is_setup_complete ) {
 			$trigger = $is_app_setup_complete ? 'application' : 'feature';
 
-			$this->core->debugger()->die( "It's too late to set something to the <code>$classname</code> since the $trigger setup has already been complete." );
+			$this->core->debugger()->die( "It's too late to set something to the feature <code>$classname</code> since the $trigger setup has already been complete." );
 		}
 
 		return $is_setup_complete || $is_app_setup_complete;
@@ -48,7 +42,7 @@ abstract class Feature {
 		$is_setup_complete = $this->is_single_called( 'setup' );
 
 		if ( ! $is_setup_complete ) {
-			$this->core->debugger()->die( "Need to setup the <code>$classname</code> feature first." );
+			$this->core->debugger()->die( "Need to setup the feature <code>$classname</code> first." );
 		}
 
 		return ! $is_setup_complete;
@@ -58,14 +52,14 @@ abstract class Feature {
 		return 'theme' === $this->app->get_env();
 	}
 
-	protected function add_setup_action( string $function, callable $callback, int $priority = HIGH_PRIORITY ): void {
+	protected function add_setup_action( string $function, callable $callback, int $priority = 1, bool $silent_secondary_calls = false ): void {
 		if ( $this->app->is_setup_called() ) {
 			$classname = static::class;
 
-			$this->core->debugger()->die( "It's too late to setup the <code>$classname</code> since the application setup has already been complete." );
+			$this->core->debugger()->die( "It's too late to setup the feature <code>$classname</code> since the application setup has already been complete." );
 		}
 
-		if ( $this->validate_single_call( $function, $this->app ) ) {
+		if ( $this->validate_single_call( $function, $this->app, $silent_secondary_calls ) ) {
 			return;
 		}
 

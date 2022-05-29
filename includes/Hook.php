@@ -33,7 +33,7 @@ class Hook extends Feature {
 
 	public function activation( callable $callback ): App {
 		if ( $this->is_theme() ) {
-			add_action( 'after_switch_theme', $callback, DEFAULT_PRIORITY, 2 );
+			add_action( 'after_switch_theme', $callback, 10, 2 );
 
 		} else {
 			register_activation_hook( $this->app->get_root_file(), $callback );
@@ -44,7 +44,7 @@ class Hook extends Feature {
 
 	public function deactivation( callable $callback ): App {
 		if ( $this->is_theme() ) {
-			add_action( 'switch_theme', $callback, DEFAULT_PRIORITY, 3 );
+			add_action( 'switch_theme', $callback, 10, 3 );
 
 		} else {
 			register_deactivation_hook( $this->app->get_root_file(), $callback );

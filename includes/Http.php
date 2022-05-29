@@ -10,26 +10,24 @@ defined( 'ABSPATH' ) || exit;
 class Http extends Feature {
 
 	public function get_current_url( bool $rel = false ): string {
-		$rel_path = add_query_arg( null, null );
-
-		return $rel ? $rel_path : $this->get_home_url( $rel_path );
+		return $this->core->http()->get_current_url( $rel );
 	}
 
 	public function get_home_url( string $path = '/', bool $base = false ): string {
-		return $this->core->hook()->apply_filters( 'home_url', home_url( $path ), $path, $base );
+		return $this->core->http()->get_home_url( $path, $base );
+	}
+
+	public function get_root_host(): string {
+		return $this->core->http()->get_root_host();
+	}
+
+	public function redirect( string $url, ?callable $callback = null ): App {
+		$this->core->http()->redirect( $url, $callback );
+
+		return $this->app;
 	}
 
 	public function get_tel_url( string $tel ): string {
 		return 'tel:' . str_replace( array( '-', ' ', '(', ')' ), '', $tel );
-	}
-
-	public function redirect( string $url, ?callable $callback = null ): App {
-		header( "Location: $url" );
-
-		if ( $callback ) {
-			header_register_callback( $callback );
-		}
-
-		return $this->app;
 	}
 }
