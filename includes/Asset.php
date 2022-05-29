@@ -176,7 +176,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Use `get_global_args_key`.
 	 */
 	public function get_script_args_key( string $object_name ): string {
 		return $this->get_global_args_key( $object_name );
@@ -192,7 +192,7 @@ class Asset extends Feature {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Use `enqueue_global_args`.
 	 */
 	public function enqueue_script_args( string $object_name, array $args ): App {
 		$this->enqueue_global_args( $object_name, $args );

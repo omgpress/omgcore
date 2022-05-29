@@ -1,7 +1,41 @@
 <?php
 
-namespace WP_Titan_1_0_19\Setting\Control;
+namespace WP_Titan_1_0_21\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
-class Text extends Control {}
+/**
+ * Type: 'text', 'number', 'email', 'tel'.
+ *
+ * ### Arguments
+ * - `'placeholder'` - field placeholder.
+ * - `'width'` - width of the field in pixels. Default: 300, 90 for `'number'`.
+ */
+class Text extends Control {
+
+	/** @ignore */
+	public static function render( string $type, string $name, /* mixed */ $value, ?string $title, array $args ): void {
+		?>
+		<div class="wpt-control-text">
+			<input
+				type="<?php echo esc_attr( $type ); ?>"
+				id="<?php echo esc_attr( $name ); ?>"
+				name="<?php echo esc_attr( $name ); ?>"
+				value="<?php echo esc_attr( $value ); ?>"
+				<?php
+				static::placeholder( $args );
+				static::required( $args );
+				?>
+				style="<?php static::width( $args, $type ); ?>"
+			>
+			<?php static::render_description( $args ); ?>
+		</div>
+		<?php
+	}
+
+	protected static function width( array $args, ?string $type = null ): void {
+		$default = 'number' === $type ? 90 : 300;
+
+		echo 'width:' . esc_attr( $args['width'] ?? $default ) . 'px;';
+	}
+}

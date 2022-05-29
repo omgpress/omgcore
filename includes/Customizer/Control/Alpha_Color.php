@@ -4,10 +4,18 @@ namespace WP_Titan_1_0_21\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Type: 'alpha_color'.
+ */
 class Alpha_Color extends \WP_Customize_Control {
 
+	/** @ignore */
 	public $type = 'wpt_alpha_color';
+
+	/** @ignore */
 	public $palette;
+
+	/** @ignore */
 	public $show_opacity;
 
 	protected function render_content() {

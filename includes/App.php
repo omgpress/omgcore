@@ -10,12 +10,11 @@ defined( 'ABSPATH' ) || exit;
  * ### Getting Started
  * A method that returns instance of a class that extends the `Feature` class is a specific feature, such as helpers, managers, etc.\
  * Of course, a feature contains its own methods and may also contain its own sub-features.\
- * Don't worry about optimization, each feature (and sub-feature) will be initialized only by the first call to its method.\
  * <a href="https://github.com/dpripa/wp-titan#example" target="_blank">Explore an example</a> of the WP Titan usage for more details.
  *
  * ### Setup Methods
  * Some features have `::setup()` method. Calling of this method is __required__ when you want to start use this feature.\
- * Don't hide its call in the any hooks, as this may ruin the work of the feature.
+ * Don't hide its call in any hooks, as this may ruin the work of the feature.
  *
  * ### Setter Methods
  * In addition, some features also have setter methods, like `::set_<name>(<property>)`. These methods can be optionally used for configure the feature and can change its behavior.\
@@ -32,10 +31,9 @@ class App {
 	protected $root_file;
 	protected $env;
 	protected $core;
-
+	protected $priority;
 	protected $requires_wp  = '5.0.0';
 	protected $requires_php = '7.2.0';
-
 	protected $admin;
 	protected $ajax;
 	protected $arr;
@@ -72,12 +70,14 @@ class App {
 			Core\Debugger::raw_die( 'Wrong application root file.', null, $key );
 		}
 
+		$this->core()->debugger()->setup();
+
 		$app_textdomain   = $this->info()->get_textdomain();
 		$app_requires_wp  = $this->info()->get_requires_wp();
 		$app_requires_php = $this->info()->get_requires_php();
 
 		if ( $app_textdomain && $app_textdomain !== $key ) {
-			$this->core()->debugger()->die( "The textdomain in the application metadata must match the application key: <code>$key</code>." );
+			$this->core()->debugger()->die( "The textdomain in the application metadata must match the application key <code>'$key'</code>." );
 		}
 
 		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
@@ -127,6 +127,12 @@ class App {
 			case 'c':
 				return $this->core()->str()->to_camelcase( $key );
 
+			case 'l':
+				return strtolower( $key );
+
+			case '-l':
+				return strtolower( str_replace( '_', '-', $key ) );
+
 			default:
 			case '_':
 				return $key;
@@ -172,6 +178,8 @@ class App {
 			return $this;
 		}
 
+		$this->priority = $priority;
+
 		if ( $this->is_theme() ) {
 			add_action(
 				'after_setup_theme',
@@ -182,13 +190,17 @@ class App {
 					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
 					add_theme_support( 'customize-selective-refresh-widgets' );
 				},
-				HIGH_PRIORITY
+				1
 			);
 		}
 
 		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;
+	}
+
+	public function get_priority(): int {
+		return $this->priority;
 	}
 
 	/**
@@ -231,7 +243,7 @@ class App {
 	}
 
 	/**
-	 * Manage customizer.
+	 * Manage customizer settings.
 	 */
 	public function customizer(): Customizer {
 		return $this->get_feature( $this, $this->core(), 'customizer', Customizer::class );

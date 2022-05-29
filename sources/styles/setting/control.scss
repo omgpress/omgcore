@@ -1,0 +1,17 @@
+.wpt-control__title-text {
+
+	+ .wpt-control__required {
+		margin-left: 8px;
+	}
+}
+
+.wpt-control__required {
+	position: relative;
+	top: -1px;
+	padding: 1px 4px 2px;
+	font-weight: 400;
+	font-size: 11px;
+	color: #808080;
+	background: #dcdcde;
+	border-radius: 3px;
+}

@@ -4,11 +4,18 @@ namespace WP_Titan_1_0_21\Customizer\Section;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Type: 'link'.
+ */
 class Link extends \WP_Customize_Section {
 
+	/** @ignore */
 	public $type = 'wpt_link';
 
-	public $link   = '';
+	/** @ignore */
+	public $link = '';
+
+	/** @ignore */
 	public $target = '';
 
 	protected function render() {

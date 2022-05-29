@@ -22,7 +22,19 @@
 				<path>includes/Integration/Plugin.php</path>
 				<path>includes/Basic_Feature.php</path>
 				<path>includes/Feature.php</path>
-				<path>includes/Setting/**/*</path>
+				<path>includes/Setting/Control/Control.php</path>
+				<path>includes/Setting/Control/Simple_Control.php</path>
+				<path>includes/Setting/Base.php</path>
+				<path>includes/Setting/Box.php</path>
+				<path>includes/Setting/Content.php</path>
+				<path>includes/Setting/Control.php</path>
+				<path>includes/Setting/Handler.php</path>
+				<path>includes/Setting/Page.php</path>
+				<path>includes/Setting/Setting.php</path>
+				<path>includes/Setting/Storage.php</path>
+				<path>includes/Setting/Sub_Tab.php</path>
+				<path>includes/Setting/Submit_Btn.php</path>
+				<path>includes/Setting/Tab.php</path>
 			</ignore>
 		</api>
 	</version>

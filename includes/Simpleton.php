@@ -9,13 +9,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Manage application classes that used the simpleton pattern.
  *
- * - The simpleton can be called everywhere.
- * - Simpleton is guarantee that a functionality of this class (part of logic) has be called only once.
- * - The simpleton `__constructor` is mainly used to call WordPress hooks and other simpleton classes.
- * - In most cases' simpleton classes are called without assignment to a variable. But you can do it if you have the need.
- * - Methods that calling by hook needs to be public. Because of this, we consider that all non-static methods of the simpleton class are reserved for a hook-based logic.
- * - Simpleton may also contain public static methods associated to the logic of the current class.
- * - <a href="https://github.com/dpripa/wp-titan#setupphp" target="_blank">Explore an example</a> of the simpleton usage for more details.
+ * The simpleton can be called everywhere.\
+ * Simpleton is guarantee that a functionality of this class (part of logic) has be called only once.\
+ * The simpleton `__constructor` is mainly used to call WordPress hooks and other simpleton classes.\
+ * In most cases' simpleton classes are called without assignment to a variable. But you can do it if you have the need.\
+ * Methods that calling by hook needs to be public. Because of this, we consider that all non-static methods of the simpleton class are reserved for a hook-based logic.\
+ * Simpleton may also contain public static methods associated to the logic of the current class.\
+ * <a href="https://github.com/dpripa/wp-titan#setupphp" target="_blank">Explore an example</a> of the simpleton usage for more details.
  */
 class Simpleton extends Feature {
 

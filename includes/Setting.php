@@ -1,131 +1,492 @@
 <?php
 
-namespace WP_Titan_1_0_19;
+namespace WP_Titan_1_0_21;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Manage settings.
+ *
+ * Here's a complete toolset for creating settings pages and fields, getting their values, etc.\
+ * Context is a little magic that makes it easy to add the setting pages, tabs, sub-tabs, boxes and settings.\
+ * You just need to add the specific setting pages, tabs, sub-tabs, boxes and settings to the context. And then all the following `::get()` setting methods will use it to find out who their parents are.\
+ * When adding settings, the same thing happens. But you don't need to explicitly update the context, as adding a page, tab, sub-tab, or box will automatically add it to the shadow context.\
+ * You don't have direct access to the shadow context, and it does NOT overlap with the regular context either.
  */
 class Setting extends Feature {
 
-	protected $pages    = array();
-	protected $tabs     = array();
-	protected $sub_tabs = array();
-	protected $boxes    = array();
-	protected $settings = array();
+	protected $context;
+	protected $shadow_context;
+	protected $storage;
+	protected $handler;
+	protected $submit_btn     = 'Save changes';
+	protected $error_notice   = 'Something went wrong.';
+	protected $success_notice = 'Changes saved.';
+	protected $required_label = 'required';
 
-	protected $master_scope;
-	protected $scope;
-
-	public function add_page( string $page, string $nav_title, string $title = '' ): App {
+	/**
+	 * Add a page or sub-page to the admin menu.
+	 */
+	public function add_page(
+		string $page,
+		?string $parent,
+		string $nav_title,
+		?string $title = null,
+		?string $icon_url = null,
+		?string $description = null,
+		?int $position = null,
+		string $capability = 'delete_posts'
+	): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
 
-		$this->master_scope['page'] = $page;
+		if ( $this->storage()->is_page( $page ) ) {
+			$this->core->debugger()->die( "The <code>'$page'</code> page already exists." );
 
-		$this->pages[ $page ] = new Setting\Page();
+			return $this->app;
+		}
+
+		$this->shadow_context()->remove();
+		$this->shadow_context()->add_page( $page );
+		$this->storage()->add_page(
+			$page,
+			$parent,
+			$nav_title,
+			$title,
+			$icon_url,
+			$description,
+			$position,
+			$capability,
+			$this->submit_btn,
+			$this->handler()->get_url()
+		);
 
 		return $this->app;
 	}
 
-	public function add_tab( string $tab, string $nav_title, string $title = '' ): App {
+	/**
+	 * Add a tab to the page.
+	 */
+	public function add_tab( string $tab, string $nav_title, ?string $title = null, ?string $description = null ): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
 
-		$this->master_scope['tab'] = $tab;
+		$page = $this->shadow_context()->get_page();
 
-		$this->tabs[ $tab ] = new Setting\Tab();
+		if ( empty( $page ) ) {
+			$this->core->debugger()->die( "Need to add a page before adding the <code>'$tab'</code> tab." );
+
+			return $this->app;
+		}
+
+		if ( $this->storage()->is_tab( $tab, $page ) ) {
+			$this->core->debugger()->die( "The <code>$tab</code> tab already exists." );
+
+			return $this->app;
+		}
+
+		$this->shadow_context()->add_tab( $tab );
+		$this->shadow_context()->add_sub_tab( null );
+		$this->shadow_context()->add_box( null );
+		$this->storage()->add_tab( $tab, $page, $nav_title, $title, $description );
 
 		return $this->app;
 	}
 
-	public function add_sub_tab( string $sub_tab, string $nav_title, string $title = '' ): App {
+	/**
+	 * Add a sub-tab to the tab.
+	 */
+	public function add_sub_tab( string $sub_tab, string $nav_title, ?string $title = null, ?string $description = null ): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
 
-		$this->master_scope['sub_tab'] = $sub_tab;
+		$page         = $this->shadow_context()->get_page();
+		$tab          = $this->shadow_context()->get_tab();
+		$prev_sub_tab = $this->shadow_context()->get_sub_tab();
+		$box          = $this->shadow_context()->get_box();
 
-		$this->sub_tabs[ $sub_tab ] = new Setting\Sub_Tab();
+		if ( $box && empty( $prev_sub_tab ) ) {
+			$this->core->debugger()->die(
+				"Wrong position of the <code>'$sub_tab'</code> sub-tab in the structure. The parent <code>'$tab'</code> tab already has the direct child boxes."
+			);
+
+			return $this->app;
+		}
+
+		if ( empty( $tab ) ) {
+			$this->core->debugger()->die( "Need to add a tab before adding the <code>'$sub_tab'</code> sub-tab." );
+
+			return $this->app;
+		}
+
+		if ( $this->storage()->is_sub_tab( $sub_tab, $tab, $page ) ) {
+			$this->core->debugger()->die( "The <code>'$sub_tab'</code> sub-tab already exists." );
+
+			return $this->app;
+		}
+
+		$this->shadow_context()->add_sub_tab( $sub_tab );
+		$this->shadow_context()->add_box( null );
+		$this->storage()->add_sub_tab( $sub_tab, $tab, $page, $nav_title, $title, $description );
 
 		return $this->app;
 	}
 
-	public function add_box( string $box, string $title = '' ): App {
+	/**
+	 * Add a box to the tab or sub-tab.
+	 */
+	public function add_box( string $box, ?string $title = null, ?string $description = null ): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
 
-		$this->master_scope['box'] = $box;
+		$page    = $this->shadow_context()->get_page();
+		$tab     = $this->shadow_context()->get_tab();
+		$sub_tab = $this->shadow_context()->get_sub_tab();
 
-		$this->boxes[ $box ] = new Setting\Box();
+		if ( empty( $tab ) && empty( $sub_tab ) ) {
+			$this->core->debugger()->die( "Need to add a tab or sub-tab before adding the <code>'$box'</code> box." );
+
+			return $this->app;
+		}
+
+		if ( $this->storage()->is_box( $box, $sub_tab, $tab, $page ) ) {
+			$this->core->debugger()->die( "The <code>'$box'</code> box already exists." );
+
+			return $this->app;
+		}
+
+		$this->shadow_context()->add_box( $box );
+		$this->storage()->add_box( $box, $sub_tab, $tab, $page, $title, $description );
 
 		return $this->app;
 	}
 
-	public function add( string $setting, array $args ): App {
+	/**
+	 * Add a setting.
+	 *
+	 * @param string $type Type of setting control. <a href="https://wpt.dpripa.com/namespaces/WP-Titan-1-0-21-Setting-Control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
+	 * @param array $args Configuration of the setting. A control can have its own additional arguments, you can find them on the control's documentation page. General arguments:
+	 *  - `'default'` - default value.
+	 *  - `'description'` - setting description.
+	 *  - `'sanitize_callback'` - name of a helper function to sanitize a setting value. Default: `'sanitize_text_field'`.
+	 */
+	public function add( string $type, string $setting, ?string $title, array $args = array() ): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
 
-		$this->settings[ $setting ] = new Setting\Setting();
+		$page    = $this->shadow_context()->get_page();
+		$tab     = $this->shadow_context()->get_tab();
+		$sub_tab = $this->shadow_context()->get_sub_tab();
+		$box     = $this->shadow_context()->get_box();
+
+		if ( empty( $box ) ) {
+			$this->core->debugger()->die( "Need to add a box before adding the <code>'$setting'</code> setting." );
+
+			return $this->app;
+		}
+
+		if ( $this->storage()->is_setting( $setting, $box, $sub_tab, $tab, $page ) ) {
+			$this->core->debugger()->die( "The <code>'$setting'</code> setting already exists." );
+
+			return $this->app;
+		}
+
+		$this->storage()->add_setting(
+			$type,
+			$setting,
+			$box,
+			$sub_tab,
+			$tab,
+			$page,
+			$title,
+			$args,
+			$this->required_label
+		);
 
 		return $this->app;
 	}
 
-	public function get( string $setting, ?string $page = null, ?string $tab = null, ?string $sub_tab_or_box = null, ?string $box = null ) /* mixed */ {
+	/**
+	 * Add a specific content to the page, tab, sub-tab or box.
+	 *
+	 * @param callable|null $custom_handler Handler for data from a custom source.
+	 */
+	public function add_content( string $content, callable $render_content, ?callable $custom_handler = null ): App {
+		if ( $this->validate_setup() ) {
+			return $this->app;
+		}
+
+		$page    = $this->shadow_context()->get_page();
+		$tab     = $this->shadow_context()->get_tab();
+		$sub_tab = $this->shadow_context()->get_sub_tab();
+		$box     = $this->shadow_context()->get_box();
+
+		if ( empty( $page ) ) {
+			$this->core->debugger()->die( "Need to add at least a page before adding the <code>'$content'</code> content." );
+
+			return $this->app;
+		}
+
+		if ( $this->storage()->is_content( $content, $box, $sub_tab, $tab, $page ) ) {
+			$this->core->debugger()->die( "The <code>'$content'</code> content already exists." );
+
+			return $this->app;
+		}
+
+		$this->storage()->add_content(
+			$content,
+			$box,
+			$sub_tab,
+			$tab,
+			$page,
+			$render_content,
+			$custom_handler
+		);
+
+		return $this->app;
+	}
+
+	/**
+	 * Get a setting value.
+	 */
+	public function get(
+		string $setting,
+		?string $box = null,
+		?string $sub_tab = null,
+		?string $tab = null,
+		?string $page = null
+	) /* mixed */ {
 		if ( $this->validate_setup() ) {
 			return null;
 		}
 
-		return get_option();
+		if ( empty( $box ) ) {
+			$box = $this->context()->get_box();
+		}
+
+		if ( empty( $sub_tab ) ) {
+			$sub_tab = $this->context()->get_sub_tab();
+		}
+
+		if ( empty( $tab ) ) {
+			$tab = $this->context()->get_tab();
+		}
+
+		if ( empty( $page ) ) {
+			$page = $this->context()->get_page();
+		}
+
+		if ( ! $this->storage()->is_setting( $setting, $box, $sub_tab, $tab, $page ) ) {
+			$sub_tab_label = $sub_tab ? "sub-tab: <code>'$sub_tab'</code>," : '';
+
+			$this->core->debugger()->die(
+				"The <code>'$setting'</code> setting doesn't exists. Parent box: <code>'$box'</code>, $sub_tab_label tab: <code>'$tab'</code>, page: <code>'$page'</code>."
+			);
+
+			return null;
+		}
+
+		$setting_data = $this->storage()->get_setting(
+			$setting,
+			$box,
+			$sub_tab,
+			$tab,
+			$page
+		);
+
+		return $setting_data['object']->get();
 	}
 
-	public function start_scope(): App {
-		if ( $this->validate_setup() ) {
+	/**
+	 * Get the full page key.
+	 */
+	public function get_page_key( string $page ): string {
+		return $this->storage()->get_page_key( $page );
+	}
+
+	/**
+	 * Set a header for the setting pages.
+	 */
+	public function set_header( callable $render_header ): App {
+		if ( $this->validate_setter() ) {
 			return $this->app;
 		}
+
+		add_action(
+			'admin_menu',
+			function () use ( $render_header ): void {
+				$this->core->hook()->add_action( 'setting_header', $render_header, 10, 3 );
+			},
+			5
+		);
 
 		return $this->app;
 	}
 
-	public function end_scope(): App {
-		if ( $this->validate_setup() ) {
+	/**
+	 * Set a footer for the setting pages.
+	 */
+	public function set_footer( callable $render_footer ): App {
+		if ( $this->validate_setter() ) {
 			return $this->app;
 		}
+
+		add_action(
+			'admin_menu',
+			function () use ( $render_footer ): void {
+				$this->core->hook()->add_action( 'setting_footer', $render_footer, 10, 3 );
+			},
+			5
+		);
 
 		return $this->app;
 	}
 
-	protected function scope(): Setting\Scope {
-		return $this->get_feature( $this->app, $this->core, 'scope', Setting\Scope::class );
+	/**
+	 * Set a title for the submit button.
+	 *
+	 * Default: `'Save changes'`.
+	 *
+	 * The submit button will only be displaying when at least one setting is displaying.
+	 *
+	 * @param string|null $btn_title Pass `null` to hide the button anyway.
+	 */
+	public function set_submit_btn( ?string $btn_title ): App {
+		$this->set_property( 'submit_btn', $btn_title );
+
+		return $this->app;
 	}
 
-	protected function master_scope(): Setting\Scope {
-		return $this->get_feature( $this->app, $this->core, 'master_scope', Setting\Scope::class );
+	/**
+	 * Set a message for the error notice of the save settings process.
+	 *
+	 * Default: `'Something went wrong.'`.
+	 */
+	public function set_error_notice( string $message ): App {
+		$this->set_property( 'error_notice', $message );
+
+		return $this->app;
 	}
 
+	/**
+	 * Set a message for the success notice of the save settings process.
+	 *
+	 * Default: `'Changes saved.'`.
+	 */
+	public function set_success_notice( string $message ): App {
+		$this->set_property( 'success_notice', $message );
+
+		return $this->app;
+	}
+
+	/**
+	 * Set a label text for the "required" label of the setting control.
+	 *
+	 * Default: `'Required'`.
+	 */
+	public function set_required_label( string $message ): App {
+		$this->set_property( 'required_label', $message );
+
+		return $this->app;
+	}
+
+	/**
+	 * Render a control for data from a custom source.
+	 *
+	 * Designed for use in the `$custom_handler` parameter of the `::add_content()` method.
+	 */
+	public function render_control( string $type, string $key, /* mixed */ $value, ?string $title, array $args = array() ): App {
+		if ( $this->validate_setup() ) {
+			return $this->app;
+		}
+
+		Setting\Control::render_custom( $this->core, $type, $key, $value, $title, $args, $this->required_label );
+
+		return $this->app;
+	}
+
+	/**
+	 * Render submit button in a custom location.
+	 *
+	 * If no settings have been added on the current page, the button will not be displayed.
+	 * Using the `::render_control()` method on a page with no settings you may need to add the button manually, the `::render_submit_btn()` method is mostly for that.
+	 *
+	 * @param string|null $btn_title Pass title if you've hidden the default button, or if you want to change the title of that particular button.
+	 */
+	public function render_submit_btn( ?string $btn_title = null ): App {
+		if ( $this->validate_setup() ) {
+			return $this->app;
+		}
+
+		Setting\Submit_Btn::render( $btn_title ?? $this->submit_btn );
+
+		return $this->app;
+	}
+
+	/**
+	 * Manage setting context.
+	 */
+	public function context(): Setting\Context {
+		$this->validate_setup();
+
+		return $this->get_feature( $this->app, $this->core, 'context', Setting\Context::class );
+	}
+
+	protected function shadow_context(): Setting\Context {
+		return $this->get_feature( $this->app, $this->core, 'shadow_context', Setting\Context::class );
+	}
+
+	protected function storage(): Setting\Storage {
+		return $this->get_feature( $this->app, $this->core, 'storage', Setting\Storage::class );
+	}
+
+	protected function handler(): Setting\Handler {
+		return $this->get_feature( $this->app, $this->core, 'handler', Setting\Handler::class );
+	}
+
+	/**
+	 * Required.
+	 */
 	public function setup(): App {
 		$this->add_setup_action(
 			__FUNCTION__,
 			function (): void {
-				$this->enqueue_assets();
+				add_action(
+					'admin_menu',
+					function (): void {
+						if ( ! $this->storage()->is_page( $this->storage()->get_active_page(), false ) ) {
+							return;
+						}
+
+						$this->enqueue_assets();
+						$this->handler()->setup(
+							$this->storage(),
+							$this->error_notice,
+							$this->success_notice
+						);
+					},
+					10
+				);
 			}
 		);
+
+		$this->app->admin()->notice()->setup();
 
 		return $this->app;
 	}
 
 	protected function enqueue_assets(): void {
-		add_action(
-			'admin_enqueue_scripts',
-			function (): void {
-				$this->core->asset()->enqueue_script( 'setting' );
-				$this->core->asset()->enqueue_style( 'setting' );
-			}
+		$this->core->asset()->enqueue_script(
+			'setting',
+			array(
+				'jquery',
+			)
 		);
+		$this->core->asset()->enqueue_style( 'setting' );
 	}
 }
