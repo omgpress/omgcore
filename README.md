@@ -152,7 +152,7 @@ final class Post {
 
     $label = app()->setting()->get( 'external_author_label', 'post' );
 
-    if ( ! empty( $label ) ) {
+    if ( $label ) {
       ob_start();
       ?>
       <br/>
