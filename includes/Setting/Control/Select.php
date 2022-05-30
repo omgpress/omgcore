@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting\Control;
+namespace WP_Titan_1_1_1\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 class Select extends Control {
 
 	/** @ignore */
-	public static function render( string $type, string $name, /* ?string|?array */ $value, ?string $title, array $args ): void { // phpcs:ignore
+	public static function render( string $type, string $name, /* array|string|null */ $value, ?string $title, array $args ): void { // phpcs:ignore
 		?>
 		<div class="wpt-control-select">
 			<select
@@ -55,7 +55,7 @@ class Select extends Control {
 		return isset( $args['multiple'] ) && true === $args['multiple'];
 	}
 
-	protected static function selected( string $option_key, /* ?string|?array */ $value ): void { // phpcs:ignore
+	protected static function selected( string $option_key, /* array|string|null */ $value ): void { // phpcs:ignore
 		echo is_array( $value ) ?
 			( in_array( $option_key, $value, true ) ? 'selected' : '' ) :
 			( $option_key === $value ? 'selected' : '' );

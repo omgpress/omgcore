@@ -24,7 +24,7 @@ Alternatively, you can [download the latest release](https://github.com/dpripa/w
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-1-0-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-1-1-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used. It doesn't matter which environment (plugin or theme) you run this code in, WP Titan automatically detects your app's environment and provides a universal API.
@@ -41,7 +41,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_1_0\App as App;
+use WP_Titan_1_1_1\App as App;
 
 // Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
@@ -50,7 +50,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-1-0-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-1-1-Simpleton.html).
 
 #### Setup.php
 ```php

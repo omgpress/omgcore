@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting;
+namespace WP_Titan_1_1_1\Setting;
 
-use WP_Titan_1_1_0\App;
-use WP_Titan_1_1_0\Core;
+use WP_Titan_1_1_1\App;
+use WP_Titan_1_1_1\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -112,6 +112,8 @@ class Tab extends Base {
 				</a>
 				<?php
 			}
+
+			$this->core->hook()->do_action( 'setting_tab_nav', $this->tab, $this->page );
 			?>
 		</div>
 		<?php

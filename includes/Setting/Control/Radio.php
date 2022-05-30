@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting\Control;
+namespace WP_Titan_1_1_1\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class Radio extends Control {
 
 	/** @ignore */
-	public static function render( string $type, string $name, /* ?string */ $value, ?string $title, array $args ): void {
+	public static function render( string $type, string $name, /* array|string|null */ $value, ?string $title, array $args ): void {
 		?>
 		<div class="wpt-control-radio">
 			<fieldset id="<?php echo esc_attr( $name ); ?>">

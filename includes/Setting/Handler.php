@@ -1,10 +1,10 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting;
+namespace WP_Titan_1_1_1\Setting;
 
-use WP_Titan_1_1_0\App;
-use WP_Titan_1_1_0\Core;
-use WP_Titan_1_1_0\Feature;
+use WP_Titan_1_1_1\App;
+use WP_Titan_1_1_1\Core;
+use WP_Titan_1_1_1\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -136,25 +136,26 @@ class Handler extends Feature {
 
 	protected function update_settings( array $settings_data ): void {
 		foreach ( $settings_data as $setting_data ) {
-			$value = null;
+			if ( ! isset( $_POST[ $setting_data['key'] ] ) ) { // phpcs:ignore
+				return;
+			}
 
-			if ( isset( $_POST[ $setting_data['key'] ] ) ) { // phpcs:ignore
-				$post_value = $_POST[ $setting_data['key'] ]; // phpcs:ignore
+			$value      = null;
+			$post_value = $_POST[ $setting_data['key'] ]; // phpcs:ignore
 
-				if ( is_array( $post_value ) ) {
-					foreach ( $post_value as $option_key => $option_value ) {
-						$value[ $option_key ] = $this->sanitize_value( $setting_data['sanitize_callback'], $option_value );
-					}
-				} else {
-					$value = $this->sanitize_value( $setting_data['sanitize_callback'], $post_value );
+			if ( is_array( $post_value ) ) {
+				foreach ( $post_value as $option_key => $option_value ) {
+					$value[ $option_key ] = $this->sanitize_value( $setting_data['sanitize_callback'], $option_value );
 				}
+			} else {
+				$value = $this->sanitize_value( $setting_data['sanitize_callback'], $post_value );
 			}
 
 			update_option( $setting_data['key'], $value );
 		}
 	}
 
-	protected function sanitize_value( /* ?string|?array */ $sanitize_callback, /* mixed */ $value ) /* mixed */ { // phpcs:ignore
+	protected function sanitize_value( /* array|string|null */ $sanitize_callback, /* mixed */ $value ) /* mixed */ { // phpcs:ignore
 		$value = wp_unslash( $value );
 
 		if ( $sanitize_callback ) {

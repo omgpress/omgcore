@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_0;
+namespace WP_Titan_1_1_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -199,6 +199,9 @@ class App {
 		return $this;
 	}
 
+	/**
+	 * Get the priority of the setup action that was passed in the call.
+	 */
 	public function get_priority(): int {
 		return $this->priority;
 	}

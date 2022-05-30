@@ -51,6 +51,11 @@ function setPackageVersion( data ) {
 }
 
 function replaceDashClassName( data, needle, replace ) {
+	data = data.replace(
+		new RegExp( needle.toLowerCase().replace( /_/g, '-' ), 'g' ),
+		replace.toLowerCase().replace( /_/g, '-' )
+	);
+
 	return data.replace(
 		new RegExp( needle.replace( /_/g, '-' ), 'g' ),
 		replace.replace( /_/g, '-' )

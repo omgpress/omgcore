@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_0;
+namespace WP_Titan_1_1_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -168,8 +168,8 @@ class Setting extends Feature {
 	/**
 	 * Add a setting.
 	 *
-	 * @param string $type Type of setting control. <a href="https://wpt.dpripa.com/namespaces/WP-Titan-1-1-0-Setting-Control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
-	 * @param array $args Configuration of the setting. A control can have its own additional arguments, you can find them on the control's documentation page. General arguments:
+	 * @param string $type Type of the setting control. <a href="https://wpt.dpripa.com/namespaces/wp-titan-1-1-1-setting-control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
+	 * @param array $args Configuration of the setting. A control can have its own additional arguments, you can find them on each control's documentation page. General arguments:
 	 *  - `'default'` - default value.
 	 *  - `'description'` - setting description.
 	 *  - `'sanitize_callback'` - name of a helper function to sanitize a setting value. Default: `'sanitize_text_field'`.
@@ -212,9 +212,17 @@ class Setting extends Feature {
 	}
 
 	/**
-	 * Add a specific content to the page, tab, sub-tab or box.
+	 * Add a custom content to the page, tab, sub-tab or box.
 	 *
-	 * @param callable|null $custom_handler Handler for data from a custom source.
+	 * @param callable $render_content Parameters:
+	 *  - string|null $sub_tab
+	 *  - string|null $tab
+	 *  - string|null $page
+	 *
+	 * @param callable|null $custom_handler Handler for data from a custom source. Parameters:
+	 *  - string|null $sub_tab
+	 *  - string|null $tab
+	 *  - string|null $page
 	 */
 	public function add_content( string $content, callable $render_content, ?callable $custom_handler = null ): App {
 		if ( $this->validate_setup() ) {
@@ -247,6 +255,23 @@ class Setting extends Feature {
 			$render_content,
 			$custom_handler
 		);
+
+		return $this->app;
+	}
+
+	/**
+	 * Add an item to the tab navigation.
+	 *
+	 * @param callable $render_item Parameters:
+	 *  - string|null $tab
+	 *  - string|null $page
+	 */
+	public function add_tab_nav_item( callable $render_item ): App {
+		if ( $this->validate_setup() ) {
+			return $this->app;
+		}
+
+		$this->core->hook()->add_action( 'setting_tab_nav', $render_item, 10, 2 );
 
 		return $this->app;
 	}
@@ -311,6 +336,11 @@ class Setting extends Feature {
 
 	/**
 	 * Set a header for the setting pages.
+	 *
+	 * @param callable $render_header Parameters:
+	 *  - string|null $sub_tab
+	 *  - string|null $tab
+	 *  - string|null $page
 	 */
 	public function set_header( callable $render_header ): App {
 		if ( $this->validate_setter() ) {
@@ -330,6 +360,11 @@ class Setting extends Feature {
 
 	/**
 	 * Set a footer for the setting pages.
+	 *
+	 * @param callable $render_footer Parameters:
+	 *  - string|null $sub_tab
+	 *  - string|null $tab
+	 *  - string|null $page
 	 */
 	public function set_footer( callable $render_footer ): App {
 		if ( $this->validate_setter() ) {
@@ -385,12 +420,12 @@ class Setting extends Feature {
 	}
 
 	/**
-	 * Set a label text for the "required" label of the setting control.
+	 * Set the "required" label of a setting control.
 	 *
-	 * Default: `'Required'`.
+	 * Default: `'required'`.
 	 */
-	public function set_required_label( string $message ): App {
-		$this->set_property( 'required_label', $message );
+	public function set_required_label( string $text ): App {
+		$this->set_property( 'required_label', $text );
 
 		return $this->app;
 	}
@@ -413,7 +448,6 @@ class Setting extends Feature {
 	/**
 	 * Render submit button in a custom location.
 	 *
-	 * If no settings have been added on the current page, the button will not be displayed.
 	 * Using the `::render_control()` method on a page with no settings you may need to add the button manually, the `::render_submit_btn()` method is mostly for that.
 	 *
 	 * @param string|null $btn_title Pass title if you've hidden the default button, or if you want to change the title of that particular button.

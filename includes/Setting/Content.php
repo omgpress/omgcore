@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting;
+namespace WP_Titan_1_1_1\Setting;
 
-use WP_Titan_1_1_0\App;
-use WP_Titan_1_1_0\Core;
+use WP_Titan_1_1_1\App;
+use WP_Titan_1_1_1\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -54,7 +54,7 @@ class Content extends Base {
 				}
 
 				if ( is_callable( $this->custom_handler ) ) {
-					$this->core->hook()->add_action( 'setting_custom_handler', array( $this, 'add_custom_handler' ) );
+					$this->core->hook()->add_action( 'setting_custom_handler', array( $this, 'add_custom_handler' ), 10, 3 );
 				}
 			},
 			5
@@ -113,7 +113,7 @@ class Content extends Base {
 		call_user_func( $this->render_content, $active_sub_tab, $active_tab, $active_page );
 	}
 
-	public function add_custom_handler( ?string $sub_tab, ?string $tab, $page ): void {
+	public function add_custom_handler( ?string $sub_tab, ?string $tab, string $page ): void {
 		if (
 			$this->sub_tab !== $sub_tab ||
 			$this->tab !== $tab ||

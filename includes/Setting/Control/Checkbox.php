@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_0\Setting\Control;
+namespace WP_Titan_1_1_1\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class Checkbox extends Control {
 
 	/** @ignore */
-	public static function render( string $type, string $name, /* ?array|?string */ $value, ?string $title, array $args ): void { // phpcs:ignore
+	public static function render( string $type, string $name, /* array|string|null */ $value, ?string $title, array $args ): void { // phpcs:ignore
 		?>
 		<div class="wpt-control-checkbox">
 			<fieldset id="<?php echo esc_attr( $name ); ?>" required>
@@ -46,7 +46,7 @@ class Checkbox extends Control {
 		<?php
 	}
 
-	protected static function checked( string $option_key, /* ?array|?string */ $value ): void { // phpcs:ignore
+	protected static function checked( string $option_key, /* array|string|null */ $value ): void { // phpcs:ignore
 		if ( is_array( $value ) && in_array( $option_key, array_keys( $value ), true ) ) {
 			echo 'checked';
 		}
