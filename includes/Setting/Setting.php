@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_1_1\Setting;
+namespace WP_Titan_1_1_2\Setting;
 
-use WP_Titan_1_1_1\App;
-use WP_Titan_1_1_1\Core;
+use WP_Titan_1_1_2\App;
+use WP_Titan_1_1_2\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -77,7 +77,7 @@ class Setting extends Base {
 	}
 
 	public function get() /* mixed */ {
-		return get_option( $this->key, isset( $this->args['default'] ) ?? null );
+		return get_option( $this->key, $this->args['default'] ?? null );
 	}
 
 	public function render( string $box, ?string $sub_tab, string $tab, string $page ): void {

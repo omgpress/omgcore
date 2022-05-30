@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Titan_1_1_1\Setting\Control;
+namespace WP_Titan_1_1_2\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,10 +20,9 @@ class Textarea extends Control {
 			<textarea
 				id="<?php echo esc_attr( $name ); ?>"
 				name="<?php echo esc_attr( $name ); ?>"
-				value="<?php echo esc_attr( $value ); ?>"
 				<?php static::placeholder( $args ); ?>
 				style="<?php static::width( $args ); ?>"
-			></textarea>
+			><?php echo esc_html( $value ); ?></textarea>
 			<?php static::render_description( $args ); ?>
 		</div>
 		<?php

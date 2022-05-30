@@ -24,7 +24,7 @@ Alternatively, you can [download the latest release](https://github.com/dpripa/w
 
 ## Documentation
 The latest documentation is published on [wpt.dpripa.com](https://wpt.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-1-1-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpt.dpripa.com/classes/WP-Titan-1-1-2-App.html) of the library.
 
 ## Example
 The following is a simple example when WP Titan is used. It doesn't matter which environment (plugin or theme) you run this code in, WP Titan automatically detects your app's environment and provides a universal API.
@@ -41,7 +41,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Always be sure that the WP Titan namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'WP_Titan_x_x_x' version is x.x.x.
-use WP_Titan_1_1_1\App as App;
+use WP_Titan_1_1_2\App as App;
 
 // Define a function that returns the singleton instance of WP Titan for your application.
 function app(): App {
@@ -50,7 +50,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-1-1-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-1-2-Simpleton.html).
 
 #### Setup.php
 ```php
@@ -67,6 +67,7 @@ final class Setup {
 
     app()->i18n()->setup()
       ->admin()->notice()->setup()
+      ->setting()->setup()
       ->setup( array( $this, 'setup' ) );
 
     // The simpleton classes can be called earlier if necessary for the application logic.
@@ -75,19 +76,13 @@ final class Setup {
   }
 
   public function setup(): void {
-    if ( ! app()->integration()->wc()->is_active() ) {
-      app()->admin()->notice()->render(
-        app()->i18n()->__( 'My App require WooCommerce.' )
-      );
-
-      return;
-    }
-
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
     // In most cases we call simpleton classes inside the setup action, when the WordPress environment is fully loaded.
-    new Cart();
-    // new Checkout();
+    new Setting();
+    new Post();
+
+    app()->hook()->do_action( 'setup_complete' );
   }
 
   public function enqueue_assets(): void {
@@ -97,29 +92,76 @@ final class Setup {
 }
 ```
 
-#### Cart.php
+#### Setting.php
 ```php
 namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
-final class Cart {
+final class Setting {
 
   public function __construct() {
     if ( app()->simpleton()->validate( self::class ) ) {
       return;
     }
 
-    add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+    app()->setting()->add_page(
+      'general',
+      'edit.php',
+      app()->i18n()->__( 'My App' ),
+      app()->i18n()->__( 'My App Settings' )
+    )->setting()->add_tab(
+      'general',
+      app()->i18n()->__( 'General' )
+    )->setting()->add_box(
+      'post'
+    )->setting()->add(
+      'textarea',
+      'external_author_label',
+      app()->i18n()->__( 'External author label' ),
+      array(
+        'default' => 'The author of this post is an external source.',
+      )
+    );
+  }
+}
+```
+
+#### Post.php
+```php
+namespace My_App;
+
+defined( 'ABSPATH' ) || exit;
+
+final class Post {
+
+  public function __construct() {
+    if ( app()->simpleton()->validate( self::class ) ) {
+      return;
+    }
+
+    add_filter( 'the_title', array( $this, 'render_external_author_label' ) );
   }
 
-  public static function get_product_limit(): int {
-    return get_option( app()->get_key( 'cart_product_limit' ), 100 );
-  }
+  public function render_external_author_label( string $title ): string {
+    if ( ! is_single() ) {
+      return $title;
+    }
 
-  public function enqueue_assets(): void {
-    app()->asset()->enqueue_style( 'cart' )
-      ->asset()->enqueue_script( 'cart' );
+    app()->setting()->context()->add( 'general', 'general' );
+
+    $label = app()->setting()->get( 'external_author_label', 'post' );
+
+    if ( ! empty( $label ) ) {
+      ob_start();
+      ?>
+      <br/>
+      <span><?php echo esc_html( $label ); ?><span>
+      <?php
+      $title = $title . ob_get_clean();
+    }
+
+    return $title;
   }
 }
 ```

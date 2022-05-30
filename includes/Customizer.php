@@ -1,9 +1,9 @@
 <?php
 
-namespace WP_Titan_1_1_1;
+namespace WP_Titan_1_1_2;
 
-use WP_Titan_1_1_1\Customizer\Section;
-use WP_Titan_1_1_1\Customizer\Control;
+use WP_Titan_1_1_2\Customizer\Section;
+use WP_Titan_1_1_2\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * These are the helpers for creating settings, sections and panels for the customizer.\
  * It uses the context similar to the settings context.\
- * <a href="https://wpt.dpripa.com/classes/WP-Titan-1-1-1-Setting.html">Read about</a> the setting context.
+ * <a href="https://wpt.dpripa.com/classes/WP-Titan-1-1-2-Setting.html">Read about</a> the setting context.
  */
 class Customizer extends Feature {
 
