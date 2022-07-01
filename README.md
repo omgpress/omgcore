@@ -32,7 +32,7 @@ Alternatively, you can [download the latest release](https://github.com/wpappy/w
 
 ## Documentation
 The latest documentation is published on [wpappy.dpripa.com](https://wpappy.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpappy.dpripa.com/classes/Wpappy-1-0-1-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpappy.dpripa.com/classes/Wpappy-1-0-2-App.html) of the library.
 
 If you need documentation for previous versions, follow these instructions:
 - Install [phpDocumentor](https://www.phpdoc.org) into your system.
@@ -44,7 +44,7 @@ phpDocumentor
 - After phpDocumentor has reported success, you can find the generated documentation in the `./docs/api` directory.
 
 ## Simple Use Case
-The following is a simple example when WP Titan is used. It doesn't matter which environment (plugin or theme) you run this code in, WP Titan automatically detects your app's environment and provides a universal API.
+The following is a simple example when Wpappy is used. It doesn't matter which environment (plugin or theme) you run this code in, Wpappy automatically detects your app's environment and provides a universal API.
 
 ### Root File (index.php / functions.php)
 ```php
@@ -58,16 +58,16 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Always be sure that the Wpappy namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'Wpappy_x_x_x' version is x.x.x.
-use Wpappy_1_0_1\App as App;
+use Wpappy_1_0_2\App as App;
 
-// Define a function that returns the singleton instance of WP Titan for your application.
+// Define a function that returns the singleton instance of Wpappy for your application.
 function app(): App {
   return App::get( __NAMESPACE__, __FILE__ );
 }
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern provided by WP Titan for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/WP-Titan-1-0-19-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern provided by Wpappy for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/Wpappy-1-0-2-Simpleton.html).
 
 ### Setup.php
 ```php
@@ -83,24 +83,16 @@ final class Setup {
     }
 
     app()->i18n()->setup()
-      ->admin()->notice()->setup()
+      ->setting()->setup()
       ->setup( array( $this, 'setup' ) );
   }
 
   public function setup(): void {
-    if ( ! app()->integration()->wc()->is_active() ) {
-      app()->admin()->notice()->render(
-        app()->i18n()->__( 'My App require WooCommerce.' )
-      );
-
-      return;
-    }
-
     new Setting();
- new Post();
+    new Post();
 
- add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
- app()->hook()->do_action( 'setup_complete' );
+    add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+    app()->hook()->do_action( 'setup_complete' );
   }
 
   public function enqueue_assets(): void {

@@ -4,4 +4,4 @@
 
 require_once __DIR__ . '/composer/autoload_real.php';
 
-return ComposerAutoloaderInit_Wpappy_1_0_1::getLoader();
+return ComposerAutoloaderInit_Wpappy_1_0_2::getLoader();
