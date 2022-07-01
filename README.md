@@ -46,7 +46,7 @@ phpDocumentor
 ## Simple Use Case
 The following is a simple example when Wpappy is used. It doesn't matter which environment (plugin or theme) you run this code in, Wpappy automatically detects your app's environment and provides a universal API.
 
-### Root File (index.php / functions.php)
+#### Root File (index.php / functions.php)
 ```php
 namespace My_App;
 
@@ -69,7 +69,7 @@ new Setup();
 ```
 You can see an example of simpleton usage here. It's a structural pattern provided by Wpappy for the WordPress based applications. Read more about [simpleton](https://wpappy.dpripa.com/classes/Wpappy-1-0-2-Simpleton.html).
 
-### Setup.php
+#### Setup.php
 ```php
 namespace My_App;
 
@@ -102,7 +102,7 @@ final class Setup {
 }
 ```
 
-### Setting.php
+#### Setting.php
 ```php
 namespace My_App;
 
@@ -141,7 +141,7 @@ final class Setting {
 }
 ```
 
-### Post.php
+#### Post.php
 ```php
 namespace My_App;
 
