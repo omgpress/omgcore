@@ -67,7 +67,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern provided by Wpappy for the WordPress based applications. Read more about [simpleton](https://wpt.dpripa.com/classes/Wpappy-1-0-2-Simpleton.html).
+You can see an example of simpleton usage here. It's a structural pattern provided by Wpappy for the WordPress based applications. Read more about [simpleton](https://wpappy.dpripa.com/classes/Wpappy-1-0-2-Simpleton.html).
 
 ### Setup.php
 ```php
