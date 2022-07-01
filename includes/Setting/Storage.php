@@ -1,8 +1,8 @@
 <?php
 
-namespace Wpappy_1_0_0\Setting;
+namespace Wpappy_1_0_1\Setting;
 
-use Wpappy_1_0_0\Feature;
+use Wpappy_1_0_1\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -147,8 +147,8 @@ class Storage extends Feature {
 	}
 
 	public function add_setting(
-		string $type,
 		string $setting,
+		string $type,
 		string $box,
 		?string $sub_tab,
 		string $tab,
@@ -163,8 +163,8 @@ class Storage extends Feature {
 					$this->app,
 					$this->core,
 					$this,
-					$type,
 					$setting,
+					$type,
 					$box,
 					$sub_tab,
 					$tab,

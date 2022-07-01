@@ -1,10 +1,10 @@
 <?php
 
-namespace Wpappy_1_0_0\Admin;
+namespace Wpappy_1_0_1\Admin;
 
-use Wpappy_1_0_0\App;
-use Wpappy_1_0_0\Core;
-use Wpappy_1_0_0\Feature;
+use Wpappy_1_0_1\App;
+use Wpappy_1_0_1\Core;
+use Wpappy_1_0_1\Feature;
 
 defined( 'ABSPATH' ) || exit;
 

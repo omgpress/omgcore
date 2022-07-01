@@ -1,8 +1,8 @@
 <?php
 
-namespace Wpappy_1_0_0\Core;
+namespace Wpappy_1_0_1\Core;
 
-use const Wpappy_1_0_0\ROOT_FILE;
+use const Wpappy_1_0_1\ROOT_FILE;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,7 +51,7 @@ class FS extends Feature {
 
 	protected function get_url_with_stamp( string $url, string $path ): string {
 		if ( file_exists( $path ) ) {
-			return add_query_arg( $url, array( 'ver' => filemtime( $path ) ) );
+			return add_query_arg( array( 'ver' => filemtime( $path ) ), $url );
 		}
 
 		return $url;

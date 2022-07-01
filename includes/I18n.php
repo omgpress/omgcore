@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0;
+namespace Wpappy_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ class I18n extends Feature {
 	/**
 	 * Set a name for the directory that contains the i18n files.
 	 *
-	 * Default: "languages".
+	 * Default: `'languages'`.
 	 */
 	public function set_dirname( string $dirname ): App {
 		$this->set_property( 'dirname', $dirname );

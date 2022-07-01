@@ -1,12 +1,15 @@
 <?php
 
-namespace Wpappy_1_0_0\Debug;
+namespace Wpappy_1_0_1\Debug;
 
-use Wpappy_1_0_0\App;
-use Wpappy_1_0_0\Feature;
+use Wpappy_1_0_1\App;
+use Wpappy_1_0_1\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Manage logs.
+ */
 class Log extends Feature {
 
 	/**

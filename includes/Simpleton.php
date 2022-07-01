@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0;
+namespace Wpappy_1_0_1;
 
 use ReflectionClass;
 
@@ -24,7 +24,7 @@ class Simpleton extends Feature {
 	 * Validate if current simpleton class was called.
 	 *
 	 * To declare current class as simpleton, just paste the following code at the beginning of the class `::__constructor()`:
-	 * ```php
+	 * ``` php
 	 * if ( app()->simpleton()->validate( self::class ) ) {
 	 *   return;
 	 * }

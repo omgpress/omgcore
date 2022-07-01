@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0;
+namespace Wpappy_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -168,13 +168,13 @@ class Setting extends Feature {
 	/**
 	 * Add a setting.
 	 *
-	 * @param string $type Type of the setting control. <a href="https://wpappy.dpripa.com/namespaces/wpappy-1-0-0-setting-control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
+	 * @param string $type Type of the setting control. <a href="https://wpappy.dpripa.com/namespaces/wpappy-1-0-1-setting-control.html">View the list</a> of available controls. You can also pass the classname of the custom control.
 	 * @param array $args Configuration of the setting. A control can have its own additional arguments, you can find them on each control's documentation page. General arguments:
 	 *  - `'default'` - default value.
 	 *  - `'description'` - setting description.
 	 *  - `'sanitize_callback'` - name of a helper function to sanitize a setting value. Default: `'sanitize_text_field'`.
 	 */
-	public function add( string $type, string $setting, ?string $title, array $args = array() ): App {
+	public function add( string $setting, string $type, ?string $title, array $args = array() ): App {
 		if ( $this->validate_setup() ) {
 			return $this->app;
 		}
@@ -197,8 +197,8 @@ class Setting extends Feature {
 		}
 
 		$this->storage()->add_setting(
-			$type,
 			$setting,
+			$type,
 			$box,
 			$sub_tab,
 			$tab,
@@ -332,6 +332,22 @@ class Setting extends Feature {
 	 */
 	public function get_page_key( string $page ): string {
 		return $this->storage()->get_page_key( $page );
+	}
+
+	public function get_url( string $page, ?string $tab = null, ?string $sub_tab = null ): string {
+		if ( ! $this->storage()->is_page( $page ) ) {
+			$this->core->debug()->die( "The <code>'$page'</code> page not exists." );
+		}
+
+		if ( $sub_tab && $this->storage()->is_sub_tab( $sub_tab, $tab, $page ) ) {
+			return $this->storage()->get_sub_tab( $sub_tab, $tab, $page )['object']->get_url();
+		}
+
+		if ( $tab && $this->storage()->is_tab( $tab, $page ) ) {
+			return $this->storage()->get_tab( $tab, $page )['object']->get_url();
+		}
+
+		return $this->storage()->get_page( $page )['object']->get_url();
 	}
 
 	/**

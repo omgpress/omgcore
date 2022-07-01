@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_0\Core\Debug;
+namespace Wpappy_1_0_1\Core\Debug;
 
-use Wpappy_1_0_0\Core;
-use Wpappy_1_0_0\Core\Feature;
+use Wpappy_1_0_1\Core;
+use Wpappy_1_0_1\Core\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +26,7 @@ class Log extends Feature {
 		return $this->path . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
-	protected function get_chunk_path( string $group ): string {
+	protected function get_group_path( string $group ): string {
 		return $this->get_path( "$group.log" );
 	}
 
@@ -41,7 +41,7 @@ class Log extends Feature {
 
 		$this->create_dir();
 
-		$group = fopen( $this->get_chunk_path( $group ), 'a' ); // phpcs:ignore
+		$group = fopen( $this->get_group_path( $group ), 'a' ); // phpcs:ignore
 
 		$timestamp = gmdate( 'n/j/Y H:i:s' );
 		$content   = "[$timestamp] $level: $message\n";
@@ -70,19 +70,21 @@ class Log extends Feature {
 	}
 
 	public function exists( string $group = 'core' ): bool {
-		return file_exists( $this->get_chunk_path( $group ) );
+		return file_exists( $this->get_group_path( $group ) );
 	}
 
 	public function get( string $group = 'core' ): string {
 		return $this->exists( $group ) ?
-			nl2br( file_get_contents( $this->get_chunk_path( $group ) ) ) : // phpcs:ignore
+			nl2br( file_get_contents( $this->get_group_path( $group ) ) ) : // phpcs:ignore
 			'';
 	}
 
-	public function get_size( string $group = 'core' ): string {
-		return ( $this->exists( $group ) ?
-			round( filesize( $this->get_chunk_path( $group ) ) / 1024, 3 ) :
-			0 ) . 'KB';
+	public function get_size( string $group = 'core', bool $int = false ) /* string|int */ {
+		$size = $this->exists( $group ) ?
+			round( filesize( $this->get_group_path( $group ) ) / 1024, 3 ) :
+			0;
+
+		return $int ? $size : "{$size}KB";
 	}
 
 	public function get_delete_url( string $group = 'core' ): string {
@@ -100,7 +102,7 @@ class Log extends Feature {
 			return;
 		}
 
-		unlink( $this->get_chunk_path( $group ) );
+		unlink( $this->get_group_path( $group ) );
 
 		if ( empty( $_GET[ $this->delete_key ] ) ) { // phpcs:ignore
 			return;

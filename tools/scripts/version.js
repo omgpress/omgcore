@@ -14,11 +14,24 @@ glob( config.rootPath + '/' + PHPClassesRoot + '/**/*.php', function( err, paths
 
 	paths.push( config.rootPath + '/index.php' );
 	paths.push( config.rootPath + '/README.md' );
-	replaceFileText( config.rootPath + '/composer.json', cache.currentPHPClassName, newPHPClassName, setPackageVersion );
+
+	replaceFileText(
+		config.rootPath + '/composer.json',
+		cache.currentPHPClassName,
+		newPHPClassName,
+		setPackageVersion
+	);
+
+	replaceFileText(
+		config.rootPath + '/index.php',
+		cache.currentVersion,
+		config.version
+	);
 
 	paths.forEach( function( path ) {
-		replaceFileText( path, cache.currentPHPClassName, newPHPClassName, replaceDashClassName );
+		replaceFileText( path, cache.currentPHPClassName, newPHPClassName, replaceAdditions );
 	});
+
 	setCache();
 });
 
@@ -43,14 +56,14 @@ function replaceFileText( path, needle, replace, modifyResult = null ) {
 }
 
 function setPackageVersion( data ) {
-	const json = JSON.parse( data );
-	json.version = config.version;
-	json.config['autoloader-suffix'] = '_' + newPHPClassName;
+	data = JSON.parse( data );
+	data.version = config.version;
+	data.config['autoloader-suffix'] = '_' + newPHPClassName;
 
-	return JSON.stringify( json, null, 2 );
+	return JSON.stringify( data, null, 2 );
 }
 
-function replaceDashClassName( data, needle, replace ) {
+function replaceAdditions( data, needle, replace ) {
 	data = data.replace(
 		new RegExp( needle.toLowerCase().replace( /_/g, '-' ), 'g' ),
 		replace.toLowerCase().replace( /_/g, '-' )
@@ -63,13 +76,19 @@ function replaceDashClassName( data, needle, replace ) {
 }
 
 function setCache() {
+	cache.currentVersion = config.version;
 	cache.currentPHPClassName = newPHPClassName;
 
-	fs.writeFile( cachePath + '.json', JSON.stringify( cache, null, 2 ), 'utf8', function( err ) {
-		if ( err ) {
-			return console.error( err );
+	fs.writeFile(
+		cachePath + '.json',
+		JSON.stringify( cache, null, 2 ),
+		'utf8',
+		function( err ) {
+			if ( err ) {
+				return console.error( err );
+			}
 		}
-	});
+	);
 }
 
 log.success_( 'Version changed to ' + config.version );

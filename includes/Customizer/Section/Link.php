@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0\Customizer\Section;
+namespace Wpappy_1_0_1\Customizer\Section;
 
 defined( 'ABSPATH' ) || exit;
 

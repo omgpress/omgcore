@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0\Setting\Control;
+namespace Wpappy_1_0_1\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * - `'placeholder'` - field placeholder.
  * - `'options'` - array of the select options.
  * - `'multiple'` - pass `true` to enable multiple selection.
- * - `'width'` - width of the field in pixels. Default: 300.
+ * - `'width'` - width of the field in pixels. Default: `300`.
  */
 class Select extends Control {
 

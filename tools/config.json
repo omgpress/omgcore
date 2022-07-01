@@ -1,7 +1,7 @@
 {
 	"name": "wpappy",
   "basePHPClassName": "Wpappy",
-	"version": "1.0.0",
+	"version": "1.0.1",
   "rootPath": "../..",
 	"directories": [
     "assets",
@@ -25,6 +25,7 @@
     "sources/webpack.config.js",
     "tools/.htaccess",
     "tools/cache.json",
+    "tools/config.json",
     "tools/package.json",
     "tools/package-lock.json",
     ".editorconfig",

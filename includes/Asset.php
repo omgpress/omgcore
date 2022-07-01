@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0;
+namespace Wpappy_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,8 +10,6 @@ defined( 'ABSPATH' ) || exit;
 class Asset extends Feature {
 
 	protected $dirname        = 'assets';
-	protected $font_dirname   = 'fonts';
-	protected $image_dirname  = 'images';
 	protected $script_dirname = 'scripts';
 	protected $style_dirname  = 'styles';
 	protected $postfix        = '.min';
@@ -21,24 +19,6 @@ class Asset extends Feature {
 	 */
 	public function set_dirname( string $name ): App {
 		$this->set_property( 'dirname', $name );
-
-		return $this->app;
-	}
-
-	/**
-	 * Default: 'fonts'.
-	 */
-	public function set_font_dirname( string $name ): App {
-		$this->set_property( 'font_dirname', $name );
-
-		return $this->app;
-	}
-
-	/**
-	 * Default: 'images'.
-	 */
-	public function set_image_dirname( string $name ): App {
-		$this->set_property( 'image_dirname', $name );
 
 		return $this->app;
 	}
@@ -70,32 +50,16 @@ class Asset extends Feature {
 		return $this->app;
 	}
 
-	protected function get_raw_path( string $path = '' ): string {
+	protected function get_rel( string $path = '' ): string {
 		return $this->dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' );
 	}
 
 	public function get_path( string $path = '', bool $rel = false ): string {
-		return $rel ? $this->get_raw_path( $path ) : $this->app->get_path( $this->get_raw_path( $path ) );
+		return $rel ? $this->get_rel( $path ) : $this->app->get_path( $this->get_rel( $path ) );
 	}
 
 	public function get_url( string $url = '', bool $stamp = false ): string {
-		return $this->app->get_url( $this->get_raw_path( $url ), $stamp );
-	}
-
-	public function get_font_path( string $path = '', bool $rel = false ): string {
-		return $this->get_path( $this->font_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $rel );
-	}
-
-	public function get_font_url( string $url = '', bool $stamp = false ): string {
-		return $this->get_url( $this->font_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ), $stamp );
-	}
-
-	public function get_image_path( string $path = '', bool $rel = false ): string {
-		return $this->get_path( $this->image_dirname . ( $path ? DIRECTORY_SEPARATOR . $path : '' ), $rel );
-	}
-
-	public function get_image_url( string $url = '', bool $stamp = false ): string {
-		return $this->get_url( $this->image_dirname . ( $url ? DIRECTORY_SEPARATOR . $url : '' ), $stamp );
+		return $this->app->get_url( $this->get_rel( $url ), $stamp );
 	}
 
 	public function get_script_path( string $path = '', bool $rel = false ): string {
@@ -139,6 +103,17 @@ class Asset extends Feature {
 		return $this->app;
 	}
 
+	/**
+	 * Apply an inline script to the script file.
+	 *
+	 * @param string $position `'after'` or `'before'`.
+	 */
+	public function enqueue_inline_script( string $parent_slug, string $js_code, string $position = 'after' ): App {
+		wp_add_inline_script( $this->app->get_key( $parent_slug ), $js_code, $position );
+
+		return $this->app;
+	}
+
 	public function enqueue_style( string $slug, array $deps = array(), /* string|array */ $addition = null ): App {
 		$key      = $this->get_key( $slug );
 		$filename = $slug . $this->postfix . '.css';
@@ -175,11 +150,11 @@ class Asset extends Feature {
 		return $this->app->get_key( "args_object_$js_object_name" );
 	}
 
-	public function enqueue_global_args( string $object_name, array $args ): App {
-		$key = $this->get_global_args_key( $object_name );
+	public function enqueue_global_args( string $js_object_name, array $args ): App {
+		$key = $this->get_global_args_key( $js_object_name );
 
 		wp_register_script( $key, null, array(), null ); // phpcs:ignore
-		wp_localize_script( $key, $object_name, $args );
+		wp_localize_script( $key, $js_object_name, $args );
 
 		return $this->app;
 	}

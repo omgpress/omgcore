@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_0\Setting;
+namespace Wpappy_1_0_1\Setting;
 
-use Wpappy_1_0_0\App;
-use Wpappy_1_0_0\Core;
+use Wpappy_1_0_1\App;
+use Wpappy_1_0_1\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,8 +27,8 @@ class Setting extends Base {
 		App $app,
 		Core $core,
 		Storage $storage,
-		string $type,
 		string $setting,
+		string $type,
 		string $box,
 		?string $sub_tab,
 		string $tab,
@@ -39,8 +39,8 @@ class Setting extends Base {
 	) {
 		parent::__construct( $app, $core, $storage, $page );
 
-		$this->type           = $type;
 		$this->setting        = $setting;
+		$this->type           = $type;
 		$this->box            = $box;
 		$this->sub_tab        = $sub_tab;
 		$this->tab            = $tab;

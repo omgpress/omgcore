@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0\Setting\Control;
+namespace Wpappy_1_0_1\Setting\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * ### Arguments
  * - `'placeholder'` - field placeholder.
- * - `'width'` - width of the field in pixels. Default: 300, 90 for `'number'`.
+ * - `'width'` - width of the field in pixels. Default: `300`, `90` for `'number'`.
  */
 class Text extends Control {
 

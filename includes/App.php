@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_0;
+namespace Wpappy_1_0_1;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -169,7 +169,7 @@ class App {
 	 * Must be called after all other `::setup()` methods.\
 	 * This is a special wrapper for `'plugins_loaded'` or `'after_setup_theme'` hook, depending on the environment. It also contains logic to ensure the stability of the application.\
 	 * In the theme environment will be auto-initialized support for the basic features of the theme:
-	 * ```php
+	 * ``` php
 	 * add_theme_support( 'title-tag' );
 	 * add_theme_support( 'automatic-feed-links' );
 	 * add_theme_support( 'post-thumbnails' );

@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_0\Setting;
+namespace Wpappy_1_0_1\Setting;
 
-use Wpappy_1_0_0\App;
-use Wpappy_1_0_0\Core;
+use Wpappy_1_0_1\App;
+use Wpappy_1_0_1\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -77,6 +77,17 @@ class Page extends Base {
 				}
 			},
 			9
+		);
+	}
+
+	public function get_url(): string {
+		return add_query_arg(
+			array(
+				'page' => $this->storage->get_page_key( $this->page ),
+			),
+			$this->app->admin()->get_url(
+				$this->storage->get_page( $this->page )['base_url']
+			)
 		);
 	}
 
