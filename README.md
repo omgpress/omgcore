@@ -130,8 +130,8 @@ final class Setting {
     app()->setting()->add_box(
       'labels'
     )->setting()->add(
-      'textarea',
       'hello_text_label',
+      'textarea',
       app()->i18n()->__( '"Hello" text label' ),
       array(
         'default' => app()->i18n()->__( 'Hello from the app!' ),
