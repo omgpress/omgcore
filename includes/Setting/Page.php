@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_3\Setting;
+namespace Wpappy_1_0_4\Setting;
 
-use Wpappy_1_0_3\App;
-use Wpappy_1_0_3\Core;
+use Wpappy_1_0_4\App;
+use Wpappy_1_0_4\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -96,8 +96,8 @@ class Page extends Base {
 		$active_tab      = $this->storage->get_active_tab();
 		$active_page     = $this->storage->get_active_page( true );
 		$layout_classes  = 'wpappy-page';
-		$layout_classes .= ' ' . $this->app->get_key( 'page', '-l' );
-		$layout_classes .= ' ' . $this->app->get_key( 'page-' . $this->page, '-l' );
+		$layout_classes .= ' ' . $this->app->get_key( 'page', '-' );
+		$layout_classes .= ' ' . $this->app->get_key( 'page-' . $this->page, '-' );
 
 		?>
 		<form class="<?php echo esc_attr( $layout_classes ); ?>" action="<?php echo esc_attr( esc_url( $this->handler_url ) ); ?>" method="post">

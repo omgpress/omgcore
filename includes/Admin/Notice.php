@@ -1,10 +1,10 @@
 <?php
 
-namespace Wpappy_1_0_3\Admin;
+namespace Wpappy_1_0_4\Admin;
 
-use Wpappy_1_0_3\App;
-use Wpappy_1_0_3\Core;
-use Wpappy_1_0_3\Feature;
+use Wpappy_1_0_4\App;
+use Wpappy_1_0_4\Core;
+use Wpappy_1_0_4\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ class Notice extends Feature {
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
-		$this->transient_key = $app->get_key( 'transient_admin_notices', 'l' );
+		$this->transient_key = $app->get_key( 'transient_admin_notices' );
 	}
 
 	protected function get_transients(): array {

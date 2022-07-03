@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_3\Debug;
+namespace Wpappy_1_0_4\Debug;
 
-use Wpappy_1_0_3\App;
-use Wpappy_1_0_3\Feature;
+use Wpappy_1_0_4\App;
+use Wpappy_1_0_4\Feature;
 
 defined( 'ABSPATH' ) || exit;
 

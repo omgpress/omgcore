@@ -1,8 +1,8 @@
 <?php
 
-namespace Wpappy_1_0_3\Setting;
+namespace Wpappy_1_0_4\Setting;
 
-use Wpappy_1_0_3\Feature;
+use Wpappy_1_0_4\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -250,12 +250,12 @@ class Storage extends Feature {
 	}
 
 	public function get_page_key( string $page ): string {
-		return $this->app->get_key( $page, 'l' );
+		return $this->app->get_key( $page );
 	}
 
 	public function is_page( ?string $page, $is_slug = true ): bool {
 		if ( ! $is_slug ) {
-			$app_key = $this->app->get_key( '', 'l' );
+			$app_key = $this->app->get_key();
 			$page    = str_replace( "{$app_key}_", '', $page );
 		}
 
@@ -358,7 +358,7 @@ class Storage extends Feature {
 		return isset( $_GET['page'] ) ? ( // phpcs:ignore
 		$rel ?
 				str_replace(
-					$this->app->get_key( '', 'l' ) . '_',
+					$this->app->get_key() . '_',
 					'',
 					$_GET['page'] // phpcs:ignore
 				) :

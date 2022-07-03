@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_3;
+namespace Wpappy_1_0_4;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -53,7 +53,8 @@ class App {
 
 	/** @ignore */
 	protected function __construct( string $key, string $root_file ) {
-		$this->key       = $key;
+		$this->set_key( $key );
+
 		$this->root_file = $root_file;
 		$root_file_paths = explode( DIRECTORY_SEPARATOR, $root_file );
 		$root_dir_number = count( $root_file_paths ) - 3;
@@ -95,7 +96,7 @@ class App {
 	/**
 	 * Get the singleton instance of Wpappy for your application.
 	 *
-	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant on initial call. Be careful when changing this parameter in a live application because it'll make the application as new to the environment.
+	 * @param string $key The application key. It's best to use the `__NAMESPACE__` constant on initial call. Only "_" is allowed as a word separator. Also key will be auto-converted to lowercase. Be careful when changing this parameter in a live application because it'll make the application as new to the environment.
 	 * @param string $root_file Required only on initial call. Use the `__FILE__` constant of the application's root file (index.php / functions.php).
 	 */
 	public static function get( string $key, string $root_file = '' ): self {
@@ -110,6 +111,18 @@ class App {
 		return self::$instances[ $key ];
 	}
 
+	protected function set_key( string $key ): void {
+		if (
+			strpos( $key, '-' ) ||
+			strpos( $key, '/' ) ||
+			strpos( $key, '\\' )
+		) {
+			Core\Debug::raw_die( 'Only "_" is allowed as a word separator of the application key.', null, $key );
+		}
+
+		$this->key = strtolower( $key );
+	}
+
 	/**
 	 * Get the application key.
 	 */
@@ -122,12 +135,6 @@ class App {
 
 			case 'c':
 				return $this->core()->type()->str()->to_camelcase( $key );
-
-			case 'l':
-				return strtolower( $key );
-
-			case '-l':
-				return strtolower( str_replace( '_', '-', $key ) );
 
 			default:
 			case '_':

@@ -1,10 +1,10 @@
 <?php
 
-namespace Wpappy_1_0_3\Setting;
+namespace Wpappy_1_0_4\Setting;
 
-use Wpappy_1_0_3\App;
-use Wpappy_1_0_3\Core;
-use Wpappy_1_0_3\Feature;
+use Wpappy_1_0_4\App;
+use Wpappy_1_0_4\Core;
+use Wpappy_1_0_4\Feature;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ class Handler extends Feature {
 	public function __construct( App $app, Core $core ) {
 		parent::__construct( $app, $core );
 
-		$this->action_key = $app->get_key( 'setting_handler', 'l' );
+		$this->action_key = $app->get_key( 'setting_handler' );
 	}
 
 	public function get_url(): string {
