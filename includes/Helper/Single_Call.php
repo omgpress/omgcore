@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_2\Helper;
+namespace Wpappy_1_0_3\Helper;
 
 defined( 'ABSPATH' ) || exit;
 

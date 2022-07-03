@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Wpappy_1_0_2\\' => array($baseDir . '/includes'),
+    'Wpappy_1_0_3\\' => array($baseDir . '/includes'),
 );

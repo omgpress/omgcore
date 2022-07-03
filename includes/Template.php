@@ -1,6 +1,6 @@
 <?php
 
-namespace Wpappy_1_0_2;
+namespace Wpappy_1_0_3;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,7 +25,7 @@ class Template extends Feature {
 	}
 
 	public function get_path( string $path = '' ): string {
-		return $this->get_path( $this->path . ( $path ? ( DIRECTORY_SEPARATOR . $path ) : '' ) );
+		return $this->app->get_path( $this->path . ( $path ? ( DIRECTORY_SEPARATOR . $path ) : '' ) );
 	}
 
 	public function get( string $name, array $args = array() ): string {
