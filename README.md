@@ -20,8 +20,8 @@ The library that introduces a smart layer between the WordPress environment and 
 
 ## Boilerplates
 The following template repositories are the best point to start developing a new WordPress application:
+- [Starter Theme](https://github.com/wpappy/starter-theme)
 - [Starter Plugin](https://github.com/wpappy/starter-plugin)
-- Starter Theme (Coming soon)
 
 ## Manual Installation
 Run the following command in root directory of your application to install using Composer:
