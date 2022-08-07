@@ -28,11 +28,7 @@ class Http extends Feature {
 		return end( $parts );
 	}
 
-	public function redirect( string $url, ?callable $callback = null ): void {
+	public function redirect( string $url ): void {
 		header( "Location: $url" );
-
-		if ( $callback ) {
-			header_register_callback( $callback );
-		}
 	}
 }

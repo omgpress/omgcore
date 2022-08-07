@@ -165,14 +165,13 @@ class Handler extends Feature {
 	}
 
 	protected function finalize( string $message, string $level = 'error' ): bool {
+		$this->app->admin()->notice()->add_transient( $message, $level );
+
 		$this->app->http()->redirect(
 			remove_query_arg(
 				$this->action_key,
 				$this->app->http()->get_current_url()
-			),
-			function () use ( $message, $level ): void {
-				$this->app->admin()->notice()->add_transient( $message, $level );
-			}
+			)
 		);
 
 		return true;

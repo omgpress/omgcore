@@ -107,14 +107,6 @@ class Log extends Feature {
 		}
 
 		unlink( $this->get_path( $group ) );
-
-		if ( empty( $_GET[ $this->delete_key ] ) ) { // phpcs:ignore
-			return;
-		}
-
-		$this->core->http()->redirect(
-			remove_query_arg( $this->delete_key, $this->core->http()->get_current_url() )
-		);
 	}
 
 	public function setup(): void {
@@ -135,6 +127,10 @@ class Log extends Feature {
 			'admin_init',
 			function (): void {
 				$this->delete( $_GET[ $this->delete_key ] ); // phpcs:ignore
+
+				$this->core->http()->redirect(
+					remove_query_arg( $this->delete_key, $this->core->http()->get_current_url() )
+				);
 			}
 		);
 	}

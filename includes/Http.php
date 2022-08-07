@@ -21,8 +21,8 @@ class Http extends Feature {
 		return $this->core->http()->get_root_host();
 	}
 
-	public function redirect( string $url, ?callable $callback = null ): App {
-		$this->core->http()->redirect( $url, $callback );
+	public function redirect( string $url ): App {
+		$this->core->http()->redirect( $url );
 
 		return $this->app;
 	}

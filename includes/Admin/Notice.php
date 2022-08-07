@@ -26,10 +26,8 @@ class Notice extends Feature {
 		return get_option( $this->transient_key, array() );
 	}
 
-	protected function update_transients( array $notices ): App {
+	protected function update_transients( array $notices ): void {
 		update_option( $this->transient_key, $notices );
-
-		return $this->app;
 	}
 
 	/**
