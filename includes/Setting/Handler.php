@@ -136,7 +136,7 @@ class Handler extends Feature {
 	protected function update_settings( array $settings_data ): void {
 		foreach ( $settings_data as $setting_data ) {
 			if ( ! isset( $_POST[ $setting_data['key'] ] ) ) { // phpcs:ignore
-				return;
+				continue;
 			}
 
 			$value      = null;
