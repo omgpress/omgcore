@@ -18,7 +18,9 @@ abstract class Feature {
 	}
 
 	protected function set_property( string $property, /* mixed */ $value ): void {
-		$this->validate_setter();
+		if ( $this->validate_setter() ) {
+			return;
+		}
 
 		$this->$property = $value;
 	}
@@ -31,10 +33,10 @@ abstract class Feature {
 		if ( $is_app_setup_complete || $is_setup_complete ) {
 			$trigger = $is_app_setup_complete ? 'application' : 'feature';
 
-			$this->core->debug()->die( "It's too late to set something to the feature <code>$classname</code> since the $trigger setup has already been complete." );
+			$this->core->debug()->die( "It's too late to set something to the <code>$classname</code> feature since the $trigger setup has already been complete." );
 		}
 
-		return $is_setup_complete || $is_app_setup_complete;
+		return $is_app_setup_complete || $is_setup_complete;
 	}
 
 	protected function validate_setup(): bool {
@@ -42,7 +44,7 @@ abstract class Feature {
 		$is_setup_complete = $this->is_single_called( 'setup' );
 
 		if ( ! $is_setup_complete ) {
-			$this->core->debug()->die( "Need to setup the feature <code>$classname</code> first." );
+			$this->core->debug()->die( "Need to call the <code>setup</code> method of the <code>$classname</code> feature first." );
 		}
 
 		return ! $is_setup_complete;
@@ -56,7 +58,7 @@ abstract class Feature {
 		if ( $this->app->is_setup_called() ) {
 			$classname = static::class;
 
-			$this->core->debug()->die( "It's too late to setup the feature <code>$classname</code> since the application setup has already been complete." );
+			$this->core->debug()->die( "It's too late to call the <code>setup</code> method the <code>$classname</code> feature since the application setup has already been complete." );
 		}
 
 		if ( $this->validate_single_call( $function, $enable_silent_secondary_calls ) ) {

@@ -4,6 +4,7 @@
   "description": "Developer tools for Wpappy.",
   "homepage": "https://github.com/wpappy/wpappy/blob/main/tools",
   "license": "GPL-2.0-or-later",
+  "private": true,
   "contributors": [
     {
       "name": "Dmitry Pripa",

@@ -23,19 +23,8 @@ class Debug extends Feature {
 		return $this->app;
 	}
 
-	/**
-	 * Set debug mode enabled.
-	 *
-	 * @param bool $is_enabled Default: `true`.
-	 */
-	public function set_enabled( bool $is_enabled ): App {
-		$this->core->debug()->set_raw_enabled( $is_enabled );
-
-		return $this->app;
-	}
-
 	public function is_enabled(): bool {
-		return $this->core->debug()->is_enabled();
+		return Core\Debug::is_enabled();
 	}
 
 	public function die( string $message, ?string $title = null, bool $enable_backtrace = true ): void {
@@ -45,8 +34,7 @@ class Debug extends Feature {
 			$this->app->get_key(),
 			$enable_backtrace,
 			false,
-			$this->die_footer_text,
-			$this->is_enabled()
+			$this->die_footer_text
 		);
 	}
 

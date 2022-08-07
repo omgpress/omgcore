@@ -130,6 +130,8 @@ class Customizer extends Feature {
 
 		if ( empty( $section ) ) {
 			$this->core->debug()->die( "Need to add a section before adding the <code>'$setting'</code> setting." );
+
+			return $this->app;
 		}
 
 		$control_args['section'] = $this->get_key( $section );

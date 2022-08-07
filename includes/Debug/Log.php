@@ -9,6 +9,8 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Manage logs.
+ *
+ * Log files will be stored in the `<wp_root>/wp-content/uploads/<app_key>_debug` directory and will be protected from direct outside access.
  */
 class Log extends Feature {
 
@@ -27,6 +29,8 @@ class Log extends Feature {
 	public function add( string $message, string $level = 'warning', string $group = 'app' ): App {
 		if ( 'core' === $group ) {
 			$this->core->debug()->die( "The <code>'core'</code> group is reserved for writing Wpappy logs." );
+
+			return $this->app;
 		}
 
 		$this->core->debug()->log()->add( $message, $level, $group );
@@ -51,8 +55,8 @@ class Log extends Feature {
 	/**
 	 * Get the log file size.
 	 */
-	public function get_size( string $group = 'app' ): string {
-		return $this->core->debug()->log()->get_size( $group );
+	public function get_size( string $group = 'app', bool $need_int = false ): string {
+		return $this->core->debug()->log()->get_size( $group, $need_int );
 	}
 
 	/**

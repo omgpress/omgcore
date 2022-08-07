@@ -16,14 +16,18 @@ class Nav_Menu extends Feature {
 	}
 
 	public function render( string $slug, array $args, ?string $before = null, ?string $after = null ): App {
-		if ( ! has_nav_menu( $this->app->get_key( $slug ) ) ) {
+		$key = $this->app->get_key( $slug );
+
+		if ( ! has_nav_menu( $key ) ) {
+			$this->core->debug()->die( "The <code>'$slug'</code> nav menu needs to be added to the application setup." );
+
 			return $this->app;
 		}
 
 		$args = wp_parse_args(
 			$args,
 			array(
-				'theme_location' => $this->app->get_key( $slug ),
+				'theme_location' => $key,
 				'container'      => 'ul'
 			)
 		);

@@ -82,7 +82,7 @@ class Setting extends Feature {
 		}
 
 		if ( $this->storage()->is_tab( $tab, $page ) ) {
-			$this->core->debug()->die( "The <code>$tab</code> tab already exists." );
+			$this->core->debug()->die( "The <code>'$tab'</code> tab already exists." );
 
 			return $this->app;
 		}
@@ -337,6 +337,8 @@ class Setting extends Feature {
 	public function get_url( string $page, ?string $tab = null, ?string $sub_tab = null ): string {
 		if ( ! $this->storage()->is_page( $page ) ) {
 			$this->core->debug()->die( "The <code>'$page'</code> page not exists." );
+
+			return '';
 		}
 
 		if ( $sub_tab && $this->storage()->is_sub_tab( $sub_tab, $tab, $page ) ) {

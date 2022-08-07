@@ -67,7 +67,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of simpleton usage here. It's a structural pattern provided by Wpappy for the WordPress based applications. Read more about [simpleton](https://wpappy.dpripa.com/classes/Wpappy-1-0-6-Simpleton.html).
+You can see an example of declarator usage here. It's a specific pattern provided by Wpappy for the WordPress based applications. Read more about [declarator](https://wpappy.dpripa.com/classes/Wpappy-1-0-6-Declarator.html).
 
 #### Setup.php
 ```php
@@ -78,7 +78,7 @@ defined( 'ABSPATH' ) || exit;
 final class Setup {
 
   public function __construct() {
-    if ( app()->simpleton()->validate( self::class ) ) {
+    if ( app()->declarator()->validate( self::class ) ) {
       return;
     }
 
@@ -89,7 +89,7 @@ final class Setup {
 
   public function setup(): void {
     new Setting();
-    new Singular();
+    new Post();
 
     app()->hook()->do_action( 'setup_complete' );
   }
@@ -105,7 +105,7 @@ defined( 'ABSPATH' ) || exit;
 final class Config {
 
   public function __construct() {
-    if ( app()->simpleton()->validate( self::class ) ) {
+    if ( app()->declarator()->validate( self::class ) ) {
       return;
     }
 
@@ -128,7 +128,7 @@ defined( 'ABSPATH' ) || exit;
 final class Setting {
 
   public function __construct() {
-    if ( app()->simpleton()->validate( self::class ) ) {
+    if ( app()->declarator()->validate( self::class ) ) {
       return;
     }
 
@@ -164,10 +164,10 @@ namespace My_App;
 
 defined( 'ABSPATH' ) || exit;
 
-final class Singular {
+final class Post {
 
   public function __construct() {
-    if ( app()->simpleton()->validate( self::class ) ) {
+    if ( app()->declarator()->validate( self::class ) ) {
       return;
     }
 

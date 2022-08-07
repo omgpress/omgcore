@@ -19,7 +19,7 @@ glob( config.rootPath + '/' + PHPClassesRoot + '/**/*.php', function( err, paths
 		config.rootPath + '/composer.json',
 		cache.currentPHPClassName,
 		newPHPClassName,
-		setPackageVersion
+		replacePackageVersion
 	);
 
 	replaceFileText(
@@ -55,7 +55,7 @@ function replaceFileText( path, needle, replace, modifyResult = null ) {
 	});
 }
 
-function setPackageVersion( data ) {
+function replacePackageVersion( data ) {
 	data = JSON.parse( data );
 	data.version = config.version;
 	data.config['autoloader-suffix'] = '_' + newPHPClassName;

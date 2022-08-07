@@ -31,7 +31,7 @@ class Log extends Feature {
 	}
 
 	public function add( string $message, string $level = 'warning', string $group = 'core' ): void {
-		if ( 'core' === $group && ! WP_DEBUG_LOG ) {
+		if ( 'core' === $group ) {
 			return;
 		}
 
@@ -83,12 +83,12 @@ class Log extends Feature {
 			'';
 	}
 
-	public function get_size( string $group = 'core', bool $int = false ) /* string|int */ {
+	public function get_size( string $group = 'core', bool $need_int = false ) /* string|int */ {
 		$size = $this->exists( $group ) ?
 			round( filesize( $this->get_path( $group ) ) / 1024, 3 ) :
 			0;
 
-		return $int ? $size : "{$size}KB";
+		return $need_int ? $size : "{$size}KB";
 	}
 
 	public function get_delete_url( string $group = 'core' ): string {

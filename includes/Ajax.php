@@ -23,9 +23,14 @@ class Ajax extends Feature {
 
 	public function get_url( string $action = '' ): string {
 		$url = $this->app->admin()->get_url( 'admin-ajax' );
+		$key = $this->app->get_key( $action );
 
 		if ( $action ) {
-			$url = add_query_arg( $url, array( 'action' => $this->app->get_key( $action ) ) );
+			if ( ! has_action( "wp_ajax_$key" ) ) {
+				$this->core->debug()->die( "The <code>'$action'</code> Ajax action isn't defined." );
+			}
+
+			$url = add_query_arg( $url, array( 'action' => $key ) );
 		}
 
 		return $url;

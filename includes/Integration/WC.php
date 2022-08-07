@@ -19,9 +19,10 @@ class WC extends Plugin {
 	}
 
 	public function set_theme_support(): App {
-		$this->validate_setter();
-
-		if ( $this->validate_single_call( __FUNCTION__ ) ) {
+		if (
+			$this->validate_setter() ||
+			$this->validate_single_call( __FUNCTION__ )
+		) {
 			return $this->app;
 		}
 
@@ -40,7 +41,9 @@ class WC extends Plugin {
 	}
 
 	public function set_block_support(): App {
-		$this->validate_setter();
+		if ( $this->validate_setter() ) {
+			return $this->app;
+		}
 
 		$this->add_setup_action(
 			__FUNCTION__,

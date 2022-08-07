@@ -4,6 +4,7 @@
   "description": "Sources of Wpappy assets.",
   "homepage": "https://github.com/wpappy/wpappy/blob/main/sources",
   "license": "GPL-2.0-or-later",
+  "private": true,
   "contributors": [
     {
       "name": "Dmitry Pripa",

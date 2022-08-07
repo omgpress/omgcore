@@ -8,9 +8,9 @@ defined( 'ABSPATH' ) || exit;
  * The Entry Point. The best point to start exploring the library.
  *
  * ### Getting Started
- * A method that returns instance of a class that extends the `Feature` class is a specific feature, such as helpers, managers, etc.\
- * Of course, a feature contains its own methods and may also contain its own sub-features.\
- * <a href="https://github.com/wpappy/wpappy#examples" target="_blank">Explore an examples</a> of the Wpappy usage for more details.
+ * This is the entry point to the library, which contains general purpose methods, as well as features that already contain their specific methods. In addition, features can have sub-features. We propose to consider this as a tree-like composition of functionality, where following the chain you always easily find the right solution.
+ * So, the methods that returns instance of a class that extends the `Feature` class (on the class documentation page, under the main heading, there will be a corresponding label) is a specific feature, such as helpers, managers, etc. This class isn't presented in the documentation since it only contains the library service code.\
+ * <a href="https://github.com/wpappy/wpappy#simple-use-case" target="_blank">Explore an example</a> of the Wpappy usage for more details.
  *
  * ### Setup Methods
  * Some features have `::setup()` method. Calling of this method is __required__ when you want to start use this feature.\
@@ -31,7 +31,6 @@ class App {
 	protected $root_file;
 	protected $env;
 	protected $core;
-	protected $priority;
 	protected $requires_wp  = '5.0.0';
 	protected $requires_php = '7.2.0';
 	protected $admin;
@@ -39,6 +38,7 @@ class App {
 	protected $asset;
 	protected $customizer;
 	protected $debug;
+	protected $declarator;
 	protected $hook;
 	protected $http;
 	protected $i18n;
@@ -47,7 +47,6 @@ class App {
 	protected $media;
 	protected $nav_menu;
 	protected $setting;
-	protected $simpleton;
 	protected $template;
 	protected $type;
 
@@ -74,7 +73,7 @@ class App {
 		$app_requires_php = $this->core()->info()->get_requires_php();
 
 		if ( $app_textdomain && $app_textdomain !== $this->key ) {
-			$this->core()->debug()->die( "The textdomain in the application metadata must match the application key <code>'$key'</code>." );
+			$this->core()->debug()->die( "The textdomain in the application metadata must match the application key <code>'$this->key'</code>." );
 		}
 
 		if ( $app_requires_wp && version_compare( $this->requires_wp, $app_requires_wp, '>' ) ) {
@@ -137,7 +136,6 @@ class App {
 				return $this->core()->type()->str()->to_camelcase( $key );
 
 			default:
-			case '_':
 				return $key;
 		}
 	}
@@ -189,32 +187,9 @@ class App {
 			return $this;
 		}
 
-		$this->priority = $priority;
-
-		if ( $this->is_theme() ) {
-			add_action(
-				'after_setup_theme',
-				function (): void {
-					add_theme_support( 'title-tag' );
-					add_theme_support( 'automatic-feed-links' );
-					add_theme_support( 'post-thumbnails' );
-					add_theme_support( 'html5', array( 'caption', 'comment-form', 'comment-list', 'gallery', 'search-form' ) );
-					add_theme_support( 'customize-selective-refresh-widgets' );
-				},
-				1
-			);
-		}
-
 		add_action( $this->is_theme() ? 'after_setup_theme' : 'plugins_loaded', $callback, $priority );
 
 		return $this;
-	}
-
-	/**
-	 * Get the priority of the setup action that was passed in the call.
-	 */
-	public function get_priority(): int {
-		return $this->priority;
 	}
 
 	/**
@@ -261,6 +236,13 @@ class App {
 	 */
 	public function debug(): Debug {
 		return $this->get_feature( $this, $this->core(), 'debug', Debug::class );
+	}
+
+	/**
+	 * Manage application classes that used the declarator pattern.
+	 */
+	public function declarator(): Declarator {
+		return $this->get_feature( $this, $this->core(), 'declarator', Declarator::class );
 	}
 
 	/**
@@ -317,13 +299,6 @@ class App {
 	 */
 	public function setting(): Setting {
 		return $this->get_feature( $this, $this->core(), 'setting', Setting::class );
-	}
-
-	/**
-	 * Manage application classes that used the simpleton pattern.
-	 */
-	public function simpleton(): Simpleton {
-		return $this->get_feature( $this, $this->core(), 'simpleton', Simpleton::class );
 	}
 
 	/**
