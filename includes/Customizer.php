@@ -1,9 +1,9 @@
 <?php
 
-namespace Wpappy_1_0_6;
+namespace Wpappy_1_0_7;
 
-use Wpappy_1_0_6\Customizer\Section;
-use Wpappy_1_0_6\Customizer\Control;
+use Wpappy_1_0_7\Customizer\Section;
+use Wpappy_1_0_7\Customizer\Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * These are the helpers for creating settings, sections and panels for the customizer.\
  * It uses the context similar to the settings context.\
- * <a href="https://wpappy.dpripa.com/classes/Wpappy-1-0-6-Setting.html">Read about</a> the setting context.
+ * <a href="https://wpappy.dpripa.com/classes/Wpappy-1-0-7-Setting.html">Read about</a> the setting context.
  */
 class Customizer extends Feature {
 

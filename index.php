@@ -1,11 +1,11 @@
 <?php
 
-namespace Wpappy_1_0_6;
+namespace Wpappy_1_0_7;
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Wpappy_1_0_6\App' ) ) {
-	define( 'Wpappy_1_0_6\ROOT_FILE', __FILE__ );
+if ( ! class_exists( 'Wpappy_1_0_7\App' ) ) {
+	define( 'Wpappy_1_0_7\ROOT_FILE', __FILE__ );
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 }

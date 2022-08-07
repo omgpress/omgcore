@@ -1,7 +1,7 @@
 {
 	"name": "wpappy",
   "basePHPClassName": "Wpappy",
-	"version": "1.0.6",
+	"version": "1.0.7",
   "rootPath": "../..",
 	"directories": [
     "assets",

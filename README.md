@@ -32,7 +32,7 @@ Alternatively, you can [download the latest release](https://github.com/wpappy/w
 
 ## Documentation
 The latest documentation is published on [wpappy.dpripa.com](https://wpappy.dpripa.com).\
-For convenience, it's better to start from [the entry point](https://wpappy.dpripa.com/classes/Wpappy-1-0-6-App.html) of the library.
+For convenience, it's better to start from [the entry point](https://wpappy.dpripa.com/classes/Wpappy-1-0-7-App.html) of the library.
 
 If you need documentation for previous versions, follow these instructions:
 - Install [phpDocumentor](https://www.phpdoc.org) into your system.
@@ -58,7 +58,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Always be sure that the Wpappy namespace matches the installed version of the library.
 // This is because other plugin and theme may use a different version.
 // For example, where 'Wpappy_x_x_x' version is x.x.x.
-use Wpappy_1_0_6\App as App;
+use Wpappy_1_0_7\App as App;
 
 // Define a function that returns the singleton instance of Wpappy for your application.
 function app(): App {
@@ -67,7 +67,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of declarator usage here. It's a specific pattern provided by Wpappy for the WordPress based applications. Read more about [declarator](https://wpappy.dpripa.com/classes/Wpappy-1-0-6-Declarator.html).
+You can see an example of declarator usage here. It's a specific pattern provided by Wpappy for the WordPress based applications. Read more about [declarator](https://wpappy.dpripa.com/classes/Wpappy-1-0-7-Declarator.html).
 
 #### Setup.php
 ```php
