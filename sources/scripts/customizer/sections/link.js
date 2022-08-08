@@ -1,7 +1,7 @@
-import { validateComponentInit } from '../../helpers/component';
+import { validateComponentSetup } from '../../helpers/component';
 
-export default function initSectionLink() {
-	if ( validateComponentInit( 'section-link' ) ) {
+export default function setupSectionLink() {
+	if ( validateComponentSetup( 'section-link' ) ) {
 		return;
 	}
 

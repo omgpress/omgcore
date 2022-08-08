@@ -67,7 +67,7 @@ function app(): App {
 
 new Setup();
 ```
-You can see an example of declarator usage here. It's a specific pattern provided by Wpappy for the WordPress based applications. Read more about [declarator](https://wpappy.dpripa.com/classes/Wpappy-1-0-7-Declarator.html).
+You can see an example of `declarator` usage here. It's a specific pattern provided by Wpappy for the WordPress based applications. Read more about [declarator](https://wpappy.dpripa.com/classes/Wpappy-1-0-7-Declarator.html).
 
 #### Setup.php
 ```php
@@ -82,9 +82,14 @@ final class Setup {
       return;
     }
 
-    new Config();
+    app()->i18n()->setup()
 
-    app()->setup( array( $this, 'setup' ) );
+      ->setting()->set_submit_btn( app()->i18n()->__( 'Save changes' ) )
+      ->setting()->set_error_notice( app()->i18n()->__( 'Something went wrong.' ) )
+      ->setting()->set_success_notice( app()->i18n()->__( 'Changes saved.' ) )
+      ->setting()->setup()
+
+      ->setup( array( $this, 'setup' ) );
   }
 
   public function setup(): void {
@@ -92,29 +97,6 @@ final class Setup {
     new Post();
 
     app()->hook()->do_action( 'setup_complete' );
-  }
-}
-```
-
-#### Config.php
-```php
-namespace My_App;
-
-defined( 'ABSPATH' ) || exit;
-
-final class Config {
-
-  public function __construct() {
-    if ( app()->declarator()->validate( self::class ) ) {
-      return;
-    }
-
-    app()->i18n()->setup();
-
-    app()->setting()->set_submit_btn( app()->i18n()->__( 'Save changes' ) )
-      ->setting()->set_error_notice( app()->i18n()->__( 'Something went wrong.' ) )
-      ->setting()->set_success_notice( app()->i18n()->__( 'Changes saved.' ) )
-      ->setting()->setup();
   }
 }
 ```
@@ -137,14 +119,12 @@ final class Setting {
       'edit.php',
       app()->i18n()->__( 'My App' ),
       app()->i18n()->__( 'My App Settings' )
-    );
 
-    app()->setting()->add_tab(
+    )->setting()->add_tab(
       'single',
       app()->i18n()->__( 'Single Post' )
-    );
 
-    app()->setting()->add_box(
+    )->setting()->add_box(
       'labels'
     )->setting()->add(
       'hello_text_label',

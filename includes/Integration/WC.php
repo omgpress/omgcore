@@ -18,28 +18,6 @@ class WC extends Plugin {
 		return class_exists( 'woocommerce', false );
 	}
 
-	public function set_theme_support(): App {
-		if (
-			$this->validate_setter() ||
-			$this->validate_single_call( __FUNCTION__ )
-		) {
-			return $this->app;
-		}
-
-		add_action(
-			'after_setup_theme',
-			function (): void {
-				add_theme_support( 'woocommerce' );
-				add_theme_support( 'wc-product-gallery-zoom' );
-				add_theme_support( 'wc-product-gallery-lightbox' );
-				add_theme_support( 'wc-product-gallery-slider' );
-			},
-			1
-		);
-
-		return $this->app;
-	}
-
 	public function set_block_support(): App {
 		if ( $this->validate_setter() ) {
 			return $this->app;
