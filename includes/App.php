@@ -39,6 +39,7 @@ class App {
 	protected $customizer;
 	protected $debug;
 	protected $declarator;
+	protected $form;
 	protected $hook;
 	protected $http;
 	protected $i18n;
@@ -211,7 +212,7 @@ class App {
 	}
 
 	/**
-	 * Manage ajax actions.
+	 * Manage Ajax actions.
 	 */
 	public function ajax(): Ajax {
 		return $this->get_feature( $this, $this->core(), 'ajax', Ajax::class );
@@ -243,6 +244,13 @@ class App {
 	 */
 	public function declarator(): Declarator {
 		return $this->get_feature( $this, $this->core(), 'declarator', Declarator::class );
+	}
+
+	/**
+	 * Manage form actions.
+	 */
+	public function form(): Form {
+		return $this->get_feature( $this, $this->core(), 'form', Form::class );
 	}
 
 	/**

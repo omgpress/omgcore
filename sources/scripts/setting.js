@@ -1,9 +1,10 @@
-import initNotices from './setting/notices';
-import initPage from './setting/page';
-import initControlSelect from './setting/control/select';
+import 'jquery';
+import setupNotices from './setting/notices';
+import setupPage from './setting/page';
+import setupControlSelect from './setting/control/select';
 
 $( document ).on( 'ready', function() {
-	initNotices();
-	initPage();
-	initControlSelect();
+	setupNotices();
+	setupPage();
+	setupControlSelect();
 });

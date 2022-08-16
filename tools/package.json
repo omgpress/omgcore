@@ -24,7 +24,7 @@
   },
   "scripts": {
     "release": "npm run change-version && npm run pack && cd ../ && composer generate-doc",
-    "pack": "cd .. && composer install-no-dev && cd tools/scripts && node pack-release.js && cd ../.. && composer install",
+    "pack": "cd .. && composer install-no-dev && cd sources && npm run build && cd .. && cd tools/scripts && node pack-release.js && cd ../.. && composer install",
     "change-version": "cd scripts && node change-version.js && cd ../.. && composer optimize-autoloader"
   }
 }

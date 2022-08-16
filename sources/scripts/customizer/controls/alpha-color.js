@@ -1,7 +1,7 @@
-import { validateComponentInit } from '../../helpers/component';
+import { validateComponentSetup } from '../../helpers/component';
 
 export default function initControlAlphaColor() {
-	if ( validateComponentInit( 'control-alpha-color' ) ) {
+	if ( validateComponentSetup( 'control-alpha-color' ) ) {
 		return;
 	}
 

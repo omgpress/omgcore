@@ -1,7 +1,7 @@
-import { validateComponentInit } from '../../helpers/component';
+import { validateComponentSetup } from '../../helpers/component';
 
-export default function initControlNumber() {
-	if ( validateComponentInit( 'control-number' ) ) {
+export default function setupControlNumber() {
+	if ( validateComponentSetup( 'control-number' ) ) {
 		return;
 	}
 

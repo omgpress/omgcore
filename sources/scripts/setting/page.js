@@ -1,6 +1,6 @@
 import 'jquery.are-you-sure';
 
-export default function initPage() {
+export default function setupPage() {
 	$( '.wpappy-page' ).areYouSure({
 		'change': function() {
 			if ( $( this ).hasClass( 'dirty' ) ) {

@@ -1,12 +1,12 @@
-export function validateComponentInit( name ) {
+export function validateComponentSetup( name ) {
 	const $body = $( 'body' );
-	const initClass = `wpappy-${name}-init`;
+	const className = `has-wpappy-${name}`;
 
-	if ( $body.hasClass( initClass ) ) {
+	if ( $body.hasClass( className ) ) {
 		return true;
 	}
 
-	$body.addClass( initClass );
+	$body.addClass( className );
 
 	return false;
 }

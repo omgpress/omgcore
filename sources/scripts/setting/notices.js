@@ -1,3 +1,3 @@
-export default function initNotices() {
+export default function setupNotices() {
 	$( '.notice' ).prependTo( '.wpappy-notices' );
 }
