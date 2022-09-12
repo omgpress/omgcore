@@ -35,6 +35,7 @@ class App {
 	protected $requires_php = '7.2.0';
 	protected $admin;
 	protected $ajax;
+	protected $api;
 	protected $asset;
 	protected $customizer;
 	protected $debug;
@@ -216,6 +217,13 @@ class App {
 	 */
 	public function ajax(): Ajax {
 		return $this->get_feature( $this, $this->core(), 'ajax', Ajax::class );
+	}
+
+	/**
+	 * Manage Rest API.
+	 */
+	public function api(): API {
+		return $this->get_feature( $this, $this->core(), 'api', API::class );
 	}
 
 	/**
