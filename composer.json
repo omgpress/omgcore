@@ -1,15 +1,15 @@
 {
-  "name": "wpappy/wpappy",
-  "version": "1.0.7",
+  "name": "oowp/core",
+  "version": "1",
   "type": "wordpress-library",
-  "description": "The library that introduces a smart layer between the WordPress environment and your plugin or theme.",
-  "homepage": "https://github.com/wpappy/wpappy",
+  "description": "",
+  "homepage": "https://github.com/oowp/core",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "Dmitry Pripa",
-      "email": "i@dpripa.com",
-      "homepage": "https://dpripa.com"
+      "name": "OOWP Contibutors",
+      "email": "",
+      "homepage": "https://github.com/oowp"
     }
   ],
   "keywords": [
@@ -18,11 +18,11 @@
   "config": {
     "platform-check": false,
     "optimize-autoloader": true,
-    "autoloader-suffix": "_Wpappy_1_0_7"
+    "autoloader-suffix": "_O0W7_1"
   },
   "autoload": {
     "psr-4": {
-      "Wpappy_1_0_7\\": "includes/"
+      "O0W7_1\\": "inc/"
     }
   },
   "require": {
@@ -37,7 +37,6 @@
     "webpack-build": "cd sources && npm run build",
     "install-no-dev": "composer install --no-dev",
     "optimize-autoloader": "composer dump-autoload --optimize",
-    "lint-php": "phpcs",
-    "generate-doc": "rm -rf docs/api && phpDocumentor"
+    "lint-php": "phpcs"
   }
 }
