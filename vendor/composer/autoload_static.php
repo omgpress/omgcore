@@ -4,103 +4,48 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit_Wpappy_1_0_7
+class ComposerStaticInit_O0W7_1
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'O' => 
         array (
-            'Wpappy_1_0_7\\' => 13,
+            'O0W7_1\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Wpappy_1_0_7\\' => 
+        'O0W7_1\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/includes',
+            0 => __DIR__ . '/../..' . '/inc',
         ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Wpappy_1_0_7\\Admin' => __DIR__ . '/../..' . '/includes/Admin.php',
-        'Wpappy_1_0_7\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Admin/Notice.php',
-        'Wpappy_1_0_7\\Ajax' => __DIR__ . '/../..' . '/includes/Ajax.php',
-        'Wpappy_1_0_7\\App' => __DIR__ . '/../..' . '/includes/App.php',
-        'Wpappy_1_0_7\\Asset' => __DIR__ . '/../..' . '/includes/Asset.php',
-        'Wpappy_1_0_7\\Core' => __DIR__ . '/../..' . '/includes/Core.php',
-        'Wpappy_1_0_7\\Core\\Admin' => __DIR__ . '/../..' . '/includes/Core/Admin.php',
-        'Wpappy_1_0_7\\Core\\Admin\\Notice' => __DIR__ . '/../..' . '/includes/Core/Admin/Notice.php',
-        'Wpappy_1_0_7\\Core\\Asset' => __DIR__ . '/../..' . '/includes/Core/Asset.php',
-        'Wpappy_1_0_7\\Core\\Debug' => __DIR__ . '/../..' . '/includes/Core/Debug.php',
-        'Wpappy_1_0_7\\Core\\Debug\\Log' => __DIR__ . '/../..' . '/includes/Core/Debug/Log.php',
-        'Wpappy_1_0_7\\Core\\FS' => __DIR__ . '/../..' . '/includes/Core/FS.php',
-        'Wpappy_1_0_7\\Core\\Feature' => __DIR__ . '/../..' . '/includes/Core/Feature.php',
-        'Wpappy_1_0_7\\Core\\Hook' => __DIR__ . '/../..' . '/includes/Core/Hook.php',
-        'Wpappy_1_0_7\\Core\\Http' => __DIR__ . '/../..' . '/includes/Core/Http.php',
-        'Wpappy_1_0_7\\Core\\Info' => __DIR__ . '/../..' . '/includes/Core/Info.php',
-        'Wpappy_1_0_7\\Core\\Media' => __DIR__ . '/../..' . '/includes/Core/Media.php',
-        'Wpappy_1_0_7\\Core\\Media\\Upload' => __DIR__ . '/../..' . '/includes/Core/Media/Upload.php',
-        'Wpappy_1_0_7\\Core\\Type' => __DIR__ . '/../..' . '/includes/Core/Type.php',
-        'Wpappy_1_0_7\\Core\\Type\\Str' => __DIR__ . '/../..' . '/includes/Core/Type/Str.php',
-        'Wpappy_1_0_7\\Customizer' => __DIR__ . '/../..' . '/includes/Customizer.php',
-        'Wpappy_1_0_7\\Customizer\\Context' => __DIR__ . '/../..' . '/includes/Customizer/Context.php',
-        'Wpappy_1_0_7\\Customizer\\Control\\Alpha_Color' => __DIR__ . '/../..' . '/includes/Customizer/Control/Alpha_Color.php',
-        'Wpappy_1_0_7\\Customizer\\Control\\Line' => __DIR__ . '/../..' . '/includes/Customizer/Control/Line.php',
-        'Wpappy_1_0_7\\Customizer\\Control\\Notice' => __DIR__ . '/../..' . '/includes/Customizer/Control/Notice.php',
-        'Wpappy_1_0_7\\Customizer\\Control\\Radio_Image' => __DIR__ . '/../..' . '/includes/Customizer/Control/Radio_Image.php',
-        'Wpappy_1_0_7\\Customizer\\Section\\Link' => __DIR__ . '/../..' . '/includes/Customizer/Section/Link.php',
-        'Wpappy_1_0_7\\Debug' => __DIR__ . '/../..' . '/includes/Debug.php',
-        'Wpappy_1_0_7\\Debug\\Log' => __DIR__ . '/../..' . '/includes/Debug/Log.php',
-        'Wpappy_1_0_7\\Declarator' => __DIR__ . '/../..' . '/includes/Declarator.php',
-        'Wpappy_1_0_7\\Feature' => __DIR__ . '/../..' . '/includes/Feature.php',
-        'Wpappy_1_0_7\\Helper\\Featured' => __DIR__ . '/../..' . '/includes/Helper/Featured.php',
-        'Wpappy_1_0_7\\Helper\\Single_Call' => __DIR__ . '/../..' . '/includes/Helper/Single_Call.php',
-        'Wpappy_1_0_7\\Hook' => __DIR__ . '/../..' . '/includes/Hook.php',
-        'Wpappy_1_0_7\\Http' => __DIR__ . '/../..' . '/includes/Http.php',
-        'Wpappy_1_0_7\\I18n' => __DIR__ . '/../..' . '/includes/I18n.php',
-        'Wpappy_1_0_7\\Info' => __DIR__ . '/../..' . '/includes/Info.php',
-        'Wpappy_1_0_7\\Integration' => __DIR__ . '/../..' . '/includes/Integration.php',
-        'Wpappy_1_0_7\\Integration\\ACF' => __DIR__ . '/../..' . '/includes/Integration/ACF.php',
-        'Wpappy_1_0_7\\Integration\\ACF\\Block_Category' => __DIR__ . '/../..' . '/includes/Integration/ACF/Block_Category.php',
-        'Wpappy_1_0_7\\Integration\\Plugin' => __DIR__ . '/../..' . '/includes/Integration/Plugin.php',
-        'Wpappy_1_0_7\\Integration\\Polylang' => __DIR__ . '/../..' . '/includes/Integration/Polylang.php',
-        'Wpappy_1_0_7\\Integration\\WC' => __DIR__ . '/../..' . '/includes/Integration/WC.php',
-        'Wpappy_1_0_7\\Integration\\Yoast' => __DIR__ . '/../..' . '/includes/Integration/Yoast.php',
-        'Wpappy_1_0_7\\Media' => __DIR__ . '/../..' . '/includes/Media.php',
-        'Wpappy_1_0_7\\Media\\Upload' => __DIR__ . '/../..' . '/includes/Media/Upload.php',
-        'Wpappy_1_0_7\\Nav_Menu' => __DIR__ . '/../..' . '/includes/Nav_Menu.php',
-        'Wpappy_1_0_7\\Setting' => __DIR__ . '/../..' . '/includes/Setting.php',
-        'Wpappy_1_0_7\\Setting\\Base' => __DIR__ . '/../..' . '/includes/Setting/Base.php',
-        'Wpappy_1_0_7\\Setting\\Box' => __DIR__ . '/../..' . '/includes/Setting/Box.php',
-        'Wpappy_1_0_7\\Setting\\Content' => __DIR__ . '/../..' . '/includes/Setting/Content.php',
-        'Wpappy_1_0_7\\Setting\\Context' => __DIR__ . '/../..' . '/includes/Setting/Context.php',
-        'Wpappy_1_0_7\\Setting\\Control' => __DIR__ . '/../..' . '/includes/Setting/Control.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Checkbox' => __DIR__ . '/../..' . '/includes/Setting/Control/Checkbox.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Control' => __DIR__ . '/../..' . '/includes/Setting/Control/Control.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Radio' => __DIR__ . '/../..' . '/includes/Setting/Control/Radio.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Select' => __DIR__ . '/../..' . '/includes/Setting/Control/Select.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Simple_Control' => __DIR__ . '/../..' . '/includes/Setting/Control/Simple_Control.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Text' => __DIR__ . '/../..' . '/includes/Setting/Control/Text.php',
-        'Wpappy_1_0_7\\Setting\\Control\\Textarea' => __DIR__ . '/../..' . '/includes/Setting/Control/Textarea.php',
-        'Wpappy_1_0_7\\Setting\\Handler' => __DIR__ . '/../..' . '/includes/Setting/Handler.php',
-        'Wpappy_1_0_7\\Setting\\Page' => __DIR__ . '/../..' . '/includes/Setting/Page.php',
-        'Wpappy_1_0_7\\Setting\\Setting' => __DIR__ . '/../..' . '/includes/Setting/Setting.php',
-        'Wpappy_1_0_7\\Setting\\Storage' => __DIR__ . '/../..' . '/includes/Setting/Storage.php',
-        'Wpappy_1_0_7\\Setting\\Sub_Tab' => __DIR__ . '/../..' . '/includes/Setting/Sub_Tab.php',
-        'Wpappy_1_0_7\\Setting\\Submit_Btn' => __DIR__ . '/../..' . '/includes/Setting/Submit_Btn.php',
-        'Wpappy_1_0_7\\Setting\\Tab' => __DIR__ . '/../..' . '/includes/Setting/Tab.php',
-        'Wpappy_1_0_7\\Template' => __DIR__ . '/../..' . '/includes/Template.php',
-        'Wpappy_1_0_7\\Type' => __DIR__ . '/../..' . '/includes/Type.php',
-        'Wpappy_1_0_7\\Type\\Arr' => __DIR__ . '/../..' . '/includes/Type/Arr.php',
-        'Wpappy_1_0_7\\Type\\Str' => __DIR__ . '/../..' . '/includes/Type/Str.php',
+        'O0W7_1\\App' => __DIR__ . '/../..' . '/inc/App.php',
+        'O0W7_1\\Bootstrap' => __DIR__ . '/../..' . '/inc/Bootstrap.php',
+        'O0W7_1\\Daemon\\App' => __DIR__ . '/../..' . '/inc/Daemon/App.php',
+        'O0W7_1\\Extension\\AdminNotice' => __DIR__ . '/../..' . '/inc/Extension/AdminNotice.php',
+        'O0W7_1\\Extension\\Arr' => __DIR__ . '/../..' . '/inc/Extension/Arr.php',
+        'O0W7_1\\Extension\\Asset' => __DIR__ . '/../..' . '/inc/Extension/Asset.php',
+        'O0W7_1\\Extension\\Env' => __DIR__ . '/../..' . '/inc/Extension/Env.php',
+        'O0W7_1\\Extension\\FS' => __DIR__ . '/../..' . '/inc/Extension/FS.php',
+        'O0W7_1\\Extension\\Form' => __DIR__ . '/../..' . '/inc/Extension/Form.php',
+        'O0W7_1\\Extension\\Hook' => __DIR__ . '/../..' . '/inc/Extension/Hook.php',
+        'O0W7_1\\Extension\\I18n' => __DIR__ . '/../..' . '/inc/Extension/I18n.php',
+        'O0W7_1\\Extension\\Info' => __DIR__ . '/../..' . '/inc/Extension/Info.php',
+        'O0W7_1\\Extension\\Str' => __DIR__ . '/../..' . '/inc/Extension/Str.php',
+        'O0W7_1\\Extension\\Template' => __DIR__ . '/../..' . '/inc/Extension/Template.php',
+        'O0W7_1\\Extension\\Url' => __DIR__ . '/../..' . '/inc/Extension/Url.php',
+        'O0W7_1\\Helper\\Singleton' => __DIR__ . '/../..' . '/inc/Helper/Singleton.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit_Wpappy_1_0_7::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit_Wpappy_1_0_7::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit_Wpappy_1_0_7::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit_O0W7_1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit_O0W7_1::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit_O0W7_1::$classMap;
 
         }, null, ClassLoader::class);
     }

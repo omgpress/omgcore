@@ -1,5 +1,4 @@
-const fs = require( 'fs' );
-const config = fs.existsSync( './config.json' ) ? require( './config' ) : require( './config-default' );
+const dotenv = require( 'dotenv' ).config();
 const entry = require( './entry' );
 const path = require( 'path' );
 const Webpack = require( 'webpack' );
@@ -16,8 +15,14 @@ const {default: ImageminPlugin} = require( 'imagemin-webpack-plugin' );
 const ImageminMozjpeg = require( 'imagemin-mozjpeg' );
 
 const paths = {
-	assets: path.resolve( __dirname, '../assets' ),
-	sources: path.resolve( __dirname, '.' )
+	asset: path.resolve( __dirname, '../asset' ),
+	source: path.resolve( __dirname, '.' )
+};
+const dirs = {
+	script: 'script',
+	style: 'style',
+	image: 'image',
+	font: 'font'
 };
 const assetPrefix = '.min';
 const mode = process.env.NODE_ENV;
@@ -80,17 +85,17 @@ if ( isDev ) {
 	BrowserSync(
 		{
 			files: [
-				paths.assets + '/scripts/*.js',
-				paths.assets + '/styles/*.css',
+				`${paths.asset}/${dirs.script}/*.js`,
+				`${paths.asset}/${dirs.style}/*.css`,
 				path.resolve( __dirname, '../**/*.php' )
 			],
-			port: config.browsersync.port,
+			port: process.env.BROWSERSYNC_PORT,
 			proxy: {
-				target: config.browsersync.proxy,
+				target: process.env.BROWSERSYNC_PROXY,
 				proxyReq: [
 					function( proxyReq ) {
 						proxyReq.setHeader( 'X-Webpack-Dev-Server', 'yes' );
-						proxyReq.setHeader( 'X-Webpack-Dev-Server-Base-URL', config.browsersync.proxy );
+						proxyReq.setHeader( 'X-Webpack-Dev-Server-Base-URL', process.env.BROWSERSYNC_PROXY );
 					}
 				]
 			},
@@ -103,11 +108,11 @@ if ( isDev ) {
 
 module.exports = {
 	mode: mode,
-	context: paths.sources,
+	context: paths.source,
 	entry: entry,
 	output: {
-		filename: `scripts/[name]${assetPrefix}.js`,
-		path: paths.assets
+		filename: `${dirs.script}/[name]${assetPrefix}.js`,
+		path: paths.asset
 	},
 	devtool: isDev ? '#cheap-module-source-map' : '',
 	stats: stats(),
@@ -224,7 +229,7 @@ module.exports = {
 		),
 		new MiniCssExtract(
 			{
-				filename: `styles/[name]${assetPrefix}.css`
+				filename: `${dirs.style}/[name]${assetPrefix}.css`
 			}
 		),
 		new FixStyleOnlyEntries(
@@ -235,16 +240,16 @@ module.exports = {
 		new Copy(
 			[
 				{
-					from: 'images',
-					to: paths.assets + '/images'
+					from: dirs.image,
+					to: `${paths.asset}/${dirs.image}`
 				},
 				{
-					from: 'fonts',
-					to: paths.assets + '/fonts'
+					from: dirs.font,
+					to: `${paths.asset}/${dirs.font}`
 				}
 			],
 			{
-				ignore: [ '.DS_Store', 'Thumbs.db', 'ehthumbs.db' ]
+				ignore: [ '.gitkeep', '.DS_Store', 'Thumbs.db', 'ehthumbs.db' ]
 			}
 		),
 		new ImageminPlugin(

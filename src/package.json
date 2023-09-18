@@ -1,15 +1,15 @@
 {
-  "name": "wpappy-sources",
+  "name": "core-src",
   "version": "1.0.0",
-  "description": "Sources of Wpappy assets.",
-  "homepage": "https://github.com/wpappy/wpappy/blob/main/sources",
-  "license": "GPL-2.0-or-later",
+  "description": "",
+  "homepage": "",
+  "license": "",
   "private": true,
   "contributors": [
     {
-      "name": "Dmitry Pripa",
-      "email": "i@dpripa.com",
-      "homepage": "https://dpripa.com"
+      "name": "",
+      "email": "",
+      "homepage": ""
     }
   ],
   "keywords": [
@@ -24,10 +24,12 @@
   ],
   "dependencies": {
     "jquery": "^3.5.1",
-    "jquery.are-you-sure": "^1.9.0",
-    "select2": "^4.0.13"
+    "normalize.css": "^8.0.1",
+    "bootstrap": "^4.6.2",
+    "popper.js": "^1.16.1"
   },
   "devDependencies": {
+    "dotenv": "^16.0.2",
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "autoprefixer": "~9.7.6",
