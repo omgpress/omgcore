@@ -4,7 +4,7 @@ namespace OmgCore\Helper;
 defined( 'ABSPATH' ) || exit;
 
 trait GenerateRandom {
-	public static function generate_random(
+	public function generate_random(
 		int $length = 16,
 		string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 	): string {

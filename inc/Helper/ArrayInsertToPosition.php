@@ -4,7 +4,7 @@ namespace OmgCore\Helper;
 defined( 'ABSPATH' ) || exit;
 
 trait ArrayInsertToPosition {
-	public static function insert_to_position( array $array_for_insert, array $target_array, int $position ): array {
+	public function insert_to_position( array $array_for_insert, array $target_array, int $position ): array {
 		if ( empty( $target_array ) ) {
 			return $array_for_insert;
 		}

@@ -2,7 +2,7 @@
   "name": "omgpress/omgcore",
   "version": "1.0.0",
   "type": "wordpress-library",
-  "description": "",
+  "description": "Library for developing WordPress plugins and themes",
   "homepage": "https://omgpress.com/omgcore",
   "license": "GPL-2.0-or-later",
   "authors": [
