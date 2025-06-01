@@ -1,19 +1,18 @@
 <?php
-
-namespace O0W7_1\Helper;
+namespace OmgCore\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
 trait Singleton {
-	private static $instance;
+	protected static ?self $instance = null;
 
 	public static function get_instance(): self {
-		if ( empty( self::$instance ) ) {
+		if ( ! self::$instance instanceof self ) {
 			self::$instance = new self();
 		}
 
 		return self::$instance;
 	}
 
-	private function __construct() {}
+	abstract protected function __construct();
 }

@@ -1,24 +1,20 @@
 <?php
-
-namespace O0W7_1\Extension;
-
-use O0W7_1\App;
+namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Info {
-	protected $name;
-	protected $url;
-	protected $version;
-	protected $description;
-	protected $author;
-	protected $author_url;
-	protected $textdomain;
-	protected $domain_path;
-	protected $requires_php;
-	protected $requires_wp;
-
-	protected $headers = array(
+abstract class Info {
+	protected string $name;
+	protected string $url;
+	protected string $version;
+	protected string $description;
+	protected string $author;
+	protected string $author_url;
+	protected string $textdomain;
+	protected string $domain_path;
+	protected string $requires_php;
+	protected string $requires_wp;
+	protected array $headers = array(
 		'version'      => 'Version',
 		'description'  => 'Description',
 		'author'       => 'Author',
@@ -29,23 +25,8 @@ class Info {
 		'requires_php' => 'Requires PHP',
 	);
 
-	public function __construct( App $app, FS $fs ) {
-		if ( 'theme' === $app->get_type() ) {
-			$file                  = $fs->get_path( 'style.css' );
-			$this->headers['name'] = 'Theme Name';
-			$this->headers['url']  = 'Theme URI';
-
-		} else {
-			$file                  = $app->get_root_file();
-			$this->headers['name'] = 'Plugin Name';
-			$this->headers['url']  = 'Plugin URI';
-		}
-
-		$info = get_file_data(
-			$file,
-			$this->headers
-		);
-
+	public function __construct( string $file_with_headers ) {
+		$info               = get_file_data( $file_with_headers, $this->headers );
 		$this->name         = $info['name'];
 		$this->url          = $info['url'];
 		$this->version      = $info['version'];

@@ -1,16 +1,13 @@
 <?php
-
-namespace O0W7_1\Extension;
-
-use O0W7_1\App;
+namespace OmgCore\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-class AdminNotice {
-	protected $key;
+class Notice {
+	protected string $key;
 
-	public function __construct( App $app ) {
-		$this->key = $app->get_key( 'admin_transient_notices' );
+	public function __construct( string $key ) {
+		$this->key = $key . '_admin_transient_notices';
 
 		add_action( 'admin_init', $this->render_transients() );
 	}
@@ -25,11 +22,11 @@ class AdminNotice {
 
 			foreach ( $notices as $level => $messages ) {
 				foreach ( $messages as $message ) {
-					self::render( $message, $level );
+					$this->render( $message, $level );
 				}
 			}
 
-			$this->update_transients( array() );
+			delete_option( $this->key );
 		};
 	}
 
@@ -37,27 +34,32 @@ class AdminNotice {
 		return get_option( $this->key, array() );
 	}
 
-	protected function update_transients( array $notices ): void {
-		update_option( $this->key, $notices );
-	}
-
 	public function add_transient( string $message, string $level = 'warning' ): void {
 		$notices             = $this->get_transients();
 		$notices[ $level ][] = $message;
 
-		$this->update_transients( $notices );
+		update_option( $this->key, $notices );
 	}
 
-	public function render( string $message, string $level = 'warning' ): void {
+	public function render( string $message, string $level = 'warning', bool $is_dismissible = true ): self {
 		add_action(
 			'admin_notices',
-			function () use ( $message, $level ): void {
+			function () use ( $message, $level, $is_dismissible ): void {
 				?>
-				<div class="notice notice-<?php echo esc_attr( $level ); ?> is-dismissible" style="padding-top: 10px; padding-bottom: 10px;">
+				<div
+					class="notice notice-<?php echo esc_attr( $level ) . ( $is_dismissible ? ' is-dismissible' : '' ); ?>"
+					style="padding-top: 10px; padding-bottom: 10px;"
+				>
 					<?php echo wp_kses_post( $message ); ?>
 				</div>
 				<?php
 			}
 		);
+
+		return $this;
+	}
+
+	public function reset(): void {
+		delete_option( $this->key );
 	}
 }
