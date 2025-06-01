@@ -1,0 +1,23 @@
+{
+  "name": "omgcore",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://omgpress.com/omgcore",
+  "license": "GPL-2.0-or-later",
+  "contributors": [
+    {
+      "name": "OmgPress",
+      "email": "hello@omgpress.com",
+      "homepage": "https://omgpress.com"
+    }
+  ],
+  "keywords": [
+    "wordpress"
+  ],
+  "devDependencies": {
+    "husky": "^8.0.3"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
