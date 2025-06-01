@@ -1,15 +1,15 @@
 {
-  "name": "oowp/framework",
-  "version": "1",
+  "name": "omgpress/omgcore",
+  "version": "1.0.0",
   "type": "wordpress-library",
   "description": "",
-  "homepage": "https://wp.local",
+  "homepage": "https://omgpress.com/omgcore",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "developer",
-      "email": "developer@wp.com",
-      "homepage": "https://wp.local"
+      "name": "OmgPress",
+      "email": "hello@omgpress.com",
+      "homepage": "https://omgpress.com"
     }
   ],
   "keywords": [
@@ -17,26 +17,23 @@
   ],
   "config": {
     "platform-check": false,
-    "optimize-autoloader": true,
-    "autoloader-suffix": "_O0W7_1"
+    "optimize-autoloader": true
   },
   "autoload": {
     "psr-4": {
-      "O0W7_1\\": "inc/"
+      "OmgCore\\": "inc/"
     }
   },
   "require": {
-    "php": "^7.2.0"
+    "php": ">=7.4.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.3.1",
     "wp-coding-standards/wpcs": "^2.2.1"
   },
   "scripts": {
-    "webpack-start": "cd sources && npm run start",
-    "webpack-build": "cd sources && npm run build",
-    "install-no-dev": "composer install --no-dev",
-    "optimize-autoloader": "composer dump-autoload --optimize",
-    "lint-php": "phpcs"
+    "no-dev": "composer install --no-dev",
+    "lint": "phpcs",
+    "fix": "phpcbf"
   }
 }
