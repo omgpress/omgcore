@@ -1,9 +1,9 @@
 <?php
-namespace OmgCore\Theme;
+namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class View extends \OmgCore\View {
+class ViewTheme extends View {
 	public function get( string $rel = '' ): string {
 		return '';
 	}

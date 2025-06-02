@@ -1,9 +1,9 @@
 <?php
-namespace OmgCore\Admin;
+namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Notice {
+class AdminNotice {
 	protected string $key;
 
 	public function __construct( string $key ) {

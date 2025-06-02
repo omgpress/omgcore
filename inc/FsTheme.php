@@ -1,9 +1,9 @@
 <?php
-namespace OmgCore\Theme;
+namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Fs extends \OmgCore\Fs {
+class FsTheme extends Fs {
 	protected string $root_file;
 
 	public function __construct( string $root_file ) {

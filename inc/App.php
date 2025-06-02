@@ -5,11 +5,11 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
-class Core {
+abstract class App {
 	protected string $root_file;
 	protected string $key;
 	protected bool $is_plugin;
-	protected Admin $admin;
+	protected AdminNotice $admin_notice;
 	protected Asset $asset;
 	protected Env $env;
 	protected Fs $fs;
@@ -17,10 +17,20 @@ class Core {
 	protected Requirement $requirement;
 	protected View $view;
 
+	protected static ?self $instance = null;
+
+	public static function get_instance(): self {
+		if ( ! self::$instance instanceof self ) {
+			static::$instance = new static();
+		}
+
+		return static::$instance;
+	}
+
 	/**
 	 * @throws Exception
 	 */
-	public function __construct( string $root_file, string $key ) {
+	protected function __construct( string $root_file, string $key ) {
 		$this->root_file = $root_file;
 		$this->key       = $key;
 		$root_file_paths = explode( DIRECTORY_SEPARATOR, $root_file );
@@ -33,31 +43,31 @@ class Core {
 			throw new Exception( 'Invalid root file path. Must be a plugin or theme.' );
 		}
 
-		$this->admin       = new Admin( $key );
-		$this->fs          = $this->is_plugin ?
-			new Plugin\Fs( $root_file ) :
-			new Theme\Fs( $root_file );
-		$this->asset       = new Asset( $key, $this->fs );
-		$this->env         = new Env();
-		$this->info        = $this->is_plugin ?
-			new Plugin\Info( $this->get_root_file() ) :
-			new Theme\Info( $this->fs->get_path( 'style.css' ) );
-		$this->requirement = new Requirement( $this->info, $this->admin->notice() );
-		$this->view        = $this->is_plugin ?
-			new Plugin\View() :
-			new Theme\View();
+		$this->admin_notice = new AdminNotice( $this->key );
+		$this->fs           = $this->is_plugin ?
+			new FsPlugin( $root_file ) :
+			new FsTheme( $root_file );
+		$this->asset        = new Asset( $key, $this->fs );
+		$this->env          = new Env();
+		$this->info         = $this->is_plugin ?
+			new InfoPlugin( $this->get_root_file() ) :
+			new InfoTheme( $this->fs->get_path( 'style.css' ) );
+		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
+		$this->view         = $this->is_plugin ?
+			new ViewPlugin() :
+			new ViewTheme();
 	}
 
 	public function get_root_file(): string {
 		return $this->root_file;
 	}
 
-	public function get_key(): string {
-		return $this->key;
+	public function get_key( string $slug ): string {
+		return $this->key . ( $slug ? '_' . $slug : '' );
 	}
 
-	public function admin(): Admin {
-		return $this->admin;
+	public function admin_notice(): AdminNotice {
+		return $this->admin_notice;
 	}
 
 	public function asset(): Asset {

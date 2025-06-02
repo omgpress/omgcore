@@ -1,12 +1,12 @@
 <?php
-namespace OmgCore\Theme;
+namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Info extends \OmgCore\Info {
+class InfoPlugin extends Info {
 	public function __construct( string $file_with_headers ) {
-		$this->headers['name'] = 'Theme Name';
-		$this->headers['url']  = 'Theme URI';
+		$this->headers['name'] = 'Plugin Name';
+		$this->headers['url']  = 'Plugin URI';
 
 		parent::__construct( $file_with_headers );
 	}
