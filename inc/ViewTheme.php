@@ -4,11 +4,16 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class ViewTheme extends View {
-	public function get( string $rel = '' ): string {
-		return '';
+	protected string $dir = 'view';
+
+	public function get( string $name, array $args = array() ): string {
+		ob_start();
+		static::render( $name, $args );
+
+		return ob_get_clean();
 	}
 
-	public function render( string $rel = '' ): self {
-		return $this;
+	public function render( string $name, array $args = array() ): void {
+		get_template_part( "$this->dir/$name", null, $args );
 	}
 }

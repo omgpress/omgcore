@@ -54,7 +54,7 @@ abstract class App {
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
 		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
 		$this->view         = $this->is_plugin ?
-			new ViewPlugin() :
+			new ViewPlugin( $this->fs ) :
 			new ViewTheme();
 	}
 
