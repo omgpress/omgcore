@@ -13,7 +13,9 @@ class ViewTheme extends View {
 		return ob_get_clean();
 	}
 
-	public function render( string $name, array $args = array() ): void {
+	public function render( string $name, array $args = array() ): self {
 		get_template_part( "$this->dir/$name", null, $args );
+
+		return $this;
 	}
 }

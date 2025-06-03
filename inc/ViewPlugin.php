@@ -18,7 +18,9 @@ class ViewPlugin extends View {
 		return ob_get_clean();
 	}
 
-	public function render( string $name, array $args = array() ): void {
+	public function render( string $name, array $args = array() ): self {
 		echo wp_kses_post( static::get( $name, $args ) );
+
+		return $this;
 	}
 }
