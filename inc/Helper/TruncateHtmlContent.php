@@ -4,7 +4,7 @@ namespace OmgCore\Helper;
 defined( 'ABSPATH' ) || exit;
 
 trait TruncateHtmlContent {
-	public function truncate_html_content( string $str, int $length = 100, array $args = array() ): string {
+	protected function truncate_html_content( string $str, int $length = 100, array $args = array() ): string {
 		$args = wp_parse_args(
 			$args,
 			array(
