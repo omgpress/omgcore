@@ -7,7 +7,7 @@ class AdminNotice {
 	protected string $key;
 
 	public function __construct( string $key ) {
-		$this->key = $key . '_admin_transient_notices';
+		$this->key = "${key}_admin_transient_notices";
 
 		add_action( 'admin_init', $this->render_transients() );
 	}

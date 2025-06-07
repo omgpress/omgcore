@@ -50,20 +50,12 @@ abstract class App {
 		$this->asset        = new Asset( $key, $this->fs );
 		$this->env          = new Env();
 		$this->info         = $this->is_plugin ?
-			new InfoPlugin( $this->get_root_file() ) :
+			new InfoPlugin( $this->root_file ) :
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
 		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
 		$this->view         = $this->is_plugin ?
 			new ViewPlugin( $this->fs ) :
 			new ViewTheme();
-	}
-
-	public function get_root_file(): string {
-		return $this->root_file;
-	}
-
-	public function get_key( string $slug ): string {
-		return $this->key . ( $slug ? '_' . $slug : '' );
 	}
 
 	public function admin_notice(): AdminNotice {

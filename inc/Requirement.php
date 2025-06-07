@@ -11,8 +11,6 @@ class Requirement {
 	public function __construct( Info $info, AdminNotice $admin_notice ) {
 		$this->info         = $info;
 		$this->admin_notice = $admin_notice;
-
-		add_action( 'admin_init', array( $this, 'validate' ) );
 	}
 
 	public function add( string $classname_or_filename, string $title ): self {
