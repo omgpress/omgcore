@@ -5,7 +5,7 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class App {
+abstract class OmgApp {
 	protected string $root_file;
 	protected string $key;
 	protected bool $is_plugin;
@@ -43,19 +43,26 @@ abstract class App {
 			throw new Exception( 'Invalid root file path. Must be a plugin or theme.' );
 		}
 
-		$this->admin_notice = new AdminNotice( $this->key );
-		$this->fs           = $this->is_plugin ?
-			new FsPlugin( $root_file ) :
-			new FsTheme( $root_file );
-		$this->asset        = new Asset( $key, $this->fs );
-		$this->env          = new Env();
 		$this->info         = $this->is_plugin ?
 			new InfoPlugin( $this->root_file ) :
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
+		$this->admin_notice = new AdminNotice( $this->key );
 		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
-		$this->view         = $this->is_plugin ?
+
+		if ( ! $this->requirement->validate() ) {
+			return;
+		}
+
+		$this->fs    = $this->is_plugin ?
+			new FsPlugin( $root_file ) :
+			new FsTheme( $root_file );
+		$this->asset = new Asset( $key, $this->fs );
+		$this->env   = new Env();
+		$this->view  = $this->is_plugin ?
 			new ViewPlugin( $this->fs ) :
 			new ViewTheme();
+
+		$this->init();
 	}
 
 	public function admin_notice(): AdminNotice {
@@ -85,4 +92,6 @@ abstract class App {
 	public function view(): View {
 		return $this->view;
 	}
+
+	abstract protected function init(): void;
 }
