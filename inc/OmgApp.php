@@ -57,7 +57,7 @@ abstract class OmgApp {
 			new ViewPlugin( $this->fs ) :
 			new ViewTheme();
 
-		if ( ! $this->requirement->validate() ) {
+		if ( $this->requirement->validate() ) {
 			return;
 		}
 
