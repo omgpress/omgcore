@@ -20,7 +20,7 @@ abstract class OmgApp {
 	protected static ?self $instance = null;
 
 	public static function get_instance(): self {
-		if ( ! self::$instance instanceof self ) {
+		if ( ! static::$instance instanceof self ) {
 			static::$instance = new static();
 		}
 
@@ -43,24 +43,23 @@ abstract class OmgApp {
 			throw new Exception( 'Invalid root file path. Must be a plugin or theme.' );
 		}
 
+		$this->admin_notice = new AdminNotice( $this->key );
+		$this->fs           = $this->is_plugin ?
+			new FsPlugin( $root_file ) :
+			new FsTheme( $root_file );
+		$this->asset        = new Asset( $key, $this->fs );
+		$this->env          = new Env();
 		$this->info         = $this->is_plugin ?
 			new InfoPlugin( $this->root_file ) :
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
-		$this->admin_notice = new AdminNotice( $this->key );
 		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
+		$this->view         = $this->is_plugin ?
+			new ViewPlugin( $this->fs ) :
+			new ViewTheme();
 
 		if ( ! $this->requirement->validate() ) {
 			return;
 		}
-
-		$this->fs    = $this->is_plugin ?
-			new FsPlugin( $root_file ) :
-			new FsTheme( $root_file );
-		$this->asset = new Asset( $key, $this->fs );
-		$this->env   = new Env();
-		$this->view  = $this->is_plugin ?
-			new ViewPlugin( $this->fs ) :
-			new ViewTheme();
 
 		$this->init();
 	}
