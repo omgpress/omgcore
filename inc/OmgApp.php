@@ -56,12 +56,6 @@ abstract class OmgApp {
 		$this->view         = $this->is_plugin ?
 			new ViewPlugin( $this->fs ) :
 			new ViewTheme();
-
-		if ( $this->requirement->validate() ) {
-			return;
-		}
-
-		$this->init();
 	}
 
 	public function admin_notice(): AdminNotice {
@@ -91,6 +85,4 @@ abstract class OmgApp {
 	public function view(): View {
 		return $this->view;
 	}
-
-	abstract protected function init(): void;
 }

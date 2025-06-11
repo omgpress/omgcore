@@ -24,11 +24,11 @@ class Env {
 		$host         = explode( '.', wp_parse_url( home_url(), PHP_URL_HOST ) );
 		$root_host    = end( $host );
 		$this->is_dev = in_array( $root_host, $this->dev_hosts, true ) ||
-            in_array( wp_get_environment_type(), $this->dev_envs, true ) ||
-            (
+			in_array( wp_get_environment_type(), $this->dev_envs, true ) ||
+			(
 				defined( 'WP_ENVIRONMENT' ) &&
-                in_array( WP_ENVIRONMENT, $this->dev_envs, true )
-            );
+				in_array( WP_ENVIRONMENT, $this->dev_envs, true )
+			);
 	}
 
 	public function is_dev(): bool {
