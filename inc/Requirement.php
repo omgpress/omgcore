@@ -7,10 +7,14 @@ class Requirement {
 	protected Info $info;
 	protected AdminNotice $admin_notice;
 	protected array $requirements = array();
+	protected string $error_message_single;
+	protected string $error_message_plural;
 
-	public function __construct( Info $info, AdminNotice $admin_notice ) {
-		$this->info         = $info;
-		$this->admin_notice = $admin_notice;
+	public function __construct( Info $info, AdminNotice $admin_notice, array $config ) {
+		$this->info                 = $info;
+		$this->admin_notice         = $admin_notice;
+		$this->error_message_single = $config['error_message_single'] ?? '%1$s requires the %2$s plugin.';
+		$this->error_message_plural = $config['error_message_plural'] ?? '%1$s requires the following plugins: %2$s.';
 	}
 
 	public function add( string $classname_or_filename, string $title ): self {
@@ -40,10 +44,13 @@ class Requirement {
 			return false;
 		}
 
-		$message = 1 < count( $this->requirements ) ?
-			__( '%1$s requires the following plugins: %2$s.', $this->info->get_textdomain() ) :
-			__( '%1$s requires the %2$s plugin.', $this->info->get_textdomain() );
-		$message = sprintf( $message, $plugin_name, $missing_requirements );
+		$message = sprintf(
+			1 < count( $this->requirements ) ?
+				$this->error_message_plural :
+				$this->error_message_single,
+			$plugin_name,
+			$missing_requirements
+		);
 
 		$this->admin_notice->render( $message, 'error' );
 

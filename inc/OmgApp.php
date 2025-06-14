@@ -30,7 +30,7 @@ abstract class OmgApp {
 	/**
 	 * @throws Exception
 	 */
-	protected function __construct( string $root_file, string $key ) {
+	protected function __construct( string $root_file, string $key, array $config = array() ) {
 		$this->root_file = $root_file;
 		$this->key       = $key;
 		$root_file_paths = explode( DIRECTORY_SEPARATOR, $root_file );
@@ -40,22 +40,30 @@ abstract class OmgApp {
 		$is_theme        = $isset_root_dir && 'themes' === $root_file_paths[ $root_dir_number ];
 
 		if ( ! $this->is_plugin && ! $is_theme ) {
-			throw new Exception( 'Invalid root file path. Must be a plugin or theme.' );
+			throw new Exception( 'Invalid root file path, must be a plugin or theme' );
 		}
 
 		$this->admin_notice = new AdminNotice( $this->key );
 		$this->fs           = $this->is_plugin ?
 			new FsPlugin( $root_file ) :
 			new FsTheme( $root_file );
-		$this->asset        = new Asset( $key, $this->fs );
+		$this->asset        = new Asset(
+			$key,
+			$this->fs,
+			$config[ Asset::class ] ?? array()
+		);
 		$this->env          = new Env();
 		$this->info         = $this->is_plugin ?
 			new InfoPlugin( $this->root_file ) :
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
-		$this->requirement  = new Requirement( $this->info, $this->admin_notice );
+		$this->requirement  = new Requirement(
+			$this->info,
+			$this->admin_notice,
+			$config[ Requirement::class ] ?? array()
+		);
 		$this->view         = $this->is_plugin ?
-			new ViewPlugin( $this->fs ) :
-			new ViewTheme();
+			new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
+			new ViewTheme( $config[ View::class ] ?? array() );
 	}
 
 	public function admin_notice(): AdminNotice {

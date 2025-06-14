@@ -4,7 +4,11 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class ViewTheme extends View {
-	protected string $dir = 'view';
+	protected string $dir;
+
+	public function __construct( array $config ) {
+		$this->dir = $config['dir'] ?? 'view';
+	}
 
 	public function get( string $name, array $args = array() ): string {
 		ob_start();

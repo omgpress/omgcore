@@ -4,11 +4,12 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class ViewPlugin extends View {
-	protected string $dir = 'view';
 	protected Fs $fs;
+	protected string $dir;
 
-	public function __construct( Fs $fs ) {
-		$this->fs = $fs;
+	public function __construct( Fs $fs, array $config ) {
+		$this->fs  = $fs;
+		$this->dir = $config['dir'] ?? 'view';
 	}
 
 	public function get( string $name, array $args = array() ): string { // phpcs:ignore

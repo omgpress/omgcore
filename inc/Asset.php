@@ -6,17 +6,21 @@ use Exception;
 defined( 'ABSPATH' ) || exit;
 
 class Asset {
-	protected string $asset_dir = 'asset';
-	protected string $js_dir    = 'js';
-	protected string $css_dir   = 'css';
-	protected string $postfix   = '.min';
+	protected string $asset_dir;
+	protected string $js_dir;
+	protected string $css_dir;
+	protected string $postfix;
 
 	protected string $key;
 	protected Fs $fs;
 
-	public function __construct( string $key, Fs $fs ) {
-		$this->key = $key;
-		$this->fs  = $fs;
+	public function __construct( string $key, Fs $fs, array $config ) {
+		$this->key       = $key;
+		$this->fs        = $fs;
+		$this->asset_dir = $config['asset_dir'] ?? 'asset';
+		$this->js_dir    = $config['js_dir'] ?? 'js';
+		$this->css_dir   = $config['css_dir'] ?? 'css';
+		$this->postfix   = $config['postfix'] ?? '.min';
 	}
 
 	/**
