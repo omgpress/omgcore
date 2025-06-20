@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Info {
+abstract class Info extends Feature {
 	protected string $name;
 	protected string $url;
 	protected string $version;
@@ -26,6 +26,8 @@ abstract class Info {
 	);
 
 	public function __construct( string $file_with_headers ) {
+		parent::__construct();
+
 		$info               = get_file_data( $file_with_headers, $this->headers );
 		$this->name         = $info['name'];
 		$this->url          = $info['url'];

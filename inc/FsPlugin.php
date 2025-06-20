@@ -7,6 +7,8 @@ class FsPlugin extends Fs {
 	protected string $root_file;
 
 	public function __construct( string $root_file ) {
+		parent::__construct();
+
 		$this->root_file = $root_file;
 	}
 

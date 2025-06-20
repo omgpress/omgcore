@@ -4,12 +4,6 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class FsTheme extends Fs {
-	protected string $root_file;
-
-	public function __construct( string $root_file ) {
-		$this->root_file = $root_file;
-	}
-
 	public function get_url( string $rel = '', bool $stamp = false ): string {
 		$url = get_theme_file_uri( $rel );
 

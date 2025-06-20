@@ -8,14 +8,14 @@ defined( 'ABSPATH' ) || exit;
 abstract class OmgApp {
 	protected string $root_file;
 	protected string $key;
-	protected string $textdomain;
 	protected bool $is_plugin;
+	protected ActionQuery $action_query;
 	protected AdminNotice $admin_notice;
 	protected Asset $asset;
+	protected Dependency $dependency;
 	protected Env $env;
 	protected Fs $fs;
 	protected Info $info;
-	protected Requirement $requirement;
 	protected View $view;
 
 	protected static ?self $instance = null;
@@ -31,96 +31,67 @@ abstract class OmgApp {
 	/**
 	 * @throws Exception
 	 */
-	protected function __construct( string $root_file, string $key, string $textdomain, array $config = array() ) {
-		$this->root_file  = $root_file;
-		$this->key        = $key;
-		$this->textdomain = $textdomain;
-		$root_file_paths  = explode( DIRECTORY_SEPARATOR, $root_file );
-		$root_dir_number  = count( $root_file_paths ) - 3;
-		$isset_root_dir   = isset( $root_file_paths[ $root_dir_number ] );
-		$this->is_plugin  = $isset_root_dir && 'plugins' === $root_file_paths[ $root_dir_number ];
-		$is_theme         = $isset_root_dir && 'themes' === $root_file_paths[ $root_dir_number ];
+	protected function __construct( string $root_file, string $key, bool $is_plugin = true ) {
+		$this->root_file = $root_file;
+		$this->key       = $key;
+		$this->is_plugin = $is_plugin;
 
-		if ( ! $this->is_plugin && ! $is_theme ) {
-			throw new Exception( 'Invalid root file path, must be a plugin or theme' );
-		}
-
-		$this->admin_notice = new AdminNotice( $this->key );
-		$this->fs           = $this->is_plugin ?
-			new FsPlugin( $root_file ) :
-			new FsTheme( $root_file );
-		$this->asset        = new Asset(
-			$key,
-			$this->fs,
-			$config[ Asset::class ] ?? array()
-		);
-		$this->env          = new Env();
-		$this->info         = $this->is_plugin ?
-			new InfoPlugin( $this->root_file ) :
-			new InfoTheme( $this->fs->get_path( 'style.css' ) );
-		$this->requirement  = new Requirement(
-			$this->info,
-			$this->admin_notice,
-			$config[ Requirement::class ] ?? array()
-		);
-		$this->view         = $this->is_plugin ?
-			new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
-			new ViewTheme( $config[ View::class ] ?? array() );
-
-		add_action( 'init', $this->load_textdomain() );
-
-		if ( $this->is_plugin ) {
-			register_activation_hook( $root_file, $this->activate() );
-			register_deactivation_hook( $root_file, $this->deactivate() );
-		} else {
-			add_action( 'after_switch_theme', $this->activate() );
-			add_action( 'switch_theme', $this->deactivate() );
-		}
+		add_action( 'init', $this->init() );
 	}
 
-	public function admin_notice(): AdminNotice {
-		return $this->admin_notice;
-	}
-
-	public function asset(): Asset {
-		return $this->asset;
-	}
-
-	public function env(): Env {
-		return $this->env;
-	}
+	abstract protected function get_config(): array;
 
 	public function fs(): Fs {
 		return $this->fs;
-	}
-
-	public function info(): Info {
-		return $this->info;
-	}
-
-	public function requirement(): Requirement {
-		return $this->requirement;
 	}
 
 	public function view(): View {
 		return $this->view;
 	}
 
-	abstract protected function init(): callable;
-
-	protected function load_textdomain(): callable {
+	protected function init(): callable {
 		return function (): void {
+			$config             = $this->get_config();
+			$this->action_query = new ActionQuery( $this->key );
+			$this->admin_notice = new AdminNotice( $this->key );
+			$this->fs           = $this->is_plugin ?
+				new FsPlugin( $this->root_file ) :
+				new FsTheme( $this->root_file );
+			$this->asset        = new Asset(
+				$this->key,
+				$this->fs,
+				$config[ Asset::class ] ?? array()
+			);
+			$this->info         = $this->is_plugin ?
+				new InfoPlugin( $this->root_file ) :
+				new InfoTheme( $this->fs->get_path( 'style.css' ) );
+			$this->dependency   = new Dependency(
+				$this->key,
+				$this->info,
+				$this->admin_notice,
+				$this->action_query,
+				$config[ Dependency::class ] ?? array()
+			);
+			$this->env          = new Env();
+			$this->view         = $this->is_plugin ?
+				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
+				new ViewTheme( $config[ View::class ] ?? array() );
+
 			if ( $this->is_plugin ) {
 				load_plugin_textdomain(
-					$this->textdomain,
+					$this->info->get_textdomain(),
 					false,
 					$this->fs->get_path( 'lang' )
 				);
+				register_activation_hook( $this->root_file, $this->activate() );
+				register_deactivation_hook( $this->root_file, $this->deactivate() );
 			} else {
 				load_theme_textdomain(
-					$this->textdomain,
+					$this->info->get_textdomain(),
 					$this->fs->get_path( 'lang' )
 				);
+				add_action( 'after_switch_theme', $this->activate() );
+				add_action( 'switch_theme', $this->deactivate() );
 			}
 		};
 	}

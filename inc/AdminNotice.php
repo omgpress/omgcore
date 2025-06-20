@@ -3,11 +3,13 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class AdminNotice {
+class AdminNotice extends Feature {
 	protected string $key;
 
 	public function __construct( string $key ) {
-		$this->key = "${key}_admin_transient_notices";
+		parent::__construct();
+
+		$this->key = "{$key}_admin_transient_notices";
 
 		add_action( 'admin_init', $this->render_transients() );
 	}

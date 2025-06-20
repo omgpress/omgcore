@@ -8,8 +8,9 @@ class ViewPlugin extends View {
 	protected string $dir;
 
 	public function __construct( Fs $fs, array $config ) {
-		$this->fs  = $fs;
-		$this->dir = $config['dir'] ?? 'view';
+		parent::__construct( $config );
+
+		$this->fs = $fs;
 	}
 
 	public function get( string $name, array $args = array() ): string { // phpcs:ignore

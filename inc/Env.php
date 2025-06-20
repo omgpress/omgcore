@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Env {
+class Env extends Feature {
 	protected array $dev_hosts = array(
 		'localhost',
 		'local',
@@ -21,6 +21,8 @@ class Env {
 	protected bool $is_dev;
 
 	public function __construct() {
+		parent::__construct();
+
 		$host         = explode( '.', wp_parse_url( home_url(), PHP_URL_HOST ) );
 		$root_host    = end( $host );
 		$this->is_dev = in_array( $root_host, $this->dev_hosts, true ) ||
