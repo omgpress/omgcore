@@ -22,6 +22,9 @@ class Dependency extends Feature {
 	protected string $notice_btn_install_and_activate;
 	protected string $notice_btn_activate_only_required;
 	protected string $notice_btn_install_and_activate_only_required;
+	protected string $notice_success_activate;
+	protected string $notice_success_install_and_activate;
+	protected string $notice_error_install;
 	protected string $install_and_activate_plugins_action_query_key = 'install_and_activate_plugins';
 
 	protected array $config_props = array(
@@ -35,6 +38,9 @@ class Dependency extends Feature {
 		'notice_btn_install_and_activate'               => 'Install and activate',
 		'notice_btn_activate_only_required'             => 'Activate only required',
 		'notice_btn_install_and_activate_only_required' => 'Install and activate only required',
+		'notice_success_activate'                       => 'Required plugins activated.',
+		'notice_success_install_and_activate'           => 'Required plugins installed and activated.',
+		'notice_error_install'                          => 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.',
 	);
 
 	public function __construct( Info $info, AdminNotice $admin_notice, ActionQuery $action_query, array $config ) {
@@ -316,7 +322,8 @@ class Dependency extends Feature {
 
 	protected function handle_install_and_activate_plugins(): callable {
 		return function ( array $data, array $post_data, string $query_key ): void {
-			$only_required = 'only_required' === $data[ $query_key ];
+			$only_required    = 'only_required' === $data[ $query_key ];
+			$was_installation = false;
 
 			foreach ( $this->plugins as $key => $plugin ) {
 				if ( $only_required && $plugin['is_optional'] ) {
@@ -335,10 +342,24 @@ class Dependency extends Feature {
 					if (
 						true === ( new Plugin_Upgrader( new SilentUpgraderSkin() ) )->install( $plugin['installation_url'] )
 					) {
+						$was_installation = true;
+
 						activate_plugin( $plugin['filename'] );
+					} else {
+						$this->admin_notice->add_transient(
+							sprintf( $this->notice_error_install, $plugin['title'] ),
+							'error'
+						);
 					}
 				}
 			}
+
+			$this->admin_notice->add_transient(
+				$was_installation ?
+					$this->notice_success_install_and_activate :
+					$this->notice_success_activate,
+				'success'
+			);
 		};
 	}
 }
