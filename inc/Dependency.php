@@ -2,6 +2,8 @@
 namespace OmgCore;
 
 use InvalidArgumentException;
+use OmgCore\Dependency\SilentUpgraderSkin;
+use Plugin_Upgrader;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -9,26 +11,45 @@ class Dependency extends Feature {
 	protected Info $info;
 	protected AdminNotice $admin_notice;
 	protected ActionQuery $action_query;
-	protected array $dependencies = array();
-	protected string $error_message_title_required_singular;
-	protected string $error_message_title_optional_singular;
-	protected string $error_message_title_plural;
+	protected array $plugins = array();
+	protected string $notice_title_required_singular;
+	protected string $notice_title_optional_singular;
+	protected string $notice_title_required_plural;
+	protected string $notice_title_optional_plural;
+	protected string $notice_item_not_installed;
+	protected string $notice_item_undefiled_installation_url;
+	protected string $notice_btn_activate;
+	protected string $notice_btn_install_and_activate;
+	protected string $notice_btn_activate_only_required;
+	protected string $notice_btn_install_and_activate_only_required;
+	protected string $install_and_activate_plugins_action_query_key = 'install_and_activate_plugins';
 
 	protected array $config_props = array(
-		'error_message_title_required_singular' => 'The "%1$s" plugin is required for the "%2$s" features to function.',
-		'error_message_title_optional_singular' => 'The "%1$s" plugin is recommended for the all "%2$s" features to function.',
-		'error_message_title_plural'            => 'The following plugins are required for the "%s" features to function:',
+		'notice_title_required_singular'                => 'The "%1$s" plugin is required for the "%2$s" features to function.',
+		'notice_title_optional_singular'                => 'The "%1$s" plugin is recommended for the all "%2$s" features to function.',
+		'notice_title_required_plural'                  => 'The following plugins are required for the "%s" features to function:',
+		'notice_title_optional_plural'                  => 'The following plugins are recommended for the all "%s" features to function:',
+		'notice_item_not_installed'                     => 'not installed',
+		'notice_item_undefiled_installation_url'        => 'not installed, can\'t be installed automatically',
+		'notice_btn_activate'                           => 'Activate',
+		'notice_btn_install_and_activate'               => 'Install and activate',
+		'notice_btn_activate_only_required'             => 'Activate only required',
+		'notice_btn_install_and_activate_only_required' => 'Install and activate only required',
 	);
 
-	public function __construct( string $key, Info $info, AdminNotice $admin_notice, ActionQuery $action_query, array $config ) {
+	public function __construct( Info $info, AdminNotice $admin_notice, ActionQuery $action_query, array $config ) {
 		parent::__construct( $config );
 
 		$this->info         = $info;
 		$this->admin_notice = $admin_notice;
 		$this->action_query = $action_query;
 
-		$action_query->add( "{$key}_install_and_activate_required_plugins", $this->handle_install_and_activate_required_plugins(), true, 'activate_plugins' );
-		$action_query->add( "{$key}_install_and_activate_all_plugins", $this->handle_install_and_activate_all_plugins(), true, 'activate_plugins' );
+		$action_query->add(
+			$this->install_and_activate_plugins_action_query_key,
+			$this->handle_install_and_activate_plugins(),
+			true,
+			'activate_plugins'
+		);
 	}
 
 	/**
@@ -53,11 +74,11 @@ class Dependency extends Feature {
 			}
 		}
 
-		if ( isset( $this->dependencies[ $key ] ) ) {
-			throw new InvalidArgumentException( esc_html( "Dependency with key \"$key\" already declared" ) );
+		if ( isset( $this->plugins[ $key ] ) ) {
+			throw new InvalidArgumentException( esc_html( "Dependency plugin with key \"$key\" already declared" ) );
 		}
 
-		$this->dependencies[ $key ] = array(
+		$this->plugins[ $key ] = array(
 			'title'            => $title,
 			'filename'         => $filename,
 			'is_optional'      => $is_optional,
@@ -70,8 +91,12 @@ class Dependency extends Feature {
 		return $this;
 	}
 
-	public function is_active_all_plugins( bool $inc_optional ): bool {
-		foreach ( $this->dependencies as $key => $dependency ) {
+	public function is_active_all_plugins( bool $inc_optional = true ): bool {
+		foreach ( $this->plugins as $key => $plugin ) {
+			if ( $inc_optional && $plugin['is_optional'] ) {
+				continue;
+			}
+
 			if ( ! $this->is_active_plugin( $key ) ) {
 				return false;
 			}
@@ -88,70 +113,85 @@ class Dependency extends Feature {
 		return $this->validate( $key )['is_installed'];
 	}
 
-	public function maybe_render_notice( bool $recommend_optionals = true ): void {
-		if ( empty( $this->dependencies ) ) {
+	public function maybe_render_notice( bool $inc_optional = true ): void {
+		if ( empty( $this->plugins ) ) {
 			return;
 		}
 
-		$not_active    = array();
-		$not_installed = array();
+		$required_not_active = array();
+		$optional_not_active = array();
 
-		foreach ( $this->dependencies as $key => $dependency ) {
-			$dependency = $this->validate( $key );
+		foreach ( $this->plugins as $key => $plugin ) {
+			$plugin = $this->validate( $key );
 
-			if ( ! $recommend_optionals && $dependency['is_optional'] ) {
-				continue;
-			}
-
-			if ( ! $dependency['is_installed'] ) {
-				$not_installed[] = $dependency;
-			} elseif ( ! $dependency['is_active'] ) {
-				$not_active[] = $dependency;
+			if ( ! $plugin['is_active'] ) {
+				if ( $plugin['is_optional'] ) {
+					if ( $inc_optional ) {
+						$optional_not_active[] = $plugin;
+					}
+				} else {
+					$required_not_active[] = $plugin;
+				}
 			}
 		}
 
-		$all_not_active = array_merge( $not_active, $not_installed );
-
-		if ( empty( $all_not_active ) ) {
+		if ( empty( $required_not_active ) && empty( $optional_not_active ) ) {
 			return;
-		}
-
-		$name      = $this->info->get_name();
-		$is_plural = 1 < count( $all_not_active );
-
-		if ( $is_plural ) {
-			$title = sprintf( $this->error_message_title_plural, $name );
-		} else {
-			$title = sprintf(
-				$all_not_active[0]['is_optional'] ?
-					$this->error_message_title_optional_singular :
-					$this->error_message_title_required_singular,
-				$all_not_active[0]['title'],
-				$name
-			);
 		}
 
 		ob_start();
 		?>
 		<div>
 			<?php
-			echo esc_html( $title );
+			if ( $required_not_active ) {
+				$this->render_notice_content(
+					$required_not_active,
+					$this->notice_title_required_singular,
+					$this->notice_title_required_plural
+				);
+			}
 
-			if ( $is_plural ) {
-				?>
+			if ( $optional_not_active ) {
+				$this->render_notice_content(
+					$optional_not_active,
+					$this->notice_title_optional_singular,
+					$this->notice_title_optional_plural
+				);
+			}
+
+			$this->render_notice_actions( $required_not_active, $optional_not_active );
+			?>
+		</div>
+		<?php
+		$this->admin_notice->render(
+			ob_get_clean(),
+			empty( $required_not_active ) ? 'warning' : 'error'
+		);
+	}
+
+	protected function render_notice_content(
+		array $plugins,
+		string $title_single,
+		string $title_plural
+	): void {
+		$name      = $this->info->get_name();
+		$is_plural = 1 < count( $plugins );
+		$title     = $is_plural ?
+			sprintf( $title_plural, $name ) :
+			sprintf( $title_single, $plugins[0]['title'], $name );
+		?>
+		<div>
+			<div><?php echo esc_html( $title ); ?></div>
+			<?php if ( $is_plural ) { ?>
 				<ul>
-					<?php foreach ( $all_not_active as $dependency ) { ?>
+					<?php foreach ( $plugins as $plugin ) { ?>
 						<li>
 							<?php
-							if ( ! empty( $dependency['installation_url'] ) ) {
-								printf(
-									'<a href="%s" target="_blank">%s</a>',
-									esc_url( $dependency['installation_url'] ),
-									esc_html( $dependency['title'] )
-								);
-							} else {
-								echo esc_html( $dependency['title'] );
-							}
+							$hint = is_string( $plugin['installation_url'] ) ?
+								$this->notice_item_not_installed :
+								$this->notice_item_undefiled_installation_url;
+
+							echo esc_html( "{$plugin['title']} ($hint)" );
 							?>
 						</li>
 					<?php } ?>
@@ -159,57 +199,146 @@ class Dependency extends Feature {
 			<?php } ?>
 		</div>
 		<?php
-		$this->admin_notice->render( ob_get_clean(), 'error' );
+	}
+
+	protected function render_notice_actions( array $required_plugins, array $optional_plugins ): void {
+		$has_required_to_activate = false;
+		$has_required_to_install  = false;
+		$has_optional_to_activate = false;
+		$has_optional_to_install  = false;
+
+		foreach ( $required_plugins as $plugin ) {
+			if ( ! $plugin['is_installed'] && is_string( $plugin['installation_url'] ) ) {
+				$has_required_to_install = true;
+			} elseif ( ! $plugin['is_active'] ) {
+				$has_required_to_activate = true;
+			}
+		}
+
+		foreach ( $optional_plugins as $plugin ) {
+			if ( ! $plugin['is_installed'] && is_string( $plugin['installation_url'] ) ) {
+				$has_optional_to_install = true;
+			} elseif ( ! $plugin['is_active'] ) {
+				$has_optional_to_activate = true;
+			}
+		}
+
+		if (
+			! $has_required_to_activate && ! $has_optional_to_activate &&
+			! $has_required_to_install && ! $has_optional_to_install
+		) {
+			return;
+		}
+
+		$all_url           = $this->action_query->get_url(
+			$this->install_and_activate_plugins_action_query_key,
+			null,
+			'all'
+		);
+		$only_required_url = $this->action_query->get_url(
+			$this->install_and_activate_plugins_action_query_key,
+			null,
+			'only_required'
+		);
+		?>
+		<div>
+			<a href="<?php echo esc_url( $all_url ); ?>">
+				<?php
+				echo esc_html(
+					$has_required_to_install || $has_optional_to_install ?
+						$this->notice_btn_install_and_activate :
+						$this->notice_btn_activate
+				);
+				?>
+			</a>
+			<?php
+			if (
+				( $has_required_to_activate || $has_required_to_install ) &&
+				( $has_optional_to_activate || $has_optional_to_install )
+			) {
+				?>
+				<a href="<?php echo esc_url( $only_required_url ); ?>">
+					<?php
+					echo esc_html(
+						$has_required_to_install ?
+							$this->notice_btn_install_and_activate_only_required :
+							$this->notice_btn_activate_only_required
+					);
+					?>
+				</a>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	protected function validate( string $key ): array {
-		if ( empty( $this->dependencies[ $key ] ) ) {
-			throw new InvalidArgumentException( esc_html( "No dependency on plugin with $key key" ) );
+		if ( empty( $this->plugins[ $key ] ) ) {
+			throw new InvalidArgumentException( esc_html( "No plugin on plugin with $key key" ) );
 		}
 
-		if ( $this->dependencies[ $key ]['is_validated'] ) {
-			return $this->dependencies[ $key ];
+		if ( $this->plugins[ $key ]['is_validated'] ) {
+			return $this->plugins[ $key ];
 		}
 
-		$requirement = $this->dependencies[ $key ];
+		$requirement = $this->plugins[ $key ];
 		$filename    = $requirement['filename'];
 
 		if ( is_array( $filename ) ) {
 			foreach ( $filename as $file ) {
-				$this->dependencies[ $key ]['is_active'] = is_plugin_active( $file );
+				$this->plugins[ $key ]['is_active'] = is_plugin_active( $file );
 
-				if ( $this->dependencies[ $key ]['is_active'] ) {
-					$this->dependencies[ $key ]['is_installed'] = true;
+				if ( $this->plugins[ $key ]['is_active'] ) {
+					$this->plugins[ $key ]['is_installed'] = true;
 
 					break;
 				}
 
-				$this->dependencies[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $file );
+				$this->plugins[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $file );
 
-				if ( $this->dependencies[ $key ]['is_installed'] ) {
+				if ( $this->plugins[ $key ]['is_installed'] ) {
 					break;
 				}
 			}
 		} else {
-			$this->dependencies[ $key ]['is_active'] = is_plugin_active( $filename );
+			$this->plugins[ $key ]['is_active'] = is_plugin_active( $filename );
 
-			if ( $this->dependencies[ $key ]['is_active'] ) {
-				$this->dependencies[ $key ]['is_installed'] = true;
+			if ( $this->plugins[ $key ]['is_active'] ) {
+				$this->plugins[ $key ]['is_installed'] = true;
 			} else {
-				$this->dependencies[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $filename );
+				$this->plugins[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $filename );
 			}
 		}
 
-		$this->dependencies[ $key ]['is_validated'] = true;
+		$this->plugins[ $key ]['is_validated'] = true;
 
-		return $this->dependencies[ $key ];
+		return $this->plugins[ $key ];
 	}
 
-	protected function handle_install_and_activate_required_plugins(): callable {
-		return function (): void {};
-	}
+	protected function handle_install_and_activate_plugins(): callable {
+		return function ( array $data, array $post_data, string $query_key ): void {
+			$only_required = 'only_required' === $data[ $query_key ];
 
-	protected function handle_install_and_activate_all_plugins(): callable {
-		return function (): void {};
+			foreach ( $this->plugins as $key => $plugin ) {
+				if ( $only_required && $plugin['is_optional'] ) {
+					continue;
+				}
+
+				$plugin = $this->validate( $key );
+
+				if ( $plugin['is_active'] ) {
+					continue;
+				}
+
+				if ( $plugin['is_installed'] ) {
+					activate_plugin( $plugin['filename'] );
+				} elseif ( is_string( $plugin['installation_url'] ) ) {
+					if (
+						true === ( new Plugin_Upgrader( new SilentUpgraderSkin() ) )->install( $plugin['installation_url'] )
+					) {
+						activate_plugin( $plugin['filename'] );
+					}
+				}
+			}
+		};
 	}
 }

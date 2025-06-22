@@ -66,7 +66,6 @@ abstract class OmgApp {
 				new InfoPlugin( $this->root_file ) :
 				new InfoTheme( $this->fs->get_path( 'style.css' ) );
 			$this->dependency   = new Dependency(
-				$this->key,
 				$this->info,
 				$this->admin_notice,
 				$this->action_query,
