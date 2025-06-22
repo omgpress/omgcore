@@ -2,6 +2,7 @@
 namespace OmgCore;
 
 use InvalidArgumentException;
+use OmgCore\Dependency\Plugin;
 use OmgCore\Dependency\SilentUpgraderSkin;
 use Plugin_Upgrader;
 
@@ -11,7 +12,12 @@ class Dependency extends Feature {
 	protected Info $info;
 	protected AdminNotice $admin_notice;
 	protected ActionQuery $action_query;
+
+	/**
+	 * @var Plugin[]
+	 */
 	protected array $plugins = array();
+
 	protected string $notice_title_required_singular;
 	protected string $notice_title_optional_singular;
 	protected string $notice_title_required_plural;
@@ -63,35 +69,21 @@ class Dependency extends Feature {
 	 */
 	public function require_plugin(
 		string $key,
-		string $title,
+		string $name,
 		$filename,
 		bool $is_optional = false,
 		?string $installation_url = null
 	): self {
-		if ( ! is_string( $filename ) && ! is_array( $filename ) ) {
-			throw new InvalidArgumentException( '$filename must be a string or an array of strings' );
-		}
-
-		if ( is_array( $filename ) ) {
-			foreach ( $filename as $file ) {
-				if ( ! is_string( $file ) ) {
-					throw new InvalidArgumentException( '$filename array can contain only strings' );
-				}
-			}
-		}
-
 		if ( isset( $this->plugins[ $key ] ) ) {
 			throw new InvalidArgumentException( esc_html( "Dependency plugin with key \"$key\" already declared" ) );
 		}
 
-		$this->plugins[ $key ] = array(
-			'title'            => $title,
-			'filename'         => $filename,
-			'is_optional'      => $is_optional,
-			'is_active'        => false,
-			'is_installed'     => false,
-			'is_validated'     => false,
-			'installation_url' => $installation_url,
+		$this->plugins[ $key ] = new Plugin(
+			$key,
+			$name,
+			$filename,
+			$is_optional,
+			$installation_url
 		);
 
 		return $this;
@@ -99,7 +91,7 @@ class Dependency extends Feature {
 
 	public function is_active_all_plugins( bool $inc_optional = true ): bool {
 		foreach ( $this->plugins as $key => $plugin ) {
-			if ( $inc_optional && $plugin['is_optional'] ) {
+			if ( $inc_optional && $plugin->is_optional() ) {
 				continue;
 			}
 
@@ -112,11 +104,11 @@ class Dependency extends Feature {
 	}
 
 	public function is_active_plugin( string $key ): bool {
-		return $this->validate( $key )['is_active'];
+		return $this->get_plugin( $key )->is_active();
 	}
 
 	public function is_installed_plugin( string $key ): bool {
-		return $this->validate( $key )['is_installed'];
+		return $this->get_plugin( $key )->is_installed();
 	}
 
 	public function maybe_render_notice( bool $inc_optional = true ): void {
@@ -127,11 +119,9 @@ class Dependency extends Feature {
 		$required_not_active = array();
 		$optional_not_active = array();
 
-		foreach ( $this->plugins as $key => $plugin ) {
-			$plugin = $this->validate( $key );
-
-			if ( ! $plugin['is_active'] ) {
-				if ( $plugin['is_optional'] ) {
+		foreach ( $this->plugins as $plugin ) {
+			if ( ! $plugin->is_active() ) {
+				if ( $plugin->is_optional() ) {
 					if ( $inc_optional ) {
 						$optional_not_active[] = $plugin;
 					}
@@ -184,7 +174,7 @@ class Dependency extends Feature {
 		$is_plural = 1 < count( $plugins );
 		$title     = $is_plural ?
 			sprintf( $title_plural, $name ) :
-			sprintf( $title_single, $plugins[0]['title'], $name );
+			sprintf( $title_single, $plugins[0]->get_name(), $name );
 		?>
 		<div>
 			<div><?php echo esc_html( $title ); ?></div>
@@ -193,11 +183,11 @@ class Dependency extends Feature {
 					<?php foreach ( $plugins as $plugin ) { ?>
 						<li>
 							<?php
-							$hint = is_string( $plugin['installation_url'] ) ?
+							$hint = is_string( $plugin->get_installation_url() ) ?
 								$this->notice_item_not_installed :
 								$this->notice_item_undefiled_installation_url;
 
-							echo esc_html( "{$plugin['title']} ($hint)" );
+							echo esc_html( "{$plugin->get_name()} ($hint)" );
 							?>
 						</li>
 					<?php } ?>
@@ -214,17 +204,17 @@ class Dependency extends Feature {
 		$has_optional_to_install  = false;
 
 		foreach ( $required_plugins as $plugin ) {
-			if ( ! $plugin['is_installed'] && is_string( $plugin['installation_url'] ) ) {
+			if ( ! $plugin->is_installed() && is_string( $plugin->get_installation_url() ) ) {
 				$has_required_to_install = true;
-			} elseif ( ! $plugin['is_active'] ) {
+			} elseif ( ! $plugin->is_active() ) {
 				$has_required_to_activate = true;
 			}
 		}
 
 		foreach ( $optional_plugins as $plugin ) {
-			if ( ! $plugin['is_installed'] && is_string( $plugin['installation_url'] ) ) {
+			if ( ! $plugin->is_installed() && is_string( $plugin->get_installation_url() ) ) {
 				$has_optional_to_install = true;
-			} elseif ( ! $plugin['is_active'] ) {
+			} elseif ( ! $plugin->is_active() ) {
 				$has_optional_to_activate = true;
 			}
 		}
@@ -277,45 +267,10 @@ class Dependency extends Feature {
 		<?php
 	}
 
-	protected function validate( string $key ): array {
+	protected function get_plugin( string $key ): Plugin {
 		if ( empty( $this->plugins[ $key ] ) ) {
-			throw new InvalidArgumentException( esc_html( "No plugin on plugin with $key key" ) );
+			throw new InvalidArgumentException( esc_html( "Dependency plugin with key \"$key\" not found" ) );
 		}
-
-		if ( $this->plugins[ $key ]['is_validated'] ) {
-			return $this->plugins[ $key ];
-		}
-
-		$requirement = $this->plugins[ $key ];
-		$filename    = $requirement['filename'];
-
-		if ( is_array( $filename ) ) {
-			foreach ( $filename as $file ) {
-				$this->plugins[ $key ]['is_active'] = is_plugin_active( $file );
-
-				if ( $this->plugins[ $key ]['is_active'] ) {
-					$this->plugins[ $key ]['is_installed'] = true;
-
-					break;
-				}
-
-				$this->plugins[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $file );
-
-				if ( $this->plugins[ $key ]['is_installed'] ) {
-					break;
-				}
-			}
-		} else {
-			$this->plugins[ $key ]['is_active'] = is_plugin_active( $filename );
-
-			if ( $this->plugins[ $key ]['is_active'] ) {
-				$this->plugins[ $key ]['is_installed'] = true;
-			} else {
-				$this->plugins[ $key ]['is_installed'] = file_exists( WP_PLUGIN_DIR . '/' . $filename );
-			}
-		}
-
-		$this->plugins[ $key ]['is_validated'] = true;
 
 		return $this->plugins[ $key ];
 	}
@@ -325,29 +280,27 @@ class Dependency extends Feature {
 			$only_required    = 'only_required' === $data[ $query_key ];
 			$was_installation = false;
 
-			foreach ( $this->plugins as $key => $plugin ) {
-				if ( $only_required && $plugin['is_optional'] ) {
+			foreach ( $this->plugins as $plugin ) {
+				if ( $only_required && $plugin->is_optional() ) {
 					continue;
 				}
 
-				$plugin = $this->validate( $key );
-
-				if ( $plugin['is_active'] ) {
+				if ( $plugin->is_active() ) {
 					continue;
 				}
 
-				if ( $plugin['is_installed'] ) {
-					activate_plugin( $plugin['filename'] );
-				} elseif ( is_string( $plugin['installation_url'] ) ) {
+				if ( $plugin->is_installed() ) {
+					$plugin->activate();
+				} elseif ( is_string( $plugin->get_installation_url() ) ) {
 					if (
-						true === ( new Plugin_Upgrader( new SilentUpgraderSkin() ) )->install( $plugin['installation_url'] )
+						true === ( new Plugin_Upgrader( new SilentUpgraderSkin() ) )->install( $plugin->get_installation_url() )
 					) {
 						$was_installation = true;
 
-						activate_plugin( $plugin['filename'] );
+						$plugin->activate();
 					} else {
 						$this->admin_notice->add_transient(
-							sprintf( $this->notice_error_install, $plugin['title'] ),
+							sprintf( $this->notice_error_install, $plugin->get_name() ),
 							'error'
 						);
 					}
