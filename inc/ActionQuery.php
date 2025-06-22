@@ -32,7 +32,7 @@ class ActionQuery extends Feature {
 					return;
 				}
 
-				$handler( $_GET, $_POST );
+				$handler( $_GET, $_POST, $query_key );
 
 				if ( $use_redirect ) {
 					wp_safe_redirect( remove_query_arg( array( $query_key, '_wpnonce' ) ) );
