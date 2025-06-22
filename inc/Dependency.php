@@ -31,25 +31,30 @@ class Dependency extends Feature {
 	protected string $notice_success_activate;
 	protected string $notice_success_install_and_activate;
 	protected string $notice_error_install;
-	protected string $install_and_activate_plugins_action_query_key = 'install_and_activate_plugins';
+	protected string $install_and_activate_action_query_key = 'omg_core_dependency_install_and_activate_plugins';
 
 	protected array $config_props = array(
-		'notice_title_required_singular'                => 'The "%1$s" plugin is required for the "%2$s" features to function.',
-		'notice_title_optional_singular'                => 'The "%1$s" plugin is recommended for the all "%2$s" features to function.',
-		'notice_title_required_plural'                  => 'The following plugins are required for the "%s" features to function:',
-		'notice_title_optional_plural'                  => 'The following plugins are recommended for the all "%s" features to function:',
+		'notice_title_required_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.',
+		'notice_title_optional_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>recommended</b> for the all <b>"%3$s"</b> features to function.',
+		'notice_title_required_plural'                  => 'The following plugins are <b>required</b> for the <b>%s</b> features to function:',
+		'notice_title_optional_plural'                  => 'The following plugins are <b>recommended</b> for the all <b>%s</b> features to function:',
 		'notice_item_not_installed'                     => 'not installed',
 		'notice_item_undefiled_installation_url'        => 'not installed, can\'t be installed automatically',
 		'notice_btn_activate'                           => 'Activate',
 		'notice_btn_install_and_activate'               => 'Install and activate',
 		'notice_btn_activate_only_required'             => 'Activate only required',
 		'notice_btn_install_and_activate_only_required' => 'Install and activate only required',
-		'notice_success_activate'                       => 'Required plugins activated.',
-		'notice_success_install_and_activate'           => 'Required plugins installed and activated.',
+		'notice_success_activate'                       => 'Required plugin(s) activated.',
+		'notice_success_install_and_activate'           => 'Required plugins(s) installed and activated.',
 		'notice_error_install'                          => 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.',
 	);
 
-	public function __construct( Info $info, AdminNotice $admin_notice, ActionQuery $action_query, array $config ) {
+	public function __construct(
+		Info $info,
+		AdminNotice $admin_notice,
+		ActionQuery $action_query,
+		array $config
+	) {
 		parent::__construct( $config );
 
 		$this->info         = $info;
@@ -57,7 +62,7 @@ class Dependency extends Feature {
 		$this->action_query = $action_query;
 
 		$action_query->add(
-			$this->install_and_activate_plugins_action_query_key,
+			$this->install_and_activate_action_query_key,
 			$this->handle_install_and_activate_plugins(),
 			true,
 			'activate_plugins'
@@ -135,30 +140,32 @@ class Dependency extends Feature {
 			return;
 		}
 
+		$this->render_notice_css();
 		ob_start();
-		?>
-		<div>
-			<?php
-			if ( $required_not_active ) {
-				$this->render_notice_content(
-					$required_not_active,
-					$this->notice_title_required_singular,
-					$this->notice_title_required_plural
-				);
-			}
 
-			if ( $optional_not_active ) {
+		if ( $required_not_active ) {
+			$this->render_notice_content(
+				$required_not_active,
+				$this->notice_title_required_singular,
+				$this->notice_title_required_plural
+			);
+		}
+
+		if ( $optional_not_active ) {
+			?>
+			<div class="<?php echo esc_attr( $this->get_notice_css_class( 'optional' ) ); ?>">
+				<?php
 				$this->render_notice_content(
 					$optional_not_active,
 					$this->notice_title_optional_singular,
 					$this->notice_title_optional_plural
 				);
-			}
+				?>
+			</div>
+			<?php
+		}
 
-			$this->render_notice_actions( $required_not_active, $optional_not_active );
-			?>
-		</div>
-		<?php
+		$this->render_notice_actions( $required_not_active, $optional_not_active );
 		$this->admin_notice->render(
 			ob_get_clean(),
 			empty( $required_not_active ) ? 'warning' : 'error'
@@ -172,29 +179,40 @@ class Dependency extends Feature {
 	): void {
 		$name      = $this->info->get_name();
 		$is_plural = 1 < count( $plugins );
-		$title     = $is_plural ?
-			sprintf( $title_plural, $name ) :
-			sprintf( $title_single, $plugins[0]->get_name(), $name );
-		?>
-		<div>
-			<div><?php echo esc_html( $title ); ?></div>
-			<?php if ( $is_plural ) { ?>
-				<ul>
-					<?php foreach ( $plugins as $plugin ) { ?>
-						<li>
-							<?php
-							$hint = is_string( $plugin->get_installation_url() ) ?
-								$this->notice_item_not_installed :
-								$this->notice_item_undefiled_installation_url;
 
-							echo esc_html( "{$plugin->get_name()} ($hint)" );
-							?>
-						</li>
-					<?php } ?>
-				</ul>
-			<?php } ?>
-		</div>
-		<?php
+		if ( $is_plural ) {
+			$title = sprintf( $title_plural, $name );
+		} else {
+			$plugin = $plugins[0];
+			$hint   = $plugin->is_installed() ?
+				'' :
+				' (' . (
+					is_string( $plugin->get_installation_url() ) ?
+						$this->notice_item_not_installed :
+						$this->notice_item_undefiled_installation_url
+				) . ')';
+			$title  = sprintf( $title_single, $plugin->get_name(), $hint, $name );
+		}
+		?>
+		<p class="<?php echo esc_attr( $this->get_notice_css_class( 'title' ) ); ?>">
+			<?php echo wp_kses( $title, array( 'b' => array() ) ); ?>
+		</p>
+		<?php if ( $is_plural ) { ?>
+			<ul class="<?php echo esc_attr( $this->get_notice_css_class( 'list' ) ); ?>">
+				<?php foreach ( $plugins as $plugin ) { ?>
+					<li>
+						<?php
+						$hint = is_string( $plugin->get_installation_url() ) ?
+							$this->notice_item_not_installed :
+							$this->notice_item_undefiled_installation_url;
+
+						echo '<b>- ' . esc_html( $plugin->get_name() ) . '</b> (' . esc_html( $hint ) . ')';
+						?>
+					</li>
+				<?php } ?>
+			</ul>
+			<?php
+		}
 	}
 
 	protected function render_notice_actions( array $required_plugins, array $optional_plugins ): void {
@@ -227,44 +245,87 @@ class Dependency extends Feature {
 		}
 
 		$all_url           = $this->action_query->get_url(
-			$this->install_and_activate_plugins_action_query_key,
+			$this->install_and_activate_action_query_key,
 			null,
 			'all'
 		);
 		$only_required_url = $this->action_query->get_url(
-			$this->install_and_activate_plugins_action_query_key,
+			$this->install_and_activate_action_query_key,
 			null,
 			'only_required'
 		);
 		?>
-		<div>
-			<a href="<?php echo esc_url( $all_url ); ?>">
-				<?php
-				echo esc_html(
-					$has_required_to_install || $has_optional_to_install ?
-						$this->notice_btn_install_and_activate :
-						$this->notice_btn_activate
-				);
-				?>
-			</a>
+		<ul class="<?php echo esc_attr( $this->get_notice_css_class( 'actions' ) ); ?>">
+			<li>
+				<a class="button" href="<?php echo esc_url( $all_url ); ?>">
+					<?php
+					echo esc_html(
+						$has_required_to_install || $has_optional_to_install ?
+							$this->notice_btn_install_and_activate :
+							$this->notice_btn_activate
+					);
+					?>
+				</a>
+			</li>
 			<?php
 			if (
 				( $has_required_to_activate || $has_required_to_install ) &&
 				( $has_optional_to_activate || $has_optional_to_install )
 			) {
 				?>
-				<a href="<?php echo esc_url( $only_required_url ); ?>">
-					<?php
-					echo esc_html(
-						$has_required_to_install ?
-							$this->notice_btn_install_and_activate_only_required :
-							$this->notice_btn_activate_only_required
-					);
-					?>
-				</a>
+				<li>
+					<a href="<?php echo esc_url( $only_required_url ); ?>">
+						<?php
+						echo esc_html(
+							$has_required_to_install ?
+								$this->notice_btn_install_and_activate_only_required :
+								$this->notice_btn_activate_only_required
+						);
+						?>
+					</a>
+				</li>
 			<?php } ?>
-		</div>
+		</ul>
 		<?php
+	}
+
+	protected function render_notice_css(): void {
+		ob_start();
+		?>
+		<style>
+			.<?php echo esc_html( $this->get_notice_css_class( 'title' ) ); ?> {
+				margin: 0;
+				padding: 0;
+			}
+
+			.<?php echo esc_html( $this->get_notice_css_class( 'list' ) ); ?> {
+				margin: 0;
+			}
+
+			.<?php echo esc_html( $this->get_notice_css_class( 'optional' ) ); ?> {
+				margin-top: 0.5rem;
+			}
+
+			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> {
+				display: flex;
+				align-items: center;
+				margin: 0.6rem 0 0;
+			}
+
+			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li {
+				margin: 0;
+			}
+
+			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li:not(:last-child) {
+				margin-right: 0.75rem;
+			}
+		</style>
+		<?php
+		echo wp_kses( ob_get_clean(), array( 'style' => array() ) );
+	}
+
+	protected function get_notice_css_class( string $css_class ): string {
+		return $this->info->get_textdomain() . '-omgcore-dependency-' . $css_class;
 	}
 
 	protected function get_plugin( string $key ): Plugin {
