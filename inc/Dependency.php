@@ -338,7 +338,7 @@ class Dependency extends Feature {
 
 	protected function handle_install_and_activate_plugins(): callable {
 		return function ( array $data, array $post_data, string $query_key ): void {
-			$only_required    = 'only_required' === $data[ $query_key ];
+			$only_required    = 'only_required' === sanitize_text_field( wp_unslash( $data[ $query_key ] ) );
 			$was_installation = false;
 
 			foreach ( $this->plugins as $plugin ) {
