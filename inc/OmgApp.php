@@ -39,10 +39,12 @@ abstract class OmgApp {
 		add_action( 'init', $this->init() );
 	}
 
-	abstract protected function get_config(): array;
-
 	public function fs(): Fs {
 		return $this->fs;
+	}
+
+	public function info(): Info {
+		return $this->info;
 	}
 
 	public function view(): View {
@@ -104,4 +106,6 @@ abstract class OmgApp {
 			$this->admin_notice->reset();
 		};
 	}
+
+	abstract protected function get_config(): array;
 }

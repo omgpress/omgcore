@@ -94,7 +94,7 @@ class Dependency extends Feature {
 		return $this;
 	}
 
-	public function is_active_all_plugins( bool $inc_optional = true ): bool {
+	public function is_active_all_plugins( bool $inc_optional = false ): bool {
 		foreach ( $this->plugins as $key => $plugin ) {
 			if ( $inc_optional && $plugin->is_optional() ) {
 				continue;
