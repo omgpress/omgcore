@@ -28,6 +28,12 @@ abstract class OmgApp {
 		return static::$instance;
 	}
 
+	protected array $config_props = array(
+		Asset::class,
+		Dependency::class,
+		View::class,
+	);
+
 	/**
 	 * @throws Exception
 	 */
@@ -53,7 +59,14 @@ abstract class OmgApp {
 
 	protected function init(): callable {
 		return function (): void {
-			$config             = $this->get_config();
+			$config = $this->get_config();
+
+			foreach ( $config as $key => $value ) {
+				if ( ! in_array( $key, $this->config_props, true ) ) {
+					throw new Exception( esc_html( "The \"$key\" class is not a valid configuration property." ) );
+				}
+			}
+
 			$this->action_query = new ActionQuery( $this->key );
 			$this->admin_notice = new AdminNotice( $this->key );
 			$this->fs           = $this->is_plugin ?
