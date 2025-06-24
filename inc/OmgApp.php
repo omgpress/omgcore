@@ -107,5 +107,7 @@ abstract class OmgApp {
 		};
 	}
 
-	abstract protected function get_config(): array;
+	protected function get_config(): array {
+		return array();
+	}
 }
