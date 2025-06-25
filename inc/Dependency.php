@@ -53,7 +53,7 @@ class Dependency extends Feature {
 		Info $info,
 		AdminNotice $admin_notice,
 		ActionQuery $action_query,
-		array $config
+		array $config = array()
 	) {
 		parent::__construct( $config );
 

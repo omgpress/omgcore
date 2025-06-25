@@ -21,7 +21,7 @@ class Asset extends Feature {
 		'postfix'   => '.min',
 	);
 
-	public function __construct( string $key, Fs $fs, array $config ) {
+	public function __construct( string $key, Fs $fs, array $config = array() ) {
 		parent::__construct( $config );
 
 		$this->key = $key;

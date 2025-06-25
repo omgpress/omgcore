@@ -7,7 +7,7 @@ class ViewPlugin extends View {
 	protected Fs $fs;
 	protected string $dir;
 
-	public function __construct( Fs $fs, array $config ) {
+	public function __construct( Fs $fs, array $config = array() ) {
 		parent::__construct( $config );
 
 		$this->fs = $fs;
