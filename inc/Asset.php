@@ -5,7 +5,7 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
-class Asset extends Feature {
+class Asset extends OmgFeature {
 	protected string $asset_dir;
 	protected string $js_dir;
 	protected string $css_dir;

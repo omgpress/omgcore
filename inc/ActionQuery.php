@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class ActionQuery extends Feature {
+class ActionQuery extends OmgFeature {
 	protected string $key;
 
 	public function __construct( string $key ) {

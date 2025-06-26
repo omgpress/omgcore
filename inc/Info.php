@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Info extends Feature {
+abstract class Info extends OmgFeature {
 	protected string $name;
 	protected string $url;
 	protected string $version;

@@ -8,7 +8,7 @@ use Plugin_Upgrader;
 
 defined( 'ABSPATH' ) || exit;
 
-class Dependency extends Feature {
+class Dependency extends OmgFeature {
 	protected Info $info;
 	protected AdminNotice $admin_notice;
 	protected ActionQuery $action_query;

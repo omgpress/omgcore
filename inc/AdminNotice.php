@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class AdminNotice extends Feature {
+class AdminNotice extends OmgFeature {
 	protected string $key;
 
 	public function __construct( string $key ) {

@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class Fs extends Feature {
+abstract class Fs extends OmgFeature {
 	abstract public function get_url( string $rel, bool $stamp = false ): string;
 	abstract public function get_path( string $rel ): string;
 

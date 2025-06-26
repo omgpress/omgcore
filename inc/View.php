@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-abstract class View extends Feature {
+abstract class View extends OmgFeature {
 	protected array $config_props = array(
 		'dir' => 'view',
 	);

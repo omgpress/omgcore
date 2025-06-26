@@ -3,7 +3,7 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
-class Env extends Feature {
+class Env extends OmgFeature {
 	protected array $dev_hosts = array(
 		'localhost',
 		'local',
