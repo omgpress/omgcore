@@ -17,12 +17,12 @@ abstract class OmgApp {
 	protected Fs $fs;
 	protected Info $info;
 	protected View $view;
-	protected array $config_props        = array(
+
+	protected array $config_prop_keys = array(
 		Asset::class,
 		Dependency::class,
 		View::class,
 	);
-	protected array $custom_config_props = array();
 
 	protected static ?self $instance = null;
 
@@ -59,11 +59,10 @@ abstract class OmgApp {
 
 	protected function init(): callable {
 		return function (): void {
-			$config       = $this->get_config();
-			$config_props = array_merge( $this->config_props, $this->custom_config_props );
+			$config = $this->get_config();
 
 			foreach ( $config as $key => $value ) {
-				if ( ! in_array( $key, $config_props, true ) ) {
+				if ( ! in_array( $key, $this->config_prop_keys, true ) ) {
 					throw new Exception( esc_html( "The \"$key\" is not a valid configuration property." ) );
 				}
 

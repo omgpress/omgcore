@@ -21,7 +21,7 @@ class ViewPlugin extends View {
 	}
 
 	public function render( string $name, array $args = array() ): self {
-		echo wp_kses_post( static::get( $name, $args ) );
+		echo wp_kses_post( $this->get( $name, $args ) );
 
 		return $this;
 	}

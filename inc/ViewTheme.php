@@ -8,7 +8,7 @@ class ViewTheme extends View {
 
 	public function get( string $name, array $args = array() ): string {
 		ob_start();
-		static::render( $name, $args );
+		$this->render( $name, $args );
 
 		return ob_get_clean();
 	}
