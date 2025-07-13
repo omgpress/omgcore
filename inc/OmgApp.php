@@ -16,6 +16,7 @@ abstract class OmgApp {
 	protected Env $env;
 	protected Fs $fs;
 	protected Info $info;
+	protected Logger $logger;
 	protected View $view;
 
 	protected array $config_prop_keys = array(
@@ -53,6 +54,10 @@ abstract class OmgApp {
 		return $this->info;
 	}
 
+	public function logger(): Logger {
+		return $this->logger;
+	}
+
 	public function view(): View {
 		return $this->view;
 	}
@@ -75,7 +80,7 @@ abstract class OmgApp {
 			$this->admin_notice = new AdminNotice( $this->key );
 			$this->fs           = $this->is_plugin ?
 				new FsPlugin( $this->root_file ) :
-				new FsTheme( $this->root_file );
+				new FsTheme();
 			$this->asset        = new Asset(
 				$this->key,
 				$this->fs,
@@ -91,6 +96,7 @@ abstract class OmgApp {
 				$config[ Dependency::class ] ?? array()
 			);
 			$this->env          = new Env();
+			$this->logger       = new Logger( $this->key, $this->fs );
 			$this->view         = $this->is_plugin ?
 				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
 				new ViewTheme( $config[ View::class ] ?? array() );
