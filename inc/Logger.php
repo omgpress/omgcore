@@ -5,13 +5,40 @@ defined( 'ABSPATH' ) || exit;
 
 class Logger extends OmgFeature {
 	protected Fs $fs;
+	protected ActionQuery $action_query;
+	protected AdminNotice $admin_notice;
+	protected Info $info;
 	protected string $dir_path;
+	protected string $delete_log_query_key;
 
-	public function __construct( string $key, Fs $fs ) {
-		parent::__construct();
+	protected string $notice_delete_log_error;
+	protected string $notice_delete_log_all_success;
+	protected string $notice_delete_log_group_success;
 
-		$this->fs       = $fs;
-		$this->dir_path = WP_CONTENT_DIR . "/uploads/{$key}_log";
+	protected array $config_props = array(
+		'notice_delete_log_error'         => 'An error occurred while trying to delete %s log files.',
+		'notice_delete_log_all_success'   => 'All %s log files have been successfully deleted.',
+		'notice_delete_log_group_success' => 'The %1$s %2$s log file has been successfully deleted.',
+	);
+
+	public function __construct(
+		string $key,
+		Fs $fs,
+		ActionQuery $action_query,
+		AdminNotice $admin_notice,
+		Info $info,
+		array $config = array()
+	) {
+		parent::__construct( $config );
+
+		$this->fs                   = $fs;
+		$this->action_query         = $action_query;
+		$this->admin_notice         = $admin_notice;
+		$this->info                 = $info;
+		$this->dir_path             = WP_CONTENT_DIR . "/uploads/{$key}_log";
+		$this->delete_log_query_key = "{$key}_omg_logger_delete_log";
+
+		$action_query->add( $this->delete_log_query_key, $this->handle_delete_log() );
 	}
 
 	public function get_content( string $group = 'debug' ): string {
@@ -20,6 +47,10 @@ class Logger extends OmgFeature {
 
 	public function get_path( string $group = 'debug' ): string {
 		return "$this->dir_path/$group.log";
+	}
+
+	public function get_delete_log_action_url( string $group = 'debug' ): string {
+		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
 	}
 
 	public function success( string $message, string $group = 'debug' ): self {
@@ -62,5 +93,62 @@ class Logger extends OmgFeature {
 		}
 
 		$this->fs->write_text_file( $htaccess_path, 'deny from all' );
+	}
+
+	protected function handle_delete_log(): callable {
+		return function ( array $data ): void {
+			if ( ! is_string( $data[ $this->delete_log_query_key ] ) ) {
+				$this->admin_notice->add_transient(
+					sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+					'error'
+				);
+
+				return;
+			}
+
+			if ( 'all' === $data[ $this->delete_log_query_key ] ) {
+				if ( ! is_dir( $this->dir_path ) ) {
+					return;
+				}
+
+				if ( ! wp_delete_file( $this->dir_path ) ) {
+					$this->admin_notice->add_transient(
+						sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+						'error'
+					);
+
+					return;
+				}
+
+				$this->admin_notice->add_transient(
+					sprintf( $this->notice_delete_log_all_success, $this->info->get_name() ),
+					'success'
+				);
+			} else {
+				$file_path = $this->get_path( $data[ $this->delete_log_query_key ] );
+
+				if ( ! file_exists( $file_path ) ) {
+					return;
+				}
+
+				if ( ! wp_delete_file( $file_path ) ) {
+					$this->admin_notice->add_transient(
+						sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+						'error'
+					);
+
+					return;
+				}
+
+				$this->admin_notice->add_transient(
+					sprintf(
+						$this->notice_delete_log_all_success,
+						$this->info->get_name(),
+						$data[ $this->delete_log_query_key ]
+					),
+					'success'
+				);
+			}
+		};
 	}
 }

@@ -96,7 +96,14 @@ abstract class OmgApp {
 				$config[ Dependency::class ] ?? array()
 			);
 			$this->env          = new Env();
-			$this->logger       = new Logger( $this->key, $this->fs );
+			$this->logger       = new Logger(
+				$this->key,
+				$this->fs,
+				$this->action_query,
+				$this->admin_notice,
+				$this->info,
+				$config[ Logger::class ] ?? array()
+			);
 			$this->view         = $this->is_plugin ?
 				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
 				new ViewTheme( $config[ View::class ] ?? array() );
