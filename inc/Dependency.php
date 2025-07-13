@@ -31,7 +31,7 @@ class Dependency extends OmgFeature {
 	protected string $notice_success_activate;
 	protected string $notice_success_install_and_activate;
 	protected string $notice_error_install;
-	protected string $install_and_activate_action_query_key = 'omg_core_dependency_install_and_activate_plugins';
+	protected string $install_and_activate_action_query_key;
 
 	protected array $config_props = array(
 		'notice_title_required_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.',
@@ -50,6 +50,7 @@ class Dependency extends OmgFeature {
 	);
 
 	public function __construct(
+		string $key,
 		Info $info,
 		AdminNotice $admin_notice,
 		ActionQuery $action_query,
@@ -57,9 +58,10 @@ class Dependency extends OmgFeature {
 	) {
 		parent::__construct( $config );
 
-		$this->info         = $info;
-		$this->admin_notice = $admin_notice;
-		$this->action_query = $action_query;
+		$this->info                                  = $info;
+		$this->admin_notice                          = $admin_notice;
+		$this->action_query                          = $action_query;
+		$this->install_and_activate_action_query_key = "{$key}_omg_core_dependency_install_and_activate_plugins";
 
 		$action_query->add(
 			$this->install_and_activate_action_query_key,

@@ -36,7 +36,7 @@ class Logger extends OmgFeature {
 		$this->admin_notice         = $admin_notice;
 		$this->info                 = $info;
 		$this->dir_path             = WP_CONTENT_DIR . "/uploads/{$key}_log";
-		$this->delete_log_query_key = "{$key}_omg_logger_delete_log";
+		$this->delete_log_query_key = "{$key}_omg_core_logger_delete_log";
 
 		$action_query->add( $this->delete_log_query_key, $this->handle_delete_log() );
 	}
