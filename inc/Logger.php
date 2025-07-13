@@ -142,7 +142,7 @@ class Logger extends OmgFeature {
 
 				$this->admin_notice->add_transient(
 					sprintf(
-						$this->notice_delete_log_all_success,
+						$this->notice_delete_log_group_success,
 						$this->info->get_name(),
 						$data[ $this->delete_log_query_key ]
 					),
