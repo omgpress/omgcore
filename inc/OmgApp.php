@@ -23,6 +23,7 @@ abstract class OmgApp {
 		Asset::class,
 		Dependency::class,
 		View::class,
+		Logger::class,
 	);
 
 	protected static ?self $instance = null;

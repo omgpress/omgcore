@@ -35,7 +35,7 @@ class Logger extends OmgFeature {
 		$this->action_query         = $action_query;
 		$this->admin_notice         = $admin_notice;
 		$this->info                 = $info;
-		$this->dir_path             = WP_CONTENT_DIR . "/uploads/{$key}_log";
+		$this->dir_path             = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $key ) . '-log';
 		$this->delete_log_query_key = "{$key}_omg_core_logger_delete_log";
 
 		$action_query->add( $this->delete_log_query_key, $this->handle_delete_log() );
@@ -71,7 +71,7 @@ class Logger extends OmgFeature {
 
 	protected function write( string $message, string $level, string $group = 'debug' ): self {
 		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
-		$content .= '[' . gmdate( 'n/j/Y H:i:s' ) . ']' . ucfirst( $level ) . ": $message\n";
+		$content .= '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
 
 		$this->maybe_create_dir();
 		$this->fs->write_text_file( $this->get_path( $group ), $content );
