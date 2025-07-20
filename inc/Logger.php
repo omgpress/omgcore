@@ -1,6 +1,8 @@
 <?php
 namespace OmgCore;
 
+use Exception;
+
 defined( 'ABSPATH' ) || exit;
 
 class Logger extends OmgFeature {
@@ -16,7 +18,7 @@ class Logger extends OmgFeature {
 	protected string $notice_delete_log_group_success;
 
 	protected array $config_props = array(
-		'notice_delete_log_error'         => 'An error occurred while trying to delete %s log files.',
+		'notice_delete_log_error'         => 'An error occurred while trying to delete %s log file(s).',
 		'notice_delete_log_all_success'   => 'All %s log files have been successfully deleted.',
 		'notice_delete_log_group_success' => 'The %1$s %2$s log file has been successfully deleted.',
 	);
@@ -69,6 +71,30 @@ class Logger extends OmgFeature {
 		return $this->write( $message, 'error', $group );
 	}
 
+	public function delete_all_log_files(): bool {
+		if (
+			! is_dir( $this->dir_path ) ||
+			! wp_delete_file( $this->dir_path )
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function delete_log_file( string $group = 'debug' ): bool {
+		$file_path = $this->get_path( $group );
+
+		if (
+			! file_exists( $file_path ) ||
+			! wp_delete_file( $file_path )
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
 	protected function write( string $message, string $level, string $group = 'debug' ): self {
 		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
 		$content .= '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
@@ -107,39 +133,22 @@ class Logger extends OmgFeature {
 			}
 
 			if ( 'all' === $data[ $this->delete_log_query_key ] ) {
-				if ( ! is_dir( $this->dir_path ) ) {
-					return;
-				}
-
-				if ( ! wp_delete_file( $this->dir_path ) ) {
+				if ( $this->delete_all_log_files() ) {
+					$this->admin_notice->add_transient(
+						sprintf( $this->notice_delete_log_all_success, $this->info->get_name() ),
+						'success'
+					);
+				} else {
 					$this->admin_notice->add_transient(
 						sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
 						'error'
 					);
-
-					return;
 				}
 
-				$this->admin_notice->add_transient(
-					sprintf( $this->notice_delete_log_all_success, $this->info->get_name() ),
-					'success'
-				);
-			} else {
-				$file_path = $this->get_path( $data[ $this->delete_log_query_key ] );
+				return;
+			}
 
-				if ( ! file_exists( $file_path ) ) {
-					return;
-				}
-
-				if ( ! wp_delete_file( $file_path ) ) {
-					$this->admin_notice->add_transient(
-						sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
-						'error'
-					);
-
-					return;
-				}
-
+			if ( $this->delete_log_file( $data[ $this->delete_log_query_key ] ) ) {
 				$this->admin_notice->add_transient(
 					sprintf(
 						$this->notice_delete_log_group_success,
@@ -147,6 +156,11 @@ class Logger extends OmgFeature {
 						$data[ $this->delete_log_query_key ]
 					),
 					'success'
+				);
+			} else {
+				$this->admin_notice->add_transient(
+					sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+					'error'
 				);
 			}
 		};
