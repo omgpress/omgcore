@@ -11,3 +11,9 @@ fix:
 
 lint:
 	composer run lint
+
+doc:
+	composer run doc
+
+deploy-doc:
+	make doc && npm run deploy-doc

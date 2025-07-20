@@ -15,9 +15,13 @@
     "wordpress"
   ],
   "devDependencies": {
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "dotenv": "^16.0.2",
+    "path": "~0.12.7",
+    "ftp-deploy": "~2.3.8"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "deploy-doc": "node .script/deploy-doc.js"
   }
 }
