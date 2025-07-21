@@ -1,7 +1,8 @@
 <?php
 namespace OmgCore;
 
-use Exception;
+use WP_Filesystem_Base;
+use WP_Filesystem_Direct;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -47,10 +48,6 @@ class Logger extends OmgFeature {
 		return $this->fs->read_text_file( "$this->dir_path/$group.log" );
 	}
 
-	public function get_path( string $group = 'debug' ): string {
-		return "$this->dir_path/$group.log";
-	}
-
 	public function get_delete_log_action_url( string $group = 'debug' ): string {
 		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
 	}
@@ -71,10 +68,18 @@ class Logger extends OmgFeature {
 		return $this->write( $message, 'error', $group );
 	}
 
-	public function delete_all_log_files(): bool {
+	public function delete_log_dir(): bool {
+		if ( ! class_exists( 'WP_Filesystem_Base' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
+		}
+
+		if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-direct.php';
+		}
+
 		if (
 			! is_dir( $this->dir_path ) ||
-			! wp_delete_file( $this->dir_path )
+			! ( new WP_Filesystem_Direct( array() ) )->rmdir( $this->dir_path, true )
 		) {
 			return false;
 		}
@@ -93,6 +98,10 @@ class Logger extends OmgFeature {
 		}
 
 		return true;
+	}
+
+	protected function get_path( string $group = 'debug' ): string {
+		return "$this->dir_path/$group.log";
 	}
 
 	protected function write( string $message, string $level, string $group = 'debug' ): self {
