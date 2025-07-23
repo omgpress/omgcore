@@ -142,7 +142,7 @@ class Dependency extends OmgFeature {
 			return;
 		}
 
-		$this->render_notice_css();
+		add_action( 'admin_head', $this->render_notice_css() );
 		ob_start();
 
 		if ( $required_not_active ) {
@@ -291,39 +291,41 @@ class Dependency extends OmgFeature {
 		<?php
 	}
 
-	protected function render_notice_css(): void {
-		ob_start();
-		?>
-		<style>
-			.<?php echo esc_html( $this->get_notice_css_class( 'title' ) ); ?> {
-				margin: 0;
-				padding: 0;
-			}
+	protected function render_notice_css(): callable {
+		return function (): void {
+			ob_start();
+			?>
+			<style>
+				.<?php echo esc_html( $this->get_notice_css_class( 'title' ) ); ?> {
+					margin: 0;
+					padding: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'list' ) ); ?> {
-				margin: 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'list' ) ); ?> {
+					margin: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'optional' ) ); ?> {
-				margin-top: 0.5rem;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'optional' ) ); ?> {
+					margin-top: 0.5rem;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> {
-				display: flex;
-				align-items: center;
-				margin: 0.6rem 0 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> {
+					display: flex;
+					align-items: center;
+					margin: 0.6rem 0 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li {
-				margin: 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li {
+					margin: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li:not(:last-child) {
-				margin-right: 0.75rem;
-			}
-		</style>
-		<?php
-		echo wp_kses( ob_get_clean(), array( 'style' => array() ) );
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li:not(:last-child) {
+					margin-right: 0.75rem;
+				}
+			</style>
+			<?php
+			echo wp_kses( ob_get_clean(), array( 'style' => array() ) );
+		};
 	}
 
 	protected function get_notice_css_class( string $css_class ): string {

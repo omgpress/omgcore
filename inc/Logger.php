@@ -142,7 +142,7 @@ class Logger extends OmgFeature {
 			}
 
 			if ( 'all' === $data[ $this->delete_log_query_key ] ) {
-				if ( $this->delete_all_log_files() ) {
+				if ( $this->delete_log_dir() ) {
 					$this->admin_notice->add_transient(
 						sprintf( $this->notice_delete_log_all_success, $this->info->get_name() ),
 						'success'
