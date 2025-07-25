@@ -69,11 +69,11 @@ abstract class OmgApp {
 
 			foreach ( $config as $key => $value ) {
 				if ( ! in_array( $key, $this->config_prop_keys, true ) ) {
-					throw new Exception( esc_html( "The \"$key\" is not a valid configuration property." ) );
+					throw new Exception( esc_html( "The \"$key\" is not a valid configuration property" ) );
 				}
 
 				if ( ! is_array( $value ) ) {
-					throw new Exception( esc_html( "The \"$key\" configuration must be an array." ) );
+					throw new Exception( esc_html( "The \"$key\" configuration must be an array" ) );
 				}
 			}
 

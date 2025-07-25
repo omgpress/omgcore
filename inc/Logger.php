@@ -1,6 +1,7 @@
 <?php
 namespace OmgCore;
 
+use InvalidArgumentException;
 use WP_Filesystem_Base;
 use WP_Filesystem_Direct;
 
@@ -52,19 +53,31 @@ class Logger extends OmgFeature {
 		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
 	}
 
-	public function success( string $message, string $group = 'debug' ): self {
+	/**
+	 * @param mixed $message
+	 */
+	public function success( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'success', $group );
 	}
 
-	public function info( string $message, string $group = 'debug' ): self {
+	/**
+	 * @param mixed $message
+	 */
+	public function info( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'info', $group );
 	}
 
-	public function warning( string $message, string $group = 'debug' ): self {
+	/**
+	 * @param mixed $message
+	 */
+	public function warning( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'warning', $group );
 	}
 
-	public function error( string $message, string $group = 'debug' ): self {
+	/**
+	 * @param mixed $message
+	 */
+	public function error( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'error', $group );
 	}
 
@@ -104,7 +117,18 @@ class Logger extends OmgFeature {
 		return "$this->dir_path/$group.log";
 	}
 
-	protected function write( string $message, string $level, string $group = 'debug' ): self {
+	/**
+	 * @param mixed $message
+	 */
+	protected function write( $message, string $level, string $group = 'debug' ): self {
+		if ( is_array( $message ) || is_object( $message ) ) {
+			$message = wp_json_encode( $message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+		} elseif ( is_callable( $message ) ) {
+			throw new InvalidArgumentException( 'The message cannot be a callable function' );
+		} else {
+			$message = strval( $message );
+		}
+
 		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
 		$content .= '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
 
