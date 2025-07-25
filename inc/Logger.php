@@ -54,6 +54,7 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * @throws InvalidArgumentException
 	 */
 	public function success( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'success', $group );
@@ -61,6 +62,7 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * @throws InvalidArgumentException
 	 */
 	public function info( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'info', $group );
@@ -68,6 +70,7 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * @throws InvalidArgumentException
 	 */
 	public function warning( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'warning', $group );
@@ -75,6 +78,7 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * @throws InvalidArgumentException
 	 */
 	public function error( $message, string $group = 'debug' ): self {
 		return $this->write( $message, 'error', $group );
@@ -118,8 +122,23 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * @throws InvalidArgumentException
 	 */
 	protected function write( $message, string $level, string $group = 'debug' ): self {
+		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
+		$content .= $this->format_message( $message, $level );
+
+		$this->maybe_create_dir();
+		$this->fs->write_text_file( $this->get_path( $group ), $content );
+
+		return $this;
+	}
+
+	/**
+	 * @param mixed $message
+	 * @throws InvalidArgumentException
+	 */
+	protected function format_message( $message, string $level ): string {
 		if ( is_array( $message ) || is_object( $message ) ) {
 			$message = wp_json_encode( $message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 		} elseif ( is_callable( $message ) ) {
@@ -128,13 +147,7 @@ class Logger extends OmgFeature {
 			$message = strval( $message );
 		}
 
-		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
-		$content .= '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
-
-		$this->maybe_create_dir();
-		$this->fs->write_text_file( $this->get_path( $group ), $content );
-
-		return $this;
+		return '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
 	}
 
 	protected function maybe_create_dir(): void {
