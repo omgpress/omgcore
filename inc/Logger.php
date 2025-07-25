@@ -2,7 +2,6 @@
 namespace OmgCore;
 
 use InvalidArgumentException;
-use WP_Filesystem_Base;
 use WP_Filesystem_Direct;
 
 defined( 'ABSPATH' ) || exit;
