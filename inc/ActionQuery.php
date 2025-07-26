@@ -4,22 +4,12 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class ActionQuery extends OmgFeature {
-	protected string $key;
-
-	public function __construct( string $key ) {
-		parent::__construct();
-
-		$this->key = $key;
-	}
-
 	public function add(
 		string $query_key,
 		callable $handler,
 		bool $use_redirect = true,
 		string $capability = 'administrator'
 	): void {
-		$query_key = "{$this->key}_$query_key";
-
 		add_action(
 			'admin_init',
 			function () use ( $query_key, $handler, $use_redirect, $capability ): void {
@@ -53,8 +43,7 @@ class ActionQuery extends OmgFeature {
 		$value = 'yes',
 		$args = array()
 	): string {
-		$query_key = "{$this->key}_$query_key";
-		$args      = wp_parse_args( array( $query_key => $value ), $args );
+		$args = wp_parse_args( array( $query_key => $value ), $args );
 
 		return wp_nonce_url(
 			is_null( $base_url ) ? add_query_arg( $args ) : add_query_arg( $args, $base_url ),
