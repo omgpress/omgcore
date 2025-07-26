@@ -131,7 +131,7 @@ class Logger extends OmgFeature {
 		}
 
 		$content  = $this->fs->read_text_file( $this->get_log_file_path( $group ) );
-		$content .= $this->format_message( $message, $level );
+		$content .= $this->format_message( $message, $level ) . "\n";
 
 		$this->maybe_create_dir();
 		$this->fs->write_text_file( $this->get_log_file_path( $group ), $content );
@@ -183,13 +183,15 @@ class Logger extends OmgFeature {
 	protected function format_message( $message, string $level ): string {
 		if ( is_array( $message ) || is_object( $message ) ) {
 			$message = wp_json_encode( $message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+		} elseif ( is_bool( $message ) || is_null( $message ) ) {
+			$message = var_export( $message, true ); // phpcs:ignore
 		} elseif ( is_callable( $message ) ) {
 			throw new InvalidArgumentException( 'The message cannot be a callable function' );
 		} else {
 			$message = strval( $message );
 		}
 
-		return '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message\n";
+		return '[' . gmdate( 'n/j/Y H:i:s' ) . '] ' . ucfirst( $level ) . ": $message";
 	}
 
 	protected function maybe_create_dir(): void {
