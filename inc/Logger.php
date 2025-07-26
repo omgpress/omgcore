@@ -14,15 +14,22 @@ class Logger extends OmgFeature {
 	protected string $dir_path;
 	protected string $enabled_option_key;
 	protected string $delete_log_query_key;
+	protected string $download_log_query_key;
 
 	protected string $notice_delete_log_error;
 	protected string $notice_delete_log_all_success;
 	protected string $notice_delete_log_group_success;
+	protected string $notice_download_log_error;
+	protected string $delete_log_action_capability;
+	protected string $download_log_action_capability;
 
 	protected array $config_props = array(
 		'notice_delete_log_error'         => 'An error occurred while trying to delete %s log file(s).',
 		'notice_delete_log_all_success'   => 'All %s log files have been successfully deleted.',
 		'notice_delete_log_group_success' => 'The %1$s %2$s log file has been successfully deleted.',
+		'notice_download_log_error'       => 'An error occurred while trying to download %s log file.',
+		'delete_log_action_capability'    => 'manage_options',
+		'download_log_action_capability'  => 'manage_options',
 	);
 
 	public function __construct(
@@ -35,15 +42,35 @@ class Logger extends OmgFeature {
 	) {
 		parent::__construct( $config );
 
-		$this->fs                   = $fs;
-		$this->action_query         = $action_query;
-		$this->admin_notice         = $admin_notice;
-		$this->info                 = $info;
-		$this->dir_path             = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $key ) . '-log';
-		$this->enabled_option_key   = "{$key}_omg_core_logger_enabled";
-		$this->delete_log_query_key = "{$key}_omg_core_logger_delete_log";
+		$this->fs                     = $fs;
+		$this->action_query           = $action_query;
+		$this->admin_notice           = $admin_notice;
+		$this->info                   = $info;
+		$this->dir_path               = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $key ) . '-log';
+		$this->enabled_option_key     = "{$key}_omg_core_logger_enabled";
+		$this->delete_log_query_key   = "{$key}_omg_core_logger_delete_log";
+		$this->download_log_query_key = "{$key}_omg_core_logger_download_log";
 
-		$action_query->add( $this->delete_log_query_key, $this->handle_delete_log() );
+		$action_query->add(
+			$this->delete_log_query_key,
+			$this->handle_delete_log(),
+			true,
+			$this->delete_log_action_capability
+		);
+		$action_query->add(
+			$this->download_log_query_key,
+			$this->handle_download_log(),
+			true,
+			$this->download_log_action_capability
+		);
+	}
+
+	public function get_log_file_path( string $group = 'debug' ): string {
+		return "$this->dir_path/$group.log";
+	}
+
+	public function is_log_file_exists( string $group = 'debug' ): bool {
+		return file_exists( $this->get_log_file_path( $group ) );
 	}
 
 	public function get_content( string $group = 'debug' ): string {
@@ -52,6 +79,14 @@ class Logger extends OmgFeature {
 
 	public function get_delete_log_action_url( string $group = 'debug' ): string {
 		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
+	}
+
+	public function get_download_log_action_url( string $group = 'debug' ): string {
+		return $this->action_query->get_url( $this->download_log_query_key, null, $group );
+	}
+
+	public function get_enabled_option_key(): string {
+		return $this->enabled_option_key;
 	}
 
 	/**
@@ -86,6 +121,24 @@ class Logger extends OmgFeature {
 		return $this->log( $message, 'error', $group );
 	}
 
+	/**
+	 * @param mixed $message
+	 * @throws InvalidArgumentException
+	 */
+	public function log( $message, string $level, string $group = 'debug' ): self {
+		if ( 'yes' === get_option( $this->enabled_option_key, 'no' ) ) {
+			return $this;
+		}
+
+		$content  = $this->fs->read_text_file( $this->get_log_file_path( $group ) );
+		$content .= $this->format_message( $message, $level );
+
+		$this->maybe_create_dir();
+		$this->fs->write_text_file( $this->get_log_file_path( $group ), $content );
+
+		return $this;
+	}
+
 	public function delete_log_dir(): bool {
 		if ( ! class_exists( 'WP_Filesystem_Base' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
@@ -106,7 +159,7 @@ class Logger extends OmgFeature {
 	}
 
 	public function delete_log_file( string $group = 'debug' ): bool {
-		$file_path = $this->get_path( $group );
+		$file_path = $this->get_log_file_path( $group );
 
 		if (
 			! file_exists( $file_path ) ||
@@ -118,35 +171,9 @@ class Logger extends OmgFeature {
 		return true;
 	}
 
-	/**
-	 * @param mixed $message
-	 * @throws InvalidArgumentException
-	 */
-	public function log( $message, string $level, string $group = 'debug' ): self {
-		if ( 'yes' === get_option( $this->enabled_option_key, 'no' ) ) {
-			return $this;
-		}
-
-		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
-		$content .= $this->format_message( $message, $level );
-
-		$this->maybe_create_dir();
-		$this->fs->write_text_file( $this->get_path( $group ), $content );
-
-		return $this;
-	}
-
-	public function get_enabled_option_key(): string {
-		return $this->enabled_option_key;
-	}
-
 	public function reset(): void {
 		$this->delete_log_dir();
 		delete_option( $this->enabled_option_key );
-	}
-
-	protected function get_path( string $group = 'debug' ): string {
-		return "$this->dir_path/$group.log";
 	}
 
 	/**
@@ -223,6 +250,42 @@ class Logger extends OmgFeature {
 					'error'
 				);
 			}
+		};
+	}
+
+	protected function handle_download_log(): callable {
+		return function ( array $data ): void {
+			if (
+				! is_string( $data[ $this->download_log_query_key ] ) ||
+				! $this->is_log_file_exists( $data[ $this->download_log_query_key ] )
+			) {
+				$this->admin_notice->add_transient(
+					sprintf( $this->notice_download_log_error, $this->info->get_name() ),
+					'error'
+				);
+
+				return;
+			}
+
+			$group     = $data[ $this->download_log_query_key ];
+			$file_name = str_replace(
+				'.',
+				'_',
+				str_replace( array( 'http://', 'https://' ), '', home_url() )
+			) . '_' . str_replace(
+				'-',
+				'_',
+				$this->info->get_textdomain()
+			) . "_$group.log";
+			$file_path = $this->get_log_file_path( $group );
+
+			header( 'Content-Type: text/plain' );
+			header( 'Content-Disposition: attachment; filename="' . $file_name . '"' );
+			header( 'Content-Length: ' . filesize( $file_path ) );
+			flush();
+			readfile( $file_path ); // phpcs:ignore
+
+			exit;
 		};
 	}
 }
