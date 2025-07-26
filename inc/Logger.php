@@ -126,7 +126,7 @@ class Logger extends OmgFeature {
 	 * @throws InvalidArgumentException
 	 */
 	public function log( $message, string $level, string $group = 'debug' ): self {
-		if ( 'yes' === get_option( $this->enabled_option_key, 'no' ) ) {
+		if ( 'yes' !== get_option( $this->enabled_option_key, 'no' ) ) {
 			return $this;
 		}
 
