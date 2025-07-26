@@ -12,6 +12,7 @@ class Logger extends OmgFeature {
 	protected AdminNotice $admin_notice;
 	protected Info $info;
 	protected string $dir_path;
+	protected string $enabled_option_key;
 	protected string $delete_log_query_key;
 
 	protected string $notice_delete_log_error;
@@ -39,6 +40,7 @@ class Logger extends OmgFeature {
 		$this->admin_notice         = $admin_notice;
 		$this->info                 = $info;
 		$this->dir_path             = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $key ) . '-log';
+		$this->enabled_option_key   = "{$key}_omg_core_logger_enabled";
 		$this->delete_log_query_key = "{$key}_omg_core_logger_delete_log";
 
 		$action_query->add( $this->delete_log_query_key, $this->handle_delete_log() );
@@ -57,7 +59,7 @@ class Logger extends OmgFeature {
 	 * @throws InvalidArgumentException
 	 */
 	public function success( $message, string $group = 'debug' ): self {
-		return $this->write( $message, 'success', $group );
+		return $this->log( $message, 'success', $group );
 	}
 
 	/**
@@ -65,7 +67,7 @@ class Logger extends OmgFeature {
 	 * @throws InvalidArgumentException
 	 */
 	public function info( $message, string $group = 'debug' ): self {
-		return $this->write( $message, 'info', $group );
+		return $this->log( $message, 'info', $group );
 	}
 
 	/**
@@ -73,7 +75,7 @@ class Logger extends OmgFeature {
 	 * @throws InvalidArgumentException
 	 */
 	public function warning( $message, string $group = 'debug' ): self {
-		return $this->write( $message, 'warning', $group );
+		return $this->log( $message, 'warning', $group );
 	}
 
 	/**
@@ -81,7 +83,7 @@ class Logger extends OmgFeature {
 	 * @throws InvalidArgumentException
 	 */
 	public function error( $message, string $group = 'debug' ): self {
-		return $this->write( $message, 'error', $group );
+		return $this->log( $message, 'error', $group );
 	}
 
 	public function delete_log_dir(): bool {
@@ -116,15 +118,15 @@ class Logger extends OmgFeature {
 		return true;
 	}
 
-	protected function get_path( string $group = 'debug' ): string {
-		return "$this->dir_path/$group.log";
-	}
-
 	/**
 	 * @param mixed $message
 	 * @throws InvalidArgumentException
 	 */
-	protected function write( $message, string $level, string $group = 'debug' ): self {
+	public function log( $message, string $level, string $group = 'debug' ): self {
+		if ( 'yes' === get_option( $this->enabled_option_key, 'no' ) ) {
+			return $this;
+		}
+
 		$content  = $this->fs->read_text_file( $this->get_path( $group ) );
 		$content .= $this->format_message( $message, $level );
 
@@ -132,6 +134,19 @@ class Logger extends OmgFeature {
 		$this->fs->write_text_file( $this->get_path( $group ), $content );
 
 		return $this;
+	}
+
+	public function get_enabled_option_key(): string {
+		return $this->enabled_option_key;
+	}
+
+	public function reset(): void {
+		$this->delete_log_dir();
+		delete_option( $this->enabled_option_key );
+	}
+
+	protected function get_path( string $group = 'debug' ): string {
+		return "$this->dir_path/$group.log";
 	}
 
 	/**

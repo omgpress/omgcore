@@ -136,6 +136,7 @@ abstract class OmgApp {
 	protected function deactivate(): callable {
 		return function (): void {
 			$this->admin_notice->reset();
+			$this->logger->reset();
 		};
 	}
 
