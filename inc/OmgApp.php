@@ -28,6 +28,12 @@ abstract class OmgApp {
 
 	protected static ?self $instance = null;
 
+	/**
+	 * Returns the singleton instance of the OmgApp class.
+	 *
+	 * @return self The singleton instance of the OmgApp class.
+	 * @throws Exception
+	 */
 	public static function get_instance(): self {
 		if ( ! static::$instance instanceof self ) {
 			static::$instance = new static();
@@ -37,6 +43,12 @@ abstract class OmgApp {
 	}
 
 	/**
+	 * Constructor for the OmgApp class.
+	 *
+	 * @param string $root_file The root file of the plugin or theme.
+	 * @param string $key The unique key for the plugin or theme.
+	 * @param bool $is_plugin Whether the application is a plugin (default: true).
+	 *
 	 * @throws Exception
 	 */
 	protected function __construct( string $root_file, string $key, bool $is_plugin = true ) {
@@ -47,18 +59,30 @@ abstract class OmgApp {
 		add_action( 'init', $this->init() );
 	}
 
+	/**
+	 * Return Fs class instance.
+	 */
 	public function fs(): Fs {
 		return $this->fs;
 	}
 
+	/**
+	 * Return Info class instance.
+	 */
 	public function info(): Info {
 		return $this->info;
 	}
 
+	/**
+	 * Return Logger class instance.
+	 */
 	public function logger(): Logger {
 		return $this->logger;
 	}
 
+	/**
+	 * Return View class instance.
+	 */
 	public function view(): View {
 		return $this->view;
 	}

@@ -7,6 +7,15 @@ abstract class Fs extends OmgFeature {
 	abstract public function get_url( string $rel, bool $stamp = false ): string;
 	abstract public function get_path( string $rel ): string;
 
+	/**
+	 * Writes text to a file at the specified path.
+	 *
+	 * @param string $path The path to the file.
+	 * @param string $text The text to write to the file.
+	 * @param int $permissions The permissions to set for the file (default: 0600).
+	 *
+	 * @return string The output of the error_log function, or an empty string on failure.
+	 */
 	public function write_text_file( string $path, string $text, int $permissions = 0600 ): string {
 		$output = error_log( '/*test*/', '3', $path ); // phpcs:ignore
 
@@ -19,6 +28,13 @@ abstract class Fs extends OmgFeature {
 		return $output;
 	}
 
+	/**
+	 * Reads the last 1MB of a text file.
+	 *
+	 * @param string $path The path to the file.
+	 *
+	 * @return string The content read from the file, or an empty string if the file does not exist.
+	 */
 	public function read_text_file( string $path ): string {
 		if ( ! file_exists( $path ) ) {
 			return '';

@@ -4,22 +4,20 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 class ActionQuery extends OmgFeature {
-	protected string $key;
-
-	public function __construct( string $key ) {
-		parent::__construct();
-
-		$this->key = $key;
-	}
-
+	/**
+	 * Adds a query action handler to the admin_init hook.
+	 *
+	 * @param string $query_key The key for the query parameter.
+	 * @param callable $handler The function to handle the query action.
+	 * @param bool $use_redirect Whether to redirect after handling the action.
+	 * @param string $capability The capability required to execute the action.
+	 */
 	public function add(
 		string $query_key,
 		callable $handler,
 		bool $use_redirect = true,
 		string $capability = 'administrator'
 	): void {
-		$query_key = "{$this->key}_$query_key";
-
 		add_action(
 			'admin_init',
 			function () use ( $query_key, $handler, $use_redirect, $capability ): void {
@@ -45,16 +43,22 @@ class ActionQuery extends OmgFeature {
 	}
 
 	/**
-	 * @param mixed $value
+	 * Generates a URL with nonce for a specific query action.
+	 *
+	 * @param string $query_key The key for the query parameter.
+	 * @param string|null $base_url Optional base URL to append the query to.
+	 * @param mixed $value The value to set for the query key, defaults to 'yes'.
+	 * @param array $args Additional arguments to include in the query.
+	 *
+	 * @return string The generated URL with the nonce.
 	 */
 	public function get_url(
 		string $query_key,
 		?string $base_url = null,
 		$value = 'yes',
-		$args = array()
+		array $args = array()
 	): string {
-		$query_key = "{$this->key}_$query_key";
-		$args      = wp_parse_args( array( $query_key => $value ), $args );
+		$args = wp_parse_args( array( $query_key => $value ), $args );
 
 		return wp_nonce_url(
 			is_null( $base_url ) ? add_query_arg( $args ) : add_query_arg( $args, $base_url ),

@@ -29,7 +29,16 @@ class Asset extends OmgFeature {
 	}
 
 	/**
-	 * @throws Exception
+	 * Enqueues a script asset.
+	 *
+	 * @param string $name The name of the script asset.
+	 * @param array $deps An array of dependencies for the script.
+	 * @param array $args An associative array of arguments to be localized with the script.
+	 * @param bool $in_footer Whether to enqueue the script in the footer (default: true).
+	 * @param string|null $args_object_name The name of the JavaScript object to which.
+	 *
+	 * @return self
+	 * @throws Exception If the script asset file does not exist.
 	 */
 	public function enqueue_script(
 		string $name,
@@ -57,6 +66,15 @@ class Asset extends OmgFeature {
 		return $this;
 	}
 
+	/**
+	 * Enqueues an inline script for a parent script.
+	 *
+	 * @param string $parent_name The name of the parent script.
+	 * @param string $js_code The JavaScript code to enqueue inline.
+	 * @param string $position The position to insert the inline script ('before' or 'after').
+	 *
+	 * @return self
+	 */
 	public function enqueue_inline_script( string $parent_name, string $js_code, string $position = 'after' ): self {
 		wp_add_inline_script( $this->key . "_$parent_name", $js_code, $position );
 
@@ -64,8 +82,14 @@ class Asset extends OmgFeature {
 	}
 
 	/**
-	 * @param string|array|null $addition
-	 * @throws Exception
+	 * Enqueues a style asset.
+	 *
+	 * @param string $name The name of the style asset.
+	 * @param array $deps An array of dependencies for the style.
+	 * @param string|array|null $addition Additional CSS to be added inline or as CSS variables.
+	 *
+	 * @return self
+	 * @throws Exception If the style asset file does not exist or if the addition parameter is invalid.
 	 */
 	public function enqueue_style( string $name, array $deps = array(), $addition = null ): self {
 		$key      = $this->get_key( $name );
@@ -99,18 +123,42 @@ class Asset extends OmgFeature {
 		return $this;
 	}
 
+	/**
+	 * Enqueues an external script.
+	 *
+	 * @param string $name The name of the script.
+	 * @param string $url The URL of the external script.
+	 * @param bool $in_footer Whether to enqueue the script in the footer (default: true).
+	 *
+	 * @return self
+	 */
 	public function enqueue_external_script( string $name, string $url, bool $in_footer = true ): self {
 		wp_enqueue_script( $this->get_key( $name ), $url, false, null, $in_footer ); // phpcs:ignore
 
 		return $this;
 	}
 
+	/**
+	 * Enqueues an external style.
+	 *
+	 * @param string $name The name of the style.
+	 * @param string $url The URL of the external style.
+	 *
+	 * @return self
+	 */
 	public function enqueue_external_style( string $name, string $url ): self {
 		wp_enqueue_style( $this->get_key( $name ), $url, false, null ); // phpcs:ignore
 
 		return $this;
 	}
 
+	/**
+	 * Generates a unique key for the asset based on the name.
+	 *
+	 * @param string $name The name of the asset.
+	 *
+	 * @return string The generated key.
+	 */
 	public function get_key( string $name ): string {
 		return $this->key . '_' . str_replace( '-', '_', $name );
 	}
