@@ -1,6 +1,8 @@
 <?php
 namespace OmgCore;
 
+use Exception;
+
 defined( 'ABSPATH' ) || exit;
 
 abstract class Info extends OmgFeature {
@@ -25,6 +27,10 @@ abstract class Info extends OmgFeature {
 		'requires_php' => 'Requires PHP',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct( string $file_with_headers ) {
 		parent::__construct();
 

@@ -4,7 +4,23 @@ namespace OmgCore;
 defined( 'ABSPATH' ) || exit;
 
 abstract class Fs extends OmgFeature {
+	/**
+	 * Returns the URL to a plugin or theme file.
+	 *
+	 * @param string $rel Relative path to append to the URL.
+	 * @param bool $stamp Optional. Whether to append a file modification timestamp.
+	 *
+	 * @return string The full URL of the plugin directory or file.
+	 */
 	abstract public function get_url( string $rel, bool $stamp = false ): string;
+
+	/**
+	 * Returns the absolute path to a plugin or theme file.
+	 *
+	 * @param string $rel Relative path to append to the directory path.
+	 *
+	 * @return string The full path of the plugin directory or file.
+	 */
 	abstract public function get_path( string $rel ): string;
 
 	/**

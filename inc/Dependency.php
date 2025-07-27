@@ -1,6 +1,7 @@
 <?php
 namespace OmgCore;
 
+use Exception;
 use InvalidArgumentException;
 use OmgCore\Dependency\Plugin;
 use OmgCore\Dependency\SilentUpgraderSkin;
@@ -49,6 +50,10 @@ class Dependency extends OmgFeature {
 		'notice_error_install'                          => 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct(
 		string $key,
 		Info $info,

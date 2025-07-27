@@ -16,7 +16,7 @@ trait TruncateHtmlContent {
 	 *
 	 * @return string The truncated string.
 	 */
-	protected function truncate_html_content( string $str, int $length = 100, array $args = array() ): string {
+	public function truncate_html_content( string $str, int $length = 100, array $args = array() ): string {
 		$args = wp_parse_args(
 			$args,
 			array(

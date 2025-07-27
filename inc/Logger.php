@@ -1,6 +1,7 @@
 <?php
 namespace OmgCore;
 
+use Exception;
 use InvalidArgumentException;
 use WP_Filesystem_Direct;
 
@@ -32,6 +33,10 @@ class Logger extends OmgFeature {
 		'download_log_action_capability'  => 'manage_options',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct(
 		string $key,
 		Fs $fs,

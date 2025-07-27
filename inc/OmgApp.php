@@ -101,7 +101,7 @@ abstract class OmgApp {
 				}
 			}
 
-			$this->action_query = new ActionQuery( $this->key );
+			$this->action_query = new ActionQuery();
 			$this->admin_notice = new AdminNotice( $this->key );
 			$this->fs           = $this->is_plugin ?
 				new FsPlugin( $this->root_file ) :

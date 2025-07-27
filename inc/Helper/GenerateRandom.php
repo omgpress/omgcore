@@ -15,7 +15,7 @@ trait GenerateRandom {
 	 * @return string The generated random string.
 	 * @throws RandomException
 	 */
-	protected function generate_random(
+	public function generate_random(
 		int $length = 16,
 		string $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 	): string {

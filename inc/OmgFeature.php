@@ -13,6 +13,7 @@ abstract class OmgFeature {
 
 	/**
 	 * @throws Exception
+	 * @ignore
 	 */
 	public function __construct( array $config = array() ) {
 		if ( in_array( static::class, self::$initiated, true ) ) {

@@ -1,11 +1,17 @@
 <?php
 namespace OmgCore;
 
+use Exception;
+
 defined( 'ABSPATH' ) || exit;
 
 class AdminNotice extends OmgFeature {
 	protected string $key;
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct( string $key ) {
 		parent::__construct();
 

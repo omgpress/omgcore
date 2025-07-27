@@ -21,6 +21,10 @@ class Asset extends OmgFeature {
 		'postfix'   => '.min',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct( string $key, Fs $fs, array $config = array() ) {
 		parent::__construct( $config );
 
