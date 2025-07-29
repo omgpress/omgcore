@@ -140,11 +140,11 @@ class Logger extends OmgFeature {
 	}
 
 	public function delete_log_dir(): bool {
-		if ( ! class_exists( '\WP_Filesystem_Base' ) ) {
+		if ( ! class_exists( 'WP_Filesystem_Base' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
 		}
 
-		if ( ! class_exists( '\WP_Filesystem_Direct' ) ) {
+		if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-direct.php';
 		}
 
