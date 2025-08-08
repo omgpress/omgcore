@@ -1,0 +1,30 @@
+{
+  "name": "omgpress/omgcore",
+  "version": "1.0.0",
+  "type": "wordpress-plugin",
+  "description": "Plugin for OmgCore development purposes",
+  "homepage": "https://omgpress.com/omgcore",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "OmgPress",
+      "email": "hello@omgpress.com",
+      "homepage": "https://omgpress.com"
+    }
+  ],
+  "keywords": [
+    "wordpress"
+  ],
+  "config": {
+    "platform-check": false,
+    "optimize-autoloader": true
+  },
+  "autoload": {
+    "psr-4": {
+      "TestPlugin\\": "inc/"
+    }
+  },
+  "require": {
+    "php": ">=7.4.0"
+  }
+}
