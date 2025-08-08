@@ -18,6 +18,7 @@ class Dependency extends OmgFeature {
 	 * @var Plugin[]
 	 */
 	protected array $plugins = array();
+	protected string $install_and_activate_action_query_key;
 
 	protected string $notice_title_required_singular;
 	protected string $notice_title_optional_singular;
@@ -32,7 +33,7 @@ class Dependency extends OmgFeature {
 	protected string $notice_success_activate;
 	protected string $notice_success_install_and_activate;
 	protected string $notice_error_install;
-	protected string $install_and_activate_action_query_key;
+	protected string $install_and_activate_action_capability;
 
 	protected array $config_props = array(
 		'notice_title_required_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.',
@@ -48,6 +49,7 @@ class Dependency extends OmgFeature {
 		'notice_success_activate'                       => 'Required plugin(s) activated.',
 		'notice_success_install_and_activate'           => 'Required plugins(s) installed and activated.',
 		'notice_error_install'                          => 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.',
+		'install_and_activate_action_capability'        => 'activate_plugins',
 	);
 
 	/**
@@ -72,7 +74,7 @@ class Dependency extends OmgFeature {
 			$this->install_and_activate_action_query_key,
 			$this->handle_install_and_activate_plugins(),
 			true,
-			'activate_plugins'
+			$this->install_and_activate_action_capability
 		);
 	}
 
@@ -184,7 +186,7 @@ class Dependency extends OmgFeature {
 			return;
 		}
 
-		$this->render_notice_css();
+		add_action( 'admin_head', $this->render_notice_css() );
 		ob_start();
 
 		if ( $required_not_active ) {
@@ -333,39 +335,41 @@ class Dependency extends OmgFeature {
 		<?php
 	}
 
-	protected function render_notice_css(): void {
-		ob_start();
-		?>
-		<style>
-			.<?php echo esc_html( $this->get_notice_css_class( 'title' ) ); ?> {
-				margin: 0;
-				padding: 0;
-			}
+	protected function render_notice_css(): callable {
+		return function (): void {
+			ob_start();
+			?>
+			<style>
+				.<?php echo esc_html( $this->get_notice_css_class( 'title' ) ); ?> {
+					margin: 0;
+					padding: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'list' ) ); ?> {
-				margin: 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'list' ) ); ?> {
+					margin: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'optional' ) ); ?> {
-				margin-top: 0.5rem;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'optional' ) ); ?> {
+					margin-top: 0.5rem;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> {
-				display: flex;
-				align-items: center;
-				margin: 0.6rem 0 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> {
+					display: flex;
+					align-items: center;
+					margin: 0.6rem 0 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li {
-				margin: 0;
-			}
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li {
+					margin: 0;
+				}
 
-			.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li:not(:last-child) {
-				margin-right: 0.75rem;
-			}
-		</style>
-		<?php
-		echo wp_kses( ob_get_clean(), array( 'style' => array() ) );
+				.<?php echo esc_html( $this->get_notice_css_class( 'actions' ) ); ?> li:not(:last-child) {
+					margin-right: 0.75rem;
+				}
+			</style>
+			<?php
+			echo wp_kses( ob_get_clean(), array( 'style' => array() ) );
+		};
 	}
 
 	protected function get_notice_css_class( string $css_class ): string {
