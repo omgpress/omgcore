@@ -17,6 +17,7 @@ abstract class OmgApp {
 	protected Fs $fs;
 	protected Info $info;
 	protected Logger $logger;
+	protected Util $util;
 	protected View $view;
 
 	protected array $config_prop_keys = array(
@@ -106,6 +107,7 @@ abstract class OmgApp {
 				$this->info,
 				$config[ Logger::class ] ?? array()
 			);
+			$this->util         = new Util();
 			$this->view         = $this->is_plugin ?
 				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
 				new ViewTheme( $config[ View::class ] ?? array() );
