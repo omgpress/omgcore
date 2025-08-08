@@ -1,5 +1,5 @@
 <?php
-namespace OmgCore\Helper;
+namespace OmgCore\Util;
 
 defined( 'ABSPATH' ) || exit;
 

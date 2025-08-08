@@ -1,5 +1,5 @@
 <?php
-namespace OmgCore\Helper;
+namespace OmgCore\Util;
 
 use Random\RandomException;
 
