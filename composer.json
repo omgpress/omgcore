@@ -42,6 +42,6 @@
     "lint": "phpcs",
     "fix": "phpcbf",
     "tests": "./vendor/bin/phpunit",
-    "doc": "vendor/bin/phpdoc run"
+    "create-doc": "vendor/bin/phpdoc run"
   }
 }

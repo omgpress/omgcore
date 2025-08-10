@@ -7,7 +7,7 @@
 	</paths>
 	<version number="1.0.0">
 		<api>
-			<default-package-name>App</default-package-name>
+			<default-package-name>OmgCore</default-package-name>
 			<extensions>
 				<extension>php</extension>
 			</extensions>
