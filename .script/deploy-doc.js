@@ -3,7 +3,7 @@ const FtpDeploy = require( 'ftp-deploy' );
 const path = require( 'path' );
 const ftp = new FtpDeploy();
 const log = require( 'log-beautify' );
-const release = require( '../package.json' ).release;
+const doc = require( '../package.json' ).doc;
 
 ftp
 	.deploy( {
@@ -13,9 +13,11 @@ ftp
 		password: process.env.DEV_FTP_PWD,
 		localRoot: path.dirname(__dirname),
 		remoteRoot: process.env.DEV_FTP_DIR,
-		include: release.directories.map(
-			( dir ) => dir + '/**'
-		).concat(release.files),
+		include: doc.directories.map(
+			( dir ) => 'doc/api/' + dir + '/**'
+		).concat(doc.files.map(
+			( file ) => 'doc/api/' + file
+		)),
 		exclude: [ 'node_modules/**', 'src/**' ],
 		deleteRemote: false,
 		forcePasv: true,
