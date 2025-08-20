@@ -17,15 +17,7 @@ abstract class OmgApp {
 	protected Fs $fs;
 	protected Info $info;
 	protected Logger $logger;
-	protected Util $util;
 	protected View $view;
-
-	protected array $config_prop_keys = array(
-		Asset::class,
-		Dependency::class,
-		View::class,
-		Logger::class,
-	);
 
 	protected static ?self $instance = null;
 
@@ -90,18 +82,7 @@ abstract class OmgApp {
 
 	protected function init(): callable {
 		return function (): void {
-			$config = $this->get_config();
-
-			foreach ( $config as $key => $value ) {
-				if ( ! in_array( $key, $this->config_prop_keys, true ) ) {
-					throw new Exception( esc_html( "The \"$key\" is not a valid configuration property" ) );
-				}
-
-				if ( ! is_array( $value ) ) {
-					throw new Exception( esc_html( "The \"$key\" configuration must be an array" ) );
-				}
-			}
-
+			$config             = $this->get_config();
 			$this->action_query = new ActionQuery();
 			$this->admin_notice = new AdminNotice( $this->key );
 			$this->fs           = $this->is_plugin ?
@@ -131,7 +112,6 @@ abstract class OmgApp {
 				$this->info,
 				$config[ Logger::class ] ?? array()
 			);
-			$this->util         = new Util();
 			$this->view         = $this->is_plugin ?
 				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
 				new ViewTheme( $config[ View::class ] ?? array() );
