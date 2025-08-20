@@ -1,6 +1,7 @@
 <?php
 namespace OmgCore;
 
+use Exception;
 use InvalidArgumentException;
 use WP_Filesystem_Direct;
 
@@ -32,6 +33,10 @@ class Logger extends OmgFeature {
 		'download_log_action_capability'  => 'manage_options',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct(
 		string $key,
 		Fs $fs,
@@ -65,32 +70,79 @@ class Logger extends OmgFeature {
 		);
 	}
 
+	/**
+	 * Returns the path to the log directory.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return string
+	 */
 	public function get_log_file_path( string $group = 'debug' ): string {
 		return "$this->dir_path/$group.log";
 	}
 
+	/**
+	 * Checks if the log directory exists.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return bool
+	 */
 	public function is_log_file_exists( string $group = 'debug' ): bool {
 		return file_exists( $this->get_log_file_path( $group ) );
 	}
 
+	/**
+	 * Returns the content of the log file.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return string
+	 */
 	public function get_content( string $group = 'debug' ): string {
 		return $this->fs->read_text_file( "$this->dir_path/$group.log" );
 	}
 
+	/**
+	 * Returns the URL to the log file.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return string
+	 */
 	public function get_delete_log_action_url( string $group = 'debug' ): string {
 		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
 	}
 
+	/**
+	 * Returns the URL to download the log file.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return string
+	 */
 	public function get_download_log_action_url( string $group = 'debug' ): string {
 		return $this->action_query->get_url( $this->download_log_query_key, null, $group );
 	}
 
+	/**
+	 * Returns the directory path for logs.
+	 *
+	 * @return string
+	 */
 	public function get_enabled_option_key(): string {
 		return $this->enabled_option_key;
 	}
 
+
 	/**
 	 * @param mixed $message
+	 * Logs a message with the 'success' level.
+	 *
+	 * @param mixed $message The message to log.
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return self
 	 * @throws InvalidArgumentException
 	 */
 	public function success( $message, string $group = 'debug' ): self {
@@ -99,6 +151,12 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * Logs a message with the 'info' level.
+	 *
+	 * @param mixed $message The message to log.
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return self
 	 * @throws InvalidArgumentException
 	 */
 	public function info( $message, string $group = 'debug' ): self {
@@ -107,6 +165,12 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * Logs a message with the 'warning' level.
+	 *
+	 * @param mixed $message The message to log.
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return self
 	 * @throws InvalidArgumentException
 	 */
 	public function warning( $message, string $group = 'debug' ): self {
@@ -115,6 +179,12 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * Logs a message with the 'error' level.
+	 *
+	 * @param mixed $message The message to log.
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return self
 	 * @throws InvalidArgumentException
 	 */
 	public function error( $message, string $group = 'debug' ): self {
@@ -123,6 +193,13 @@ class Logger extends OmgFeature {
 
 	/**
 	 * @param mixed $message
+	 * Logs a message with the specified level and group.
+	 *
+	 * @param mixed $message The message to log.
+	 * @param string $level The log level (e.g., 'success', 'info', 'warning', 'error').
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return self
 	 * @throws InvalidArgumentException
 	 */
 	public function log( $message, string $level, string $group = 'debug' ): self {
@@ -139,6 +216,11 @@ class Logger extends OmgFeature {
 		return $this;
 	}
 
+	/**
+	 * Deletes the log directory.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
 	public function delete_log_dir(): bool {
 		if ( ! class_exists( 'WP_Filesystem_Base' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
@@ -158,6 +240,13 @@ class Logger extends OmgFeature {
 		return true;
 	}
 
+	/**
+	 * Deletes a specific log file.
+	 *
+	 * @param string $group Optional. The log group name.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
 	public function delete_log_file( string $group = 'debug' ): bool {
 		$file_path = $this->get_log_file_path( $group );
 
@@ -171,6 +260,9 @@ class Logger extends OmgFeature {
 		return true;
 	}
 
+	/**
+	 * Resets the logger by deleting the log directory and the enabled option.
+	 */
 	public function reset(): void {
 		$this->delete_log_dir();
 		delete_option( $this->enabled_option_key );

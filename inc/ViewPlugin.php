@@ -1,12 +1,21 @@
 <?php
 namespace OmgCore;
 
+use Exception;
+
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * @ignore
+ */
 class ViewPlugin extends View {
 	protected Fs $fs;
 	protected string $dir;
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct( Fs $fs, array $config = array() ) {
 		parent::__construct( $config );
 

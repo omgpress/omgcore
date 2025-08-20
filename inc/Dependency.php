@@ -1,6 +1,7 @@
 <?php
 namespace OmgCore;
 
+use Exception;
 use InvalidArgumentException;
 use OmgCore\Dependency\Plugin;
 use OmgCore\Dependency\SilentUpgraderSkin;
@@ -51,6 +52,10 @@ class Dependency extends OmgFeature {
 		'install_and_activate_action_capability'        => 'activate_plugins',
 	);
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct(
 		string $key,
 		Info $info,
@@ -74,7 +79,16 @@ class Dependency extends OmgFeature {
 	}
 
 	/**
-	 * @param string|array $filename
+	 * Registers a plugin dependency.
+	 *
+	 * @param string $key Unique key for the plugin.
+	 * @param string $name Name of the plugin.
+	 * @param string|array $filename Path(s) to the plugin file.
+	 * @param bool $is_optional Whether the plugin is optional.
+	 * @param string|null $installation_url URL to install the plugin, if applicable.
+	 *
+	 * @return self
+	 * @throws InvalidArgumentException If a plugin with the same key is already declared.
 	 */
 	public function require_plugin(
 		string $key,
@@ -98,6 +112,13 @@ class Dependency extends OmgFeature {
 		return $this;
 	}
 
+	/**
+	 * Checks if all required plugins are active.
+	 *
+	 * @param bool $inc_optional Whether to include optional plugins in the check.
+	 *
+	 * @return bool True if all required plugins are active, false otherwise.
+	 */
 	public function is_active_all_plugins( bool $inc_optional = false ): bool {
 		foreach ( $this->plugins as $key => $plugin ) {
 			if ( $inc_optional && $plugin->is_optional() ) {
@@ -112,14 +133,35 @@ class Dependency extends OmgFeature {
 		return true;
 	}
 
+	/**
+	 * Checks if a specific plugin is active.
+	 *
+	 * @param string $key The key of the plugin to check.
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 * @throws InvalidArgumentException If the plugin with the specified key is not found.
+	 */
 	public function is_active_plugin( string $key ): bool {
 		return $this->get_plugin( $key )->is_active();
 	}
 
+	/**
+	 * Checks if a specific plugin is installed.
+	 *
+	 * @param string $key The key of the plugin to check.
+	 *
+	 * @return bool True if the plugin is installed, false otherwise.
+	 * @throws InvalidArgumentException If the plugin with the specified key is not found.
+	 */
 	public function is_installed_plugin( string $key ): bool {
 		return $this->get_plugin( $key )->is_installed();
 	}
 
+	/**
+	 * Render a notice if there are any required or optional plugins not active.
+	 *
+	 * @param bool $inc_optional Optional. Whether to include optional plugins in the notice.
+	 */
 	public function maybe_render_notice( bool $inc_optional = true ): void {
 		if ( empty( $this->plugins ) ) {
 			return;

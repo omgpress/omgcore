@@ -1,6 +1,8 @@
 <?php
 namespace OmgCore;
 
+use Exception;
+
 defined( 'ABSPATH' ) || exit;
 
 class Env extends OmgFeature {
@@ -20,6 +22,10 @@ class Env extends OmgFeature {
 
 	protected bool $is_dev;
 
+	/**
+	 * @throws Exception
+	 * @ignore
+	 */
 	public function __construct() {
 		parent::__construct();
 
@@ -33,6 +39,11 @@ class Env extends OmgFeature {
 			);
 	}
 
+	/**
+	 * Checks if the current environment is a development environment.
+	 *
+	 * @return bool True if in a development environment, false otherwise.
+	 */
 	public function is_dev(): bool {
 		return $this->is_dev;
 	}

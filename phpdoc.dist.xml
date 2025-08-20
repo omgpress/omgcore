@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<phpdocumentor configVersion="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpdoc.org" xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd">
+	<title>OmgCore</title>
+	<paths>
+		<output>doc/api</output>
+		<cache>doc/cache</cache>
+	</paths>
+	<version number="1.0.0">
+		<api>
+			<default-package-name>OmgCore</default-package-name>
+			<extensions>
+				<extension>php</extension>
+			</extensions>
+			<source dsn=".">
+				<path>inc</path>
+			</source>
+			<visibility>public</visibility>
+			<ignore hidden="true" symlinks="true">
+				<path>inc/Dependency/**/*</path>
+			</ignore>
+		</api>
+	</version>
+</phpdocumentor>

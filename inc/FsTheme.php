@@ -3,6 +3,9 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * @ignore
+ */
 class FsTheme extends Fs {
 	public function get_url( string $rel = '', bool $stamp = false ): string {
 		$url = get_theme_file_uri( $rel );

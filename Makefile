@@ -19,3 +19,9 @@ fix:
 
 lint:
 	composer run lint
+
+create-doc:
+	rm -rf doc && composer run create-doc
+
+deploy-doc:
+	make doc && npm run deploy-doc
