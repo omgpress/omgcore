@@ -14,22 +14,6 @@
   "keywords": [
     "wordpress"
   ],
-  "doc": {
-    "directories": [
-      "classes",
-      "css",
-      "files",
-      "graphs",
-      "indices",
-      "js",
-      "namespaces",
-      "packages",
-      "reports"
-    ],
-    "files": [
-      "index/html"
-    ]
-  },
   "devDependencies": {
     "husky": "^8.0.3",
     "dotenv": "^16.0.2",
