@@ -29,13 +29,14 @@
     }
   },
   "require": {
-    "php": ">=7.4.0",
-    "phpdocumentor/shim": "^3.8"
+    "php": ">=7.4.0"
   },
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.1.0",
     "phpunit/phpunit": "^9.6.23",
-    "yoast/phpunit-polyfills": "^3.1.2"
+    "yoast/phpunit-polyfills": "^3.1.2",
+    "phpdocumentor/shim": "^3.8",
+    "omgpress/phpdocumentor-template": "^0.1.0"
   },
   "scripts": {
     "no-dev": "composer install --no-dev",
