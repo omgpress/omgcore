@@ -36,7 +36,7 @@
     "phpunit/phpunit": "^9.6.23",
     "yoast/phpunit-polyfills": "^3.1.2",
     "phpdocumentor/shim": "^3.8",
-    "omgpress/phpdocumentor-template": "^0.1.0"
+    "omgpress/phpdoc-tpl": "^0.1.0"
   },
   "scripts": {
     "no-dev": "composer install --no-dev",

@@ -20,5 +20,5 @@
 			</ignore>
 		</api>
 	</version>
-	<template name="omgpress/phpdocumentor-template" location="vendor"/>
+	<template name="omgpress/phpdoc-tpl" location="vendor"/>
 </phpdocumentor>
