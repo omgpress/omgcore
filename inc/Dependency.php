@@ -9,6 +9,9 @@ use Plugin_Upgrader;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Dependency manager.
+ */
 class Dependency extends OmgFeature {
 	protected Info $info;
 	protected AdminNotice $admin_notice;

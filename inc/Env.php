@@ -5,6 +5,9 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Environment manager.
+ */
 class Env extends OmgFeature {
 	protected array $dev_hosts = array(
 		'localhost',

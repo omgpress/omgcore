@@ -5,6 +5,9 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Admin notice manager.
+ */
 class AdminNotice extends OmgFeature {
 	protected string $key;
 

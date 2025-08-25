@@ -3,6 +3,9 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * File system manager.
+ */
 abstract class Fs extends OmgFeature {
 	/**
 	 * Returns the URL to a plugin or theme file.

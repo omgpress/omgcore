@@ -5,6 +5,9 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Application.
+ */
 abstract class OmgApp {
 	protected string $root_file;
 	protected string $key;

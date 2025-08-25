@@ -5,6 +5,9 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Plugin or theme information.
+ */
 abstract class Info extends OmgFeature {
 	protected string $name;
 	protected string $url;

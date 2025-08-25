@@ -5,6 +5,9 @@ use Exception;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Asset manager.
+ */
 class Asset extends OmgFeature {
 	protected string $asset_dir;
 	protected string $js_dir;

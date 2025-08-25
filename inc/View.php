@@ -3,6 +3,9 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * View manager.
+ */
 abstract class View extends OmgFeature {
 	protected array $config_props = array(
 		'dir' => 'view',

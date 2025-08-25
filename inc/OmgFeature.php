@@ -6,6 +6,9 @@ use InvalidArgumentException;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Feature.
+ */
 abstract class OmgFeature {
 	protected static array $initiated = array();
 

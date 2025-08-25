@@ -7,6 +7,9 @@ use WP_Filesystem_Direct;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Logger.
+ */
 class Logger extends OmgFeature {
 	protected Fs $fs;
 	protected ActionQuery $action_query;

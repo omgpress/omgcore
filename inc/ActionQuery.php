@@ -3,23 +3,28 @@ namespace OmgCore;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Action Query manager.
+ */
 class ActionQuery extends OmgFeature {
 	/**
-	 * Adds a query action handler to the admin_init hook.
+	 * Adds a query action handler.
 	 *
 	 * @param string $query_key The key for the query parameter.
 	 * @param callable $handler The function to handle the query action.
 	 * @param bool $use_redirect Whether to redirect after handling the action.
 	 * @param string $capability The capability required to execute the action.
+	 * @param bool $admin_only Whether the action should only be available to administrators.
 	 */
 	public function add(
 		string $query_key,
 		callable $handler,
 		bool $use_redirect = true,
-		string $capability = 'administrator'
+		string $capability = 'administrator',
+		bool $admin_only = true
 	): void {
 		add_action(
-			'admin_init',
+			$admin_only ? 'admin_init' : 'init',
 			function () use ( $query_key, $handler, $use_redirect, $capability ): void {
 				if (
 					empty( $_GET['_wpnonce'] ) ||
