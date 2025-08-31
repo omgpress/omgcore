@@ -61,7 +61,7 @@ class Asset extends OmgFeature {
 		$path     = $this->fs->get_path( $rel );
 
 		if ( ! file_exists( $path ) ) {
-			throw new Exception( esc_html( "The \"$path\" script asset file does not exist" ) );
+			throw new Exception( esc_html( "The $path script asset file does not exist" ) );
 		}
 
 		wp_enqueue_script( $key, $url, $deps, filemtime( $path ), $in_footer );
@@ -106,7 +106,7 @@ class Asset extends OmgFeature {
 		$path     = $this->fs->get_path( $rel );
 
 		if ( ! file_exists( $path ) ) {
-			throw new Exception( esc_html( "The \"$path\" style asset file does not exist" ) );
+			throw new Exception( esc_html( "The $path style asset file does not exist" ) );
 		}
 
 		wp_enqueue_style( $key, $url, $deps, filemtime( $path ) );

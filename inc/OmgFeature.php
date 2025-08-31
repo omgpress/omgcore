@@ -35,26 +35,26 @@ abstract class OmgFeature {
 			switch ( gettype( $this->config_props[ $config_prop ] ) ) {
 				case 'string':
 					if ( ! is_string( $config[ $config_prop ] ) ) {
-						throw new InvalidArgumentException( esc_html( "Config key \"$config_prop\" must be a string" ) );
+						throw new InvalidArgumentException( esc_html( "Config key $config_prop must be a string" ) );
 					}
 					break;
 				case 'integer':
 					if ( ! is_int( $config[ $config_prop ] ) ) {
-						throw new InvalidArgumentException( esc_html( "Config key \"$config_prop\" must be an integer" ) );
+						throw new InvalidArgumentException( esc_html( "Config key $config_prop must be an integer" ) );
 					}
 					break;
 				case 'array':
 					if ( ! is_array( $config[ $config_prop ] ) ) {
-						throw new InvalidArgumentException( esc_html( "Config key \"$config_prop\" must be an array" ) );
+						throw new InvalidArgumentException( esc_html( "Config key $config_prop must be an array" ) );
 					}
 					break;
 				case 'bool':
 					if ( ! is_bool( $config[ $config_prop ] ) ) {
-						throw new InvalidArgumentException( esc_html( "Config key \"$config_prop\" must be a boolean" ) );
+						throw new InvalidArgumentException( esc_html( "Config key $config_prop must be a boolean" ) );
 					}
 					break;
 				default:
-					throw new InvalidArgumentException( esc_html( "Unknown config prop type: \"$config_prop\"" ) );
+					throw new InvalidArgumentException( esc_html( "Unknown config prop type: $config_prop" ) );
 			}
 
 			$this->{$config_prop} = $config[ $config_prop ];

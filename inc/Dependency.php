@@ -101,7 +101,7 @@ class Dependency extends OmgFeature {
 		?string $installation_url = null
 	): self {
 		if ( isset( $this->plugins[ $key ] ) ) {
-			throw new InvalidArgumentException( esc_html( "Dependency plugin with key \"$key\" already declared" ) );
+			throw new InvalidArgumentException( esc_html( "Dependency plugin with key $key already declared" ) );
 		}
 
 		$this->plugins[ $key ] = new Plugin(
@@ -381,7 +381,7 @@ class Dependency extends OmgFeature {
 
 	protected function get_plugin( string $key ): Plugin {
 		if ( empty( $this->plugins[ $key ] ) ) {
-			throw new InvalidArgumentException( esc_html( "Dependency plugin with key \"$key\" not found" ) );
+			throw new InvalidArgumentException( esc_html( "Dependency plugin with key $key not found" ) );
 		}
 
 		return $this->plugins[ $key ];
