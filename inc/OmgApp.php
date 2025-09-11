@@ -52,10 +52,7 @@ abstract class OmgApp {
 		$this->key       = $key;
 		$this->is_plugin = $is_plugin;
 
-		add_action(
-			$is_plugin ? 'plugins_loaded' : 'after_setup_theme',
-			$this->init()
-		);
+		add_action( 'after_setup_theme', $this->init() );
 	}
 
 	/**
