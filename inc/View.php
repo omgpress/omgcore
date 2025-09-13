@@ -7,9 +7,7 @@ defined( 'ABSPATH' ) || exit;
  * View manager.
  */
 abstract class View extends OmgFeature {
-	protected array $config_props = array(
-		'dir' => 'view',
-	);
+	protected string $dir = 'view';
 
 	/**
 	 * Returns content of a template file.

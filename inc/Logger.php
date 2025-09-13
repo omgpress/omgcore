@@ -20,21 +20,12 @@ class Logger extends OmgFeature {
 	protected string $delete_log_query_key;
 	protected string $download_log_query_key;
 
-	protected string $notice_delete_log_error;
-	protected string $notice_delete_log_all_success;
-	protected string $notice_delete_log_group_success;
-	protected string $notice_download_log_error;
-	protected string $delete_log_action_capability;
-	protected string $download_log_action_capability;
-
-	protected array $config_props = array(
-		'notice_delete_log_error'         => 'An error occurred while trying to delete %s log file(s).',
-		'notice_delete_log_all_success'   => 'All %s log files have been successfully deleted.',
-		'notice_delete_log_group_success' => 'The %1$s %2$s log file has been successfully deleted.',
-		'notice_download_log_error'       => 'An error occurred while trying to download %s log file.',
-		'delete_log_action_capability'    => 'manage_options',
-		'download_log_action_capability'  => 'manage_options',
-	);
+	protected string $notice_delete_log_error         = 'An error occurred while trying to delete %s log file(s).';
+	protected string $notice_delete_log_all_success   = 'All %s log files have been successfully deleted.';
+	protected string $notice_delete_log_group_success = 'The %1$s %2$s log file has been successfully deleted.';
+	protected string $notice_download_log_error       = 'An error occurred while trying to download %s log file.';
+	protected string $delete_log_action_capability    = 'manage_options';
+	protected string $download_log_action_capability  = 'manage_options';
 
 	/**
 	 * @throws Exception
@@ -46,9 +37,10 @@ class Logger extends OmgFeature {
 		ActionQuery $action_query,
 		AdminNotice $admin_notice,
 		Info $info,
-		array $config = array()
+		callable $get_config,
+		callable $get_i18n
 	) {
-		parent::__construct( $config );
+		parent::__construct( $get_config, $get_i18n );
 
 		$this->fs                     = $fs;
 		$this->action_query           = $action_query;

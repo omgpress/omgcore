@@ -16,8 +16,8 @@ class ViewPlugin extends View {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( Fs $fs, array $config = array() ) {
-		parent::__construct( $config );
+	public function __construct( Fs $fs, callable $get_config ) {
+		parent::__construct( $get_config );
 
 		$this->fs = $fs;
 	}

@@ -9,27 +9,20 @@ defined( 'ABSPATH' ) || exit;
  * Asset manager.
  */
 class Asset extends OmgFeature {
-	protected string $asset_dir;
-	protected string $js_dir;
-	protected string $css_dir;
-	protected string $postfix;
+	protected string $asset_dir = 'asset';
+	protected string $js_dir    = 'js';
+	protected string $css_dir   = 'css';
+	protected string $postfix   = '.min';
 
 	protected string $key;
 	protected Fs $fs;
-
-	protected array $config_props = array(
-		'asset_dir' => 'asset',
-		'js_dir'    => 'js',
-		'css_dir'   => 'css',
-		'postfix'   => '.min',
-	);
 
 	/**
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( string $key, Fs $fs, array $config = array() ) {
-		parent::__construct( $config );
+	public function __construct( string $key, Fs $fs, callable $get_config ) {
+		parent::__construct( $get_config );
 
 		$this->key = $key;
 		$this->fs  = $fs;

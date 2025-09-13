@@ -23,37 +23,20 @@ class Dependency extends OmgFeature {
 	protected array $plugins = array();
 	protected string $install_and_activate_action_query_key;
 
-	protected string $notice_title_required_singular;
-	protected string $notice_title_optional_singular;
-	protected string $notice_title_required_plural;
-	protected string $notice_title_optional_plural;
-	protected string $notice_item_not_installed;
-	protected string $notice_item_undefiled_installation_url;
-	protected string $notice_btn_activate;
-	protected string $notice_btn_install_and_activate;
-	protected string $notice_btn_activate_only_required;
-	protected string $notice_btn_install_and_activate_only_required;
-	protected string $notice_success_activate;
-	protected string $notice_success_install_and_activate;
-	protected string $notice_error_install;
-	protected string $install_and_activate_action_capability;
-
-	protected array $config_props = array(
-		'notice_title_required_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.',
-		'notice_title_optional_singular'                => 'The <b>%1$s</b> plugin%2$s is <b>recommended</b> for the all <b>"%3$s"</b> features to function.',
-		'notice_title_required_plural'                  => 'The following plugins are <b>required</b> for the <b>%s</b> features to function:',
-		'notice_title_optional_plural'                  => 'The following plugins are <b>recommended</b> for the all <b>%s</b> features to function:',
-		'notice_item_not_installed'                     => 'not installed',
-		'notice_item_undefiled_installation_url'        => 'not installed, can\'t be installed automatically',
-		'notice_btn_activate'                           => 'Activate',
-		'notice_btn_install_and_activate'               => 'Install and activate',
-		'notice_btn_activate_only_required'             => 'Activate only required',
-		'notice_btn_install_and_activate_only_required' => 'Install and activate only required',
-		'notice_success_activate'                       => 'Required plugin(s) activated.',
-		'notice_success_install_and_activate'           => 'Required plugins(s) installed and activated.',
-		'notice_error_install'                          => 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.',
-		'install_and_activate_action_capability'        => 'activate_plugins',
-	);
+	protected string $notice_title_required_singular                = 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.';
+	protected string $notice_title_optional_singular                = 'The <b>%1$s</b> plugin%2$s is <b>recommended</b> for the all <b>"%3$s"</b> features to function.';
+	protected string $notice_title_required_plural                  = 'The following plugins are <b>required</b> for the <b>%s</b> features to function:';
+	protected string $notice_title_optional_plural                  = 'The following plugins are <b>recommended</b> for the all <b>%s</b> features to function:';
+	protected string $notice_item_not_installed                     = 'not installed';
+	protected string $notice_item_undefiled_installation_url        = 'not installed, can\'t be installed automatically';
+	protected string $notice_btn_activate                           = 'Activate';
+	protected string $notice_btn_install_and_activate               = 'Install and activate';
+	protected string $notice_btn_activate_only_required             = 'Activate only required';
+	protected string $notice_btn_install_and_activate_only_required = 'Install and activate only required';
+	protected string $notice_success_activate                       = 'Required plugin(s) activated.';
+	protected string $notice_success_install_and_activate           = 'Required plugins(s) installed and activated.';
+	protected string $notice_error_install                          = 'The "%1$s" plugin can\'t be installed automatically. Please install it manually.';
+	protected string $install_and_activate_action_capability        = 'activate_plugins';
 
 	/**
 	 * @throws Exception
@@ -64,9 +47,10 @@ class Dependency extends OmgFeature {
 		Info $info,
 		AdminNotice $admin_notice,
 		ActionQuery $action_query,
-		array $config = array()
+		callable $get_config,
+		callable $get_i18n
 	) {
-		parent::__construct( $config );
+		parent::__construct( $get_config, $get_i18n );
 
 		$this->info                                  = $info;
 		$this->admin_notice                          = $admin_notice;

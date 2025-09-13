@@ -48,11 +48,53 @@ abstract class OmgApp {
 	 * @throws Exception
 	 */
 	protected function __construct( string $root_file, string $key, bool $is_plugin = true ) {
-		$this->root_file = $root_file;
-		$this->key       = $key;
-		$this->is_plugin = $is_plugin;
+		$this->root_file    = $root_file;
+		$this->key          = $key;
+		$this->is_plugin    = $is_plugin;
+		$this->action_query = new ActionQuery();
+		$this->admin_notice = new AdminNotice( $this->key );
+		$this->fs           = $this->is_plugin ?
+			new FsPlugin( $this->root_file ) :
+			new FsTheme();
+		$this->asset        = new Asset(
+			$this->key,
+			$this->fs,
+			$this->get_core_config()
+		);
+		$this->info         = $this->is_plugin ?
+			new InfoPlugin( $this->root_file ) :
+			new InfoTheme( $this->fs->get_path( 'style.css' ) );
+		$this->dependency   = new Dependency(
+			$this->key,
+			$this->info,
+			$this->admin_notice,
+			$this->action_query,
+			$this->get_core_config(),
+			$this->get_core_i18n()
+		);
+		$this->env          = new Env();
+		$this->logger       = new Logger(
+			$this->key,
+			$this->fs,
+			$this->action_query,
+			$this->admin_notice,
+			$this->info,
+			$this->get_core_config(),
+			$this->get_core_i18n()
+		);
+		$this->view         = $this->is_plugin ?
+			new ViewPlugin( $this->fs, $this->get_core_config() ) :
+			new ViewTheme( $this->get_core_config() );
 
-		add_action( 'after_setup_theme', $this->init() );
+		if ( $this->is_plugin ) {
+			register_activation_hook( $this->root_file, $this->activate() );
+			register_deactivation_hook( $this->root_file, $this->deactivate() );
+		} else {
+			add_action( 'after_switch_theme', $this->activate() );
+			add_action( 'switch_theme', $this->deactivate() );
+		}
+
+		add_action( 'init', $this->init() );
 	}
 
 	/**
@@ -85,55 +127,17 @@ abstract class OmgApp {
 
 	protected function init(): callable {
 		return function (): void {
-			$config             = $this->get_config();
-			$this->action_query = new ActionQuery();
-			$this->admin_notice = new AdminNotice( $this->key );
-			$this->fs           = $this->is_plugin ?
-				new FsPlugin( $this->root_file ) :
-				new FsTheme();
-			$this->asset        = new Asset(
-				$this->key,
-				$this->fs,
-				$config[ Asset::class ] ?? array()
-			);
-			$this->info         = $this->is_plugin ?
-				new InfoPlugin( $this->root_file ) :
-				new InfoTheme( $this->fs->get_path( 'style.css' ) );
-			$this->dependency   = new Dependency(
-				$this->key,
-				$this->info,
-				$this->admin_notice,
-				$this->action_query,
-				$config[ Dependency::class ] ?? array()
-			);
-			$this->env          = new Env();
-			$this->logger       = new Logger(
-				$this->key,
-				$this->fs,
-				$this->action_query,
-				$this->admin_notice,
-				$this->info,
-				$config[ Logger::class ] ?? array()
-			);
-			$this->view         = $this->is_plugin ?
-				new ViewPlugin( $this->fs, $config[ View::class ] ?? array() ) :
-				new ViewTheme( $config[ View::class ] ?? array() );
-
 			if ( $this->is_plugin ) {
 				load_plugin_textdomain(
 					$this->info->get_textdomain(),
 					false,
 					$this->fs->get_path( 'lang' )
 				);
-				register_activation_hook( $this->root_file, $this->activate() );
-				register_deactivation_hook( $this->root_file, $this->deactivate() );
 			} else {
 				load_theme_textdomain(
 					$this->info->get_textdomain(),
 					$this->fs->get_path( 'lang' )
 				);
-				add_action( 'after_switch_theme', $this->activate() );
-				add_action( 'switch_theme', $this->deactivate() );
 			}
 		};
 	}
@@ -149,7 +153,15 @@ abstract class OmgApp {
 		};
 	}
 
-	protected function get_config(): array {
-		return array();
+	protected function get_core_config(): callable {
+		return function (): array {
+			return array();
+		};
+	}
+
+	protected function get_core_i18n(): callable {
+		return function (): array {
+			return array();
+		};
 	}
 }
