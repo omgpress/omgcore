@@ -7,8 +7,6 @@ defined( 'ABSPATH' ) || exit;
  * @ignore
  */
 class ViewTheme extends View {
-	protected string $dir;
-
 	public function get( string $name, array $args = array() ): string {
 		ob_start();
 		$this->render( $name, $args );
