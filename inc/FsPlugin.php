@@ -11,18 +11,14 @@ defined( 'ABSPATH' ) || exit;
 class FsPlugin extends Fs {
 	protected string $root_file;
 
-	/**
-	 * @throws Exception
-	 * @ignore
-	 */
-	public function __construct( string $root_file ) {
-		parent::__construct();
+	public function __construct( OmgApp $app ) {
+		parent::__construct( $app );
 
-		$this->root_file = $root_file;
+		$this->root_file = $app->get_root_file();
 	}
 
 	public function get_url( string $rel = '', bool $stamp = false ): string {
-		$url = plugin_dir_url( $this->root_file );
+		$url = plugin_dir_url( $this->app->get_root_file() );
 		$url = $rel ? ( $url . $rel ) : rtrim( $url, '/\\' );
 
 		if ( $stamp ) {
@@ -39,7 +35,7 @@ class FsPlugin extends Fs {
 	}
 
 	public function get_path( string $rel = '' ): string {
-		$path = plugin_dir_path( $this->root_file );
+		$path = plugin_dir_path( $this->app->get_root_file() );
 
 		return $rel ? "$path{$rel}" : rtrim( $path, '/\\' );
 	}

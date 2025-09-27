@@ -11,10 +11,6 @@ defined( 'ABSPATH' ) || exit;
  * Logger.
  */
 class Logger extends OmgFeature {
-	protected Fs $fs;
-	protected ActionQuery $action_query;
-	protected AdminNotice $admin_notice;
-	protected Info $info;
 	protected string $dir_path;
 	protected string $enabled_option_key;
 	protected string $delete_log_query_key;
@@ -31,33 +27,21 @@ class Logger extends OmgFeature {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct(
-		string $key,
-		Fs $fs,
-		ActionQuery $action_query,
-		AdminNotice $admin_notice,
-		Info $info,
-		callable $get_config,
-		callable $get_i18n
-	) {
-		parent::__construct( $get_config, $get_i18n );
+	public function __construct( OmgApp $app, callable $get_config, callable $get_i18n ) {
+		parent::__construct( $app, $get_config, $get_i18n );
 
-		$this->fs                     = $fs;
-		$this->action_query           = $action_query;
-		$this->admin_notice           = $admin_notice;
-		$this->info                   = $info;
-		$this->dir_path               = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $key ) . '-log';
-		$this->enabled_option_key     = "{$key}_omg_core_logger_enabled";
-		$this->delete_log_query_key   = "{$key}_omg_core_logger_delete_log";
-		$this->download_log_query_key = "{$key}_omg_core_logger_download_log";
+		$this->dir_path               = WP_CONTENT_DIR . '/uploads/' . str_replace( '_', '-', $app->get_key() ) . '-log';
+		$this->enabled_option_key     = $app->get_key( 'omg_core_logger_enabled' );
+		$this->delete_log_query_key   = $app->get_key( 'omg_core_logger_delete_log' );
+		$this->download_log_query_key = $app->get_key( 'omg_core_logger_download_log' );
 
-		$action_query->add(
+		$app->action_query()->add(
 			$this->delete_log_query_key,
 			$this->handle_delete_log(),
 			true,
 			$this->delete_log_action_capability
 		);
-		$action_query->add(
+		$app->action_query()->add(
 			$this->download_log_query_key,
 			$this->handle_download_log(),
 			true,
@@ -95,7 +79,7 @@ class Logger extends OmgFeature {
 	 * @return string
 	 */
 	public function get_content( string $group = 'debug' ): string {
-		return $this->fs->read_text_file( "$this->dir_path/$group.log" );
+		return $this->app->fs()->read_text_file( "$this->dir_path/$group.log" );
 	}
 
 	/**
@@ -106,7 +90,7 @@ class Logger extends OmgFeature {
 	 * @return string
 	 */
 	public function get_delete_log_action_url( string $group = 'debug' ): string {
-		return $this->action_query->get_url( $this->delete_log_query_key, null, $group );
+		return $this->app->action_query()->get_url( $this->delete_log_query_key, null, $group );
 	}
 
 	/**
@@ -117,7 +101,7 @@ class Logger extends OmgFeature {
 	 * @return string
 	 */
 	public function get_download_log_action_url( string $group = 'debug' ): string {
-		return $this->action_query->get_url( $this->download_log_query_key, null, $group );
+		return $this->app->action_query()->get_url( $this->download_log_query_key, null, $group );
 	}
 
 	/**
@@ -202,11 +186,11 @@ class Logger extends OmgFeature {
 			return $this;
 		}
 
-		$content  = $this->fs->read_text_file( $this->get_log_file_path( $group ) );
+		$content  = $this->app->fs()->read_text_file( $this->get_log_file_path( $group ) );
 		$content .= $this->format_message( $message, $level ) . "\n";
 
 		$this->maybe_create_dir();
-		$this->fs->write_text_file( $this->get_log_file_path( $group ), $content );
+		$this->app->fs()->write_text_file( $this->get_log_file_path( $group ), $content );
 
 		return $this;
 	}
@@ -294,14 +278,14 @@ class Logger extends OmgFeature {
 			return;
 		}
 
-		$this->fs->write_text_file( $htaccess_path, 'deny from all' );
+		$this->app->fs()->write_text_file( $htaccess_path, 'deny from all' );
 	}
 
 	protected function handle_delete_log(): callable {
 		return function ( array $data ): void {
 			if ( ! is_string( $data[ $this->delete_log_query_key ] ) ) {
-				$this->admin_notice->add_transient(
-					sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+				$this->app->admin_notice()->add_transient(
+					sprintf( $this->notice_delete_log_error, $this->app->info()->get_name() ),
 					'error'
 				);
 
@@ -310,13 +294,13 @@ class Logger extends OmgFeature {
 
 			if ( 'all' === $data[ $this->delete_log_query_key ] ) {
 				if ( $this->delete_log_dir() ) {
-					$this->admin_notice->add_transient(
-						sprintf( $this->notice_delete_log_all_success, $this->info->get_name() ),
+					$this->app->admin_notice()->add_transient(
+						sprintf( $this->notice_delete_log_all_success, $this->app->info()->get_name() ),
 						'success'
 					);
 				} else {
-					$this->admin_notice->add_transient(
-						sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+					$this->app->admin_notice()->add_transient(
+						sprintf( $this->notice_delete_log_error, $this->app->info()->get_name() ),
 						'error'
 					);
 				}
@@ -325,17 +309,17 @@ class Logger extends OmgFeature {
 			}
 
 			if ( $this->delete_log_file( $data[ $this->delete_log_query_key ] ) ) {
-				$this->admin_notice->add_transient(
+				$this->app->admin_notice()->add_transient(
 					sprintf(
 						$this->notice_delete_log_group_success,
-						$this->info->get_name(),
+						$this->app->info()->get_name(),
 						$data[ $this->delete_log_query_key ]
 					),
 					'success'
 				);
 			} else {
-				$this->admin_notice->add_transient(
-					sprintf( $this->notice_delete_log_error, $this->info->get_name() ),
+				$this->app->admin_notice()->add_transient(
+					sprintf( $this->notice_delete_log_error, $this->app->info()->get_name() ),
 					'error'
 				);
 			}
@@ -348,8 +332,8 @@ class Logger extends OmgFeature {
 				! is_string( $data[ $this->download_log_query_key ] ) ||
 				! $this->is_log_file_exists( $data[ $this->download_log_query_key ] )
 			) {
-				$this->admin_notice->add_transient(
-					sprintf( $this->notice_download_log_error, $this->info->get_name() ),
+				$this->app->admin_notice()->add_transient(
+					sprintf( $this->notice_download_log_error, $this->app->info()->get_name() ),
 					'error'
 				);
 
@@ -364,7 +348,7 @@ class Logger extends OmgFeature {
 			) . '_' . str_replace(
 				'-',
 				'_',
-				$this->info->get_textdomain()
+				$this->app->info()->get_textdomain()
 			) . "_$group.log";
 			$file_path = $this->get_log_file_path( $group );
 

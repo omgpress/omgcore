@@ -51,39 +51,20 @@ abstract class OmgApp {
 		$this->root_file    = $root_file;
 		$this->key          = $key;
 		$this->is_plugin    = $is_plugin;
-		$this->action_query = new ActionQuery();
-		$this->admin_notice = new AdminNotice( $this->key );
+		$this->action_query = new ActionQuery( $this );
+		$this->admin_notice = new AdminNotice( $this );
 		$this->fs           = $this->is_plugin ?
-			new FsPlugin( $this->root_file ) :
+			new FsPlugin( $this ) :
 			new FsTheme();
-		$this->asset        = new Asset(
-			$this->key,
-			$this->fs,
-			$this->get_core_config()
-		);
+		$this->asset        = new Asset( $this, $this->get_core_config() );
 		$this->info         = $this->is_plugin ?
 			new InfoPlugin( $this->root_file ) :
 			new InfoTheme( $this->fs->get_path( 'style.css' ) );
-		$this->dependency   = new Dependency(
-			$this->key,
-			$this->info,
-			$this->admin_notice,
-			$this->action_query,
-			$this->get_core_config(),
-			$this->get_core_i18n()
-		);
+		$this->dependency   = new Dependency( $this, $this->get_core_config(), $this->get_core_i18n() );
 		$this->env          = new Env();
-		$this->logger       = new Logger(
-			$this->key,
-			$this->fs,
-			$this->action_query,
-			$this->admin_notice,
-			$this->info,
-			$this->get_core_config(),
-			$this->get_core_i18n()
-		);
+		$this->logger       = new Logger( $this, $this->get_core_config(), $this->get_core_i18n() );
 		$this->view         = $this->is_plugin ?
-			new ViewPlugin( $this->fs, $this->get_core_config() ) :
+			new ViewPlugin( $this, $this->get_core_config() ) :
 			new ViewTheme( $this->get_core_config() );
 
 		if ( $this->is_plugin ) {
@@ -95,6 +76,59 @@ abstract class OmgApp {
 		}
 
 		add_action( 'init', $this->init() );
+	}
+
+	/**
+	 * Return a prefixed key for the application based on the provided key.
+	 *
+	 * @param string $key Optional. The key to append to the base key.
+	 *
+	 * @return string The prefixed key.
+	 */
+	public function get_key( string $key = '' ): string {
+		return $this->key . ( $key ? ( "_$key" ) : '' );
+	}
+
+	/**
+	 * Return the root file of the application.
+	 */
+	public function get_root_file(): string {
+		return $this->root_file;
+	}
+
+	/**
+	 * Return ActionQuery class instance.
+	 */
+	public function action_query(): ActionQuery {
+		return $this->action_query;
+	}
+
+	/**
+	 * Return AdminNotice class instance.
+	 */
+	public function admin_notice(): AdminNotice {
+		return $this->admin_notice;
+	}
+
+	/**
+	 * Return Asset class instance.
+	 */
+	public function asset(): Asset {
+		return $this->asset;
+	}
+
+	/**
+	 * Return Dependency class instance.
+	 */
+	public function dependency(): Dependency {
+		return $this->dependency;
+	}
+
+	/**
+	 * Return Env class instance.
+	 */
+	public function env(): Env {
+		return $this->env;
 	}
 
 	/**

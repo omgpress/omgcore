@@ -13,10 +13,6 @@ defined( 'ABSPATH' ) || exit;
  * Dependency manager.
  */
 class Dependency extends OmgFeature {
-	protected Info $info;
-	protected AdminNotice $admin_notice;
-	protected ActionQuery $action_query;
-
 	/**
 	 * @var Plugin[]
 	 */
@@ -42,22 +38,12 @@ class Dependency extends OmgFeature {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct(
-		string $key,
-		Info $info,
-		AdminNotice $admin_notice,
-		ActionQuery $action_query,
-		callable $get_config,
-		callable $get_i18n
-	) {
-		parent::__construct( $get_config, $get_i18n );
+	public function __construct( OmgApp $app, callable $get_config, callable $get_i18n ) {
+		parent::__construct( $app, $get_config, $get_i18n );
 
-		$this->info                                  = $info;
-		$this->admin_notice                          = $admin_notice;
-		$this->action_query                          = $action_query;
-		$this->install_and_activate_action_query_key = "{$key}_omg_core_dependency_install_and_activate_plugins";
+		$this->install_and_activate_action_query_key = $app->get_key( 'omg_core_dependency_install_and_activate_plugins' );
 
-		$action_query->add(
+		$app->action_query()->add(
 			$this->install_and_activate_action_query_key,
 			$this->handle_install_and_activate_plugins(),
 			true,
@@ -199,7 +185,7 @@ class Dependency extends OmgFeature {
 		}
 
 		$this->render_notice_actions( $required_not_active, $optional_not_active );
-		$this->admin_notice->render(
+		$this->app->admin_notice()->render(
 			ob_get_clean(),
 			empty( $required_not_active ) ? 'warning' : 'error'
 		);
@@ -210,7 +196,7 @@ class Dependency extends OmgFeature {
 		string $title_single,
 		string $title_plural
 	): void {
-		$name      = $this->info->get_name();
+		$name      = $this->app->info()->get_name();
 		$is_plural = 1 < count( $plugins );
 
 		if ( $is_plural ) {
@@ -277,12 +263,12 @@ class Dependency extends OmgFeature {
 			return;
 		}
 
-		$all_url           = $this->action_query->get_url(
+		$all_url           = $this->app->action_query()->get_url(
 			$this->install_and_activate_action_query_key,
 			null,
 			'all'
 		);
-		$only_required_url = $this->action_query->get_url(
+		$only_required_url = $this->app->action_query()->get_url(
 			$this->install_and_activate_action_query_key,
 			null,
 			'only_required'
@@ -360,7 +346,7 @@ class Dependency extends OmgFeature {
 	}
 
 	protected function get_notice_css_class( string $css_class ): string {
-		return $this->info->get_textdomain() . '-omgcore-dependency-' . $css_class;
+		return $this->app->info()->get_textdomain() . '-omgcore-dependency-' . $css_class;
 	}
 
 	protected function get_plugin( string $key ): Plugin {
@@ -395,7 +381,7 @@ class Dependency extends OmgFeature {
 
 						$plugin->activate();
 					} else {
-						$this->admin_notice->add_transient(
+						$this->app->admin_notice()->add_transient(
 							sprintf( $this->notice_error_install, $plugin->get_name() ),
 							'error'
 						);
@@ -403,7 +389,7 @@ class Dependency extends OmgFeature {
 				}
 			}
 
-			$this->admin_notice->add_transient(
+			$this->app->admin_notice()->add_transient(
 				$was_installation ?
 					$this->notice_success_install_and_activate :
 					$this->notice_success_activate,

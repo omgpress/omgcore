@@ -15,10 +15,10 @@ class AdminNotice extends OmgFeature {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( string $key ) {
-		parent::__construct();
+	public function __construct( OmgApp $app ) {
+		parent::__construct( $app );
 
-		$this->key = "{$key}_admin_transient_notices";
+		$this->key = $app->get_key( 'admin_transient_notices' );
 
 		add_action( 'admin_init', $this->render_transients() );
 	}
