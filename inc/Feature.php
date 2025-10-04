@@ -9,10 +9,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Feature.
  */
-abstract class OmgFeature {
+abstract class Feature {
 	protected static array $initiated = array();
 
-	protected ?OmgApp $app  = null;
 	protected array $config = array();
 	protected array $i18n   = array();
 
@@ -20,12 +19,11 @@ abstract class OmgFeature {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( ?OmgApp $app = null, ?callable $get_config = null, ?callable $get_i18n = null ) {
+	public function __construct( ?callable $get_config = null, ?callable $get_i18n = null ) {
 		if ( in_array( static::class, self::$initiated, true ) ) {
 			throw new Exception( static::class . ' class can be initialized only once' );
 		}
 
-		$this->app         = $app;
 		self::$initiated[] = static::class;
 
 		if ( is_callable( $get_config ) ) {

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Environment manager.
  */
-class Env extends OmgFeature {
+class Env extends Feature {
 	protected array $dev_hosts = array(
 		'localhost',
 		'local',

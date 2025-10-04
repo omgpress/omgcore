@@ -12,13 +12,15 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Dependency manager.
  */
-class Dependency extends OmgFeature {
+class Dependency extends Feature {
 	/**
 	 * @var Plugin[]
 	 */
 	protected array $plugins = array();
+	protected ActionQuery $action_query;
+	protected AdminNotice $admin_notice;
+	protected Info $info;
 	protected string $install_and_activate_action_query_key;
-
 	protected string $notice_title_required_singular                = 'The <b>%1$s</b> plugin%2$s is <b>required</b> for the <b>"%3$s"</b> features to function.';
 	protected string $notice_title_optional_singular                = 'The <b>%1$s</b> plugin%2$s is <b>recommended</b> for the all <b>"%3$s"</b> features to function.';
 	protected string $notice_title_required_plural                  = 'The following plugins are <b>required</b> for the <b>%s</b> features to function:';
@@ -38,12 +40,22 @@ class Dependency extends OmgFeature {
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( OmgApp $app, callable $get_config, callable $get_i18n ) {
-		parent::__construct( $app, $get_config, $get_i18n );
+	public function __construct(
+		string $key,
+		ActionQuery $action_query,
+		AdminNotice $admin_notice,
+		Info $info,
+		callable $get_config,
+		callable $get_i18n
+	) {
+		parent::__construct( $get_config, $get_i18n );
 
-		$this->install_and_activate_action_query_key = $app->get_key( 'omg_core_dependency_install_and_activate_plugins' );
+		$this->action_query                          = $action_query;
+		$this->admin_notice                          = $admin_notice;
+		$this->info                                  = $info;
+		$this->install_and_activate_action_query_key = "{$key}_omg_core_dependency_install_and_activate_plugins";
 
-		$app->action_query()->add(
+		$action_query->add(
 			$this->install_and_activate_action_query_key,
 			$this->handle_install_and_activate_plugins(),
 			true,
@@ -185,7 +197,7 @@ class Dependency extends OmgFeature {
 		}
 
 		$this->render_notice_actions( $required_not_active, $optional_not_active );
-		$this->app->admin_notice()->render(
+		$this->admin_notice->render(
 			ob_get_clean(),
 			empty( $required_not_active ) ? 'warning' : 'error'
 		);
@@ -196,7 +208,7 @@ class Dependency extends OmgFeature {
 		string $title_single,
 		string $title_plural
 	): void {
-		$name      = $this->app->info()->get_name();
+		$name      = $this->info->get_name();
 		$is_plural = 1 < count( $plugins );
 
 		if ( $is_plural ) {
@@ -263,12 +275,12 @@ class Dependency extends OmgFeature {
 			return;
 		}
 
-		$all_url           = $this->app->action_query()->get_url(
+		$all_url           = $this->action_query->get_url(
 			$this->install_and_activate_action_query_key,
 			null,
 			'all'
 		);
-		$only_required_url = $this->app->action_query()->get_url(
+		$only_required_url = $this->action_query->get_url(
 			$this->install_and_activate_action_query_key,
 			null,
 			'only_required'
@@ -346,7 +358,7 @@ class Dependency extends OmgFeature {
 	}
 
 	protected function get_notice_css_class( string $css_class ): string {
-		return $this->app->info()->get_textdomain() . '-omgcore-dependency-' . $css_class;
+		return $this->info->get_textdomain() . '-omgcore-dependency-' . $css_class;
 	}
 
 	protected function get_plugin( string $key ): Plugin {
@@ -381,7 +393,7 @@ class Dependency extends OmgFeature {
 
 						$plugin->activate();
 					} else {
-						$this->app->admin_notice()->add_transient(
+						$this->admin_notice->add_transient(
 							sprintf( $this->notice_error_install, $plugin->get_name() ),
 							'error'
 						);
@@ -389,7 +401,7 @@ class Dependency extends OmgFeature {
 				}
 			}
 
-			$this->app->admin_notice()->add_transient(
+			$this->admin_notice->add_transient(
 				$was_installation ?
 					$this->notice_success_install_and_activate :
 					$this->notice_success_activate,

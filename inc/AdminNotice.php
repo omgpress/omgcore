@@ -8,17 +8,17 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Admin notice manager.
  */
-class AdminNotice extends OmgFeature {
+class AdminNotice extends Feature {
 	protected string $key;
 
 	/**
 	 * @throws Exception
 	 * @ignore
 	 */
-	public function __construct( OmgApp $app ) {
-		parent::__construct( $app );
+	public function __construct( string $key ) {
+		parent::__construct();
 
-		$this->key = $app->get_key( 'admin_transient_notices' );
+		$this->key = "{$key}_admin_transient_notices";
 
 		add_action( 'admin_init', $this->render_transients() );
 	}

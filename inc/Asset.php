@@ -8,11 +8,20 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Asset manager.
  */
-class Asset extends OmgFeature {
+class Asset extends Feature {
+	protected string $key;
+	protected Fs $fs;
 	protected string $asset_dir = 'asset';
 	protected string $js_dir    = 'js';
 	protected string $css_dir   = 'css';
 	protected string $postfix   = '.min';
+
+	public function __construct( string $key, Fs $fs, callable $get_config ) {
+		parent::__construct( $get_config );
+
+		$this->key = $key;
+		$this->fs  = $fs;
+	}
 
 	/**
 	 * Enqueues a script asset.
@@ -36,8 +45,8 @@ class Asset extends OmgFeature {
 		$key      = $this->get_key( $name );
 		$filename = $name . $this->postfix . '.js';
 		$rel      = $this->asset_dir . '/' . $this->js_dir . '/' . $filename;
-		$url      = $this->app->fs()->get_url( $rel );
-		$path     = $this->app->fs()->get_path( $rel );
+		$url      = $this->fs->get_url( $rel );
+		$path     = $this->fs->get_path( $rel );
 
 		if ( ! file_exists( $path ) ) {
 			throw new Exception( esc_html( "The $path script asset file does not exist" ) );
@@ -62,7 +71,7 @@ class Asset extends OmgFeature {
 	 * @return self
 	 */
 	public function enqueue_inline_script( string $parent_name, string $js_code, string $position = 'after' ): self {
-		wp_add_inline_script( $this->app->get_key( $parent_name ), $js_code, $position );
+		wp_add_inline_script( $this->get_key( $parent_name ), $js_code, $position );
 
 		return $this;
 	}
@@ -81,8 +90,8 @@ class Asset extends OmgFeature {
 		$key      = $this->get_key( $name );
 		$filename = $name . $this->postfix . '.css';
 		$rel      = $this->asset_dir . '/' . $this->css_dir . '/' . $filename;
-		$url      = $this->app->fs()->get_url( $rel );
-		$path     = $this->app->fs()->get_path( $rel );
+		$url      = $this->fs->get_url( $rel );
+		$path     = $this->fs->get_path( $rel );
 
 		if ( ! file_exists( $path ) ) {
 			throw new Exception( esc_html( "The $path style asset file does not exist" ) );
@@ -97,7 +106,7 @@ class Asset extends OmgFeature {
 			$css_vars = ':root{';
 
 			foreach ( $addition as $var_name => $var_val ) {
-				$css_vars .= '--' . str_replace( '_', '-', $this->app->get_key( $var_name ) ) . ':' . $var_val . ';';
+				$css_vars .= '--' . str_replace( '_', '-', "$this->key-$var_name" ) . ":$var_val;";
 			}
 
 			wp_add_inline_style( $key, "$css_vars}" );
@@ -146,6 +155,6 @@ class Asset extends OmgFeature {
 	 * @return string The generated key.
 	 */
 	public function get_key( string $name ): string {
-		return $this->app->get_key( str_replace( '-', '_', $name ) );
+		return "{$this->key}_" . str_replace( '-', '_', $name );
 	}
 }
